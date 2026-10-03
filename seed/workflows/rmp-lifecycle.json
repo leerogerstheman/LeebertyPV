@@ -1,0 +1,661 @@
+{
+  "code": "RMP-LIFE",
+  "recordPrefix": "RMP",
+  "name": "风险管理计划全生命周期管理",
+  "nameEn": "RMP Lifecycle Management",
+  "category": "风险管理",
+  "gxpAreas": ["RMP"],
+  "regulationRefs": [
+    "《药物警戒质量管理规范》（国家药监局2021年第65号公告）第96-99条",
+    "ICH E2E Pharmacovigilance Planning",
+    "CDE《临床风险管理计划撰写指导原则（试行）》（2021年第68号通告）",
+    "EU GVP Module V (Risk Management Systems)"
+  ],
+  "description": "覆盖风险管理计划（RMP）全生命周期：确定产品与风险特征，梳理重要已识别/潜在风险与缺失信息，设计药物警戒计划与风险最小化措施（RMM），经药品安全委员会审核与批准后实施，开展RMM有效性评估并定期更新。",
+  "descriptionEn": "Manage the full RMP lifecycle: define product scope and risk profile, list important identified/potential risks and missing information, design the pharmacovigilance plan and risk minimisation measures (RMM), obtain Drug Safety Committee review and approval, implement, evaluate RMM effectiveness, and update periodically.",
+  "slaDays": 90,
+  "requiresRootCause": false,
+  "requiresEffectivenessCheck": true,
+  "requiresQaApproval": true,
+  "criticalityLevels": ["minor", "major", "critical"],
+  "states": ["draft", "scope", "risk_profile", "pv_plan", "rmm_design", "approval", "implementation", "effectiveness", "update", "closed", "cancelled"],
+  "initialState": "draft",
+  "terminalStates": ["closed", "cancelled"],
+  "fields": [
+    {
+      "key": "title",
+      "label": "计划标题",
+      "labelEn": "Plan Title",
+      "type": "text",
+      "required": true,
+      "help": "建议格式：药品名+风险管理计划（版本）。"
+    },
+    {
+      "key": "summary",
+      "label": "计划概述",
+      "labelEn": "Summary",
+      "type": "textarea",
+      "required": false,
+      "help": "简述品种安全性概况与计划目的。"
+    },
+    {
+      "key": "product",
+      "label": "药品名称",
+      "labelEn": "Product Name",
+      "type": "text",
+      "required": true,
+      "help": "填写药品通用名与商品名。"
+    },
+    {
+      "key": "indication",
+      "label": "适应症/用途",
+      "labelEn": "Indication",
+      "type": "text",
+      "required": true,
+      "help": "批准适应症与目标人群，获益-风险评估以批准适应症为基础。"
+    },
+    {
+      "key": "riskCategory",
+      "label": "风险特征类别",
+      "labelEn": "Risk Category",
+      "type": "select",
+      "required": true,
+      "options": ["重要已识别风险", "重要潜在风险", "重要缺失信息", "综合（多类并存）"],
+      "help": "反映品种主要风险特征，决定PV计划与RMM设计重点。"
+    }
+  ],
+  "steps": [
+    {
+      "code": "scope",
+      "name": "确定产品与风险范围",
+      "nameEn": "Scope Definition",
+      "role": ["pv_officer", "pv_medical"],
+      "type": "task",
+      "onComplete": "scope",
+      "requiresFields": ["productInfo", "dataSources", "scopeConfirm"],
+      "form": [
+        {
+          "key": "productInfo",
+          "label": "产品概览",
+          "labelEn": "Product Overview",
+          "type": "textarea",
+          "required": true,
+          "help": "活性成分、适应症、用法用量、全球上市状态，对应EU RMP Part I。"
+        },
+        {
+          "key": "dataSources",
+          "label": "数据来源清单",
+          "labelEn": "Data Sources",
+          "type": "textarea",
+          "required": true,
+          "help": "说明书、PSUR、信号评估、上市后研究等可获得的全部安全性数据来源。"
+        },
+        {
+          "key": "scopeConfirm",
+          "label": "范围确认",
+          "labelEn": "Scope Confirmation",
+          "type": "select",
+          "required": true,
+          "options": ["已确认", "需调整"],
+          "help": "范围确认后才进入风险梳理，避免返工。"
+        },
+        {
+          "key": "attachedDoc",
+          "label": "附件/前期报告链接",
+          "labelEn": "Attachment/Link",
+          "type": "text",
+          "required": false,
+          "help": "挂载前期评估报告与参考资料。"
+        },
+        {
+          "key": "scopeRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：RMP必须先明确产品安全性概况与数据范围，范围不清后面所有章节都会返工。怎么做：整理产品概览、目标人群与可获得的安全性数据来源，确认范围后再推进。常见错：范围过窄漏掉重要风险、直接套用模板不更新品种数据。参考：结构对应EU GVP Module V Part I-II及CDE指导原则。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "product_overview": "productInfo",
+        "indication": "indication"
+      }
+    },
+    {
+      "code": "risk_profile",
+      "name": "重要风险与缺失信息清单",
+      "nameEn": "Risk Profile",
+      "role": ["pv_medical"],
+      "type": "task",
+      "onComplete": "risk_profile",
+      "requiresFields": ["identifiedRisks", "potentialRisks", "missingInfo", "riskListReview"],
+      "form": [
+        {
+          "key": "identifiedRisks",
+          "label": "重要已识别风险清单",
+          "labelEn": "Important Identified Risks",
+          "type": "textarea",
+          "required": true,
+          "help": "逐项描述证据强度与来源（个例/流行病学/非临床）。"
+        },
+        {
+          "key": "potentialRisks",
+          "label": "重要潜在风险清单",
+          "labelEn": "Important Potential Risks",
+          "type": "textarea",
+          "required": true,
+          "help": "有依据但尚未充分确认的风险。"
+        },
+        {
+          "key": "missingInfo",
+          "label": "重要缺失信息",
+          "labelEn": "Missing Information",
+          "type": "textarea",
+          "required": true,
+          "help": "特殊人群、长期用药、相互作用等未充分研究的信息。"
+        },
+        {
+          "key": "evidenceLevel",
+          "label": "证据强度说明",
+          "labelEn": "Evidence Level",
+          "type": "text",
+          "required": false,
+          "help": "标注证据分级，便于风险排序。"
+        },
+        {
+          "key": "riskListReview",
+          "label": "风险清单复核",
+          "labelEn": "Risk List Review",
+          "type": "select",
+          "required": true,
+          "options": ["已复核一致", "需补充"],
+          "help": "与信号评估、PSUR结论交叉核对。"
+        }
+      ],
+      "guidance": "为什么：风险与缺失信息的完整识别决定PV计划与RMM的覆盖范围，漏项等于管控盲区。怎么做：基于信号评估、PSUR与说明书逐项整理三类清单并标注证据强度。常见错：把全部已知反应列为重要风险造成失焦、缺失信息常年不更新。法规依据：GVP第96-99条；ICH E2E；对应EU RMP Part II。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "identified_risks": "identifiedRisks",
+        "potential_risks": "potentialRisks",
+        "missing_info": "missingInfo"
+      }
+    },
+    {
+      "code": "pv_plan",
+      "name": "药物警戒计划",
+      "nameEn": "Pharmacovigilance Plan",
+      "role": ["pv_officer"],
+      "type": "task",
+      "onComplete": "pv_plan",
+      "requiresFields": ["routineActivities", "additionalActivities", "planReview"],
+      "form": [
+        {
+          "key": "routineActivities",
+          "label": "常规PV活动",
+          "labelEn": "Routine PV Activities",
+          "type": "textarea",
+          "required": true,
+          "help": "个例报告、信号检测、PSUR等常规活动如何覆盖各风险。"
+        },
+        {
+          "key": "additionalActivities",
+          "label": "附加PV活动",
+          "labelEn": "Additional PV Activities",
+          "type": "textarea",
+          "required": true,
+          "help": "上市后研究、专项监测、登记研究等，对应EU RMP Part III。"
+        },
+        {
+          "key": "planObjective",
+          "label": "活动目标与指标",
+          "labelEn": "Objectives & Indicators",
+          "type": "textarea",
+          "required": false,
+          "help": "每项附加活动的目的、样本量、时间表与成功标准。"
+        },
+        {
+          "key": "planReview",
+          "label": "计划复核",
+          "labelEn": "Plan Review",
+          "type": "select",
+          "required": true,
+          "options": ["完善", "需调整"],
+          "help": "核对活动与风险的对应关系。"
+        },
+        {
+          "key": "planRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：PV计划说明每个重要风险如何被常规或附加活动覆盖，监管关注活动与风险的对应关系。怎么做：逐风险映射常规/附加活动，写明附加活动的目的、时间表与样本量。常见错：活动与风险脱节、附加活动无目的无时间表。法规依据：GVP第96-99条药物警戒计划；ICH E2E；EU RMP Part III。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "additional_activities": "additionalActivities"
+      }
+    },
+    {
+      "code": "rmm_design",
+      "name": "风险最小化措施设计",
+      "nameEn": "RMM Design",
+      "role": ["pv_head", "qa_manager"],
+      "type": "task",
+      "onComplete": "rmm_design",
+      "requiresFields": ["routineRmm", "targetRisk", "designReview"],
+      "form": [
+        {
+          "key": "routineRmm",
+          "label": "常规RMM",
+          "labelEn": "Routine RMM",
+          "type": "textarea",
+          "required": true,
+          "help": "说明书、标签、包装、处方状态管理等（GVP第87条）。"
+        },
+        {
+          "key": "additionalRmm",
+          "label": "附加RMM",
+          "labelEn": "Additional RMM",
+          "type": "textarea",
+          "required": false,
+          "help": "DHPC致医务人员函、患者教育材料、用药登记簿、限制处方、受控分发等。"
+        },
+        {
+          "key": "targetRisk",
+          "label": "每项措施对应风险",
+          "labelEn": "Risk Targeted by Each Measure",
+          "type": "textarea",
+          "required": true,
+          "help": "写明每项RMM要管控哪个风险，防止措施空转。"
+        },
+        {
+          "key": "feasibility",
+          "label": "可行性评估",
+          "labelEn": "Feasibility",
+          "type": "textarea",
+          "required": false,
+          "help": "资源、渠道、实施难度评估。"
+        },
+        {
+          "key": "designReview",
+          "label": "设计审查",
+          "labelEn": "Design Review",
+          "type": "select",
+          "required": true,
+          "options": ["通过", "需修改"],
+          "help": "确认措施-风险对应与可落地性。"
+        }
+      ],
+      "guidance": "为什么：RMM必须与风险目标一一对应且可落地，GVP第87、96-99条要求措施与风险匹配并持续评估。怎么做：先列风险再设计措施，明确常规与附加分工，评估可行性。常见错：措施与风险不对应、附加措施无实施主体。法规依据：GVP第87条；EU GVP Module V Part V；CDE指导原则。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "routine_rmm": "routineRmm",
+        "additional_rmm": "additionalRmm"
+      }
+    },
+    {
+      "code": "approval",
+      "name": "审批与批准",
+      "nameEn": "Approval & Authorisation",
+      "role": ["pv_head", "qa_manager"],
+      "type": "signature",
+      "onComplete": "approval",
+      "requiresFields": ["committeeReview", "approvalOpinion", "version", "approvalDate"],
+      "signatureMeaning": "approved",
+      "form": [
+        {
+          "key": "committeeReview",
+          "label": "药品安全委员会审议",
+          "labelEn": "Drug Safety Committee Review",
+          "type": "select",
+          "required": true,
+          "options": ["已审议通过", "已审议有意见", "未审议"],
+          "help": "药物警戒计划/风险管理计划须报药品安全委员会审核（GVP第99条）。"
+        },
+        {
+          "key": "approvalOpinion",
+          "label": "审批意见",
+          "labelEn": "Approval Opinion",
+          "type": "textarea",
+          "required": true,
+          "help": "记录批准依据与意见，作为正式执行起点。"
+        },
+        {
+          "key": "version",
+          "label": "版本号",
+          "labelEn": "Version",
+          "type": "text",
+          "required": true,
+          "help": "RMP版本管理（如V1.0），修订须留修订日志。"
+        },
+        {
+          "key": "approvalDate",
+          "label": "批准日期",
+          "labelEn": "Approval Date",
+          "type": "date",
+          "required": true,
+          "help": "批准留痕时间戳。"
+        },
+        {
+          "key": "approvalRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：RMP/药物警戒计划须经药品安全委员会审核并批准方生效（GVP第97-99条），是正式执行的起点。怎么做：提交委员会审议、落实意见后由非作者方的QPPV与QA批准并锁定版本。常见错：跳过委员会审议、作者自批、无版本管理。法规依据：GVP第96-99条；药品安全委员会职责见GVP第20条。",
+      "optional": false,
+      "independentOfAuthor": true,
+      "persistFields": {
+        "rmp_version": "version",
+        "approval_date": "approvalDate"
+      }
+    },
+    {
+      "code": "implementation",
+      "name": "实施与培训",
+      "nameEn": "Implementation & Training",
+      "role": ["pv_officer", "qa_specialist"],
+      "type": "task",
+      "onComplete": "implementation",
+      "requiresFields": ["actionList", "trainingStatus", "implementationEvidence"],
+      "form": [
+        {
+          "key": "actionList",
+          "label": "实施动作清单",
+          "labelEn": "Action List",
+          "type": "textarea",
+          "required": true,
+          "help": "说明书修订、DHPC发出、登记簿建立、培训等，标注责任人与完成日期。"
+        },
+        {
+          "key": "trainingStatus",
+          "label": "培训完成情况",
+          "labelEn": "Training Status",
+          "type": "select",
+          "required": true,
+          "options": ["已完成", "进行中", "未开始"],
+          "help": "RMM相关人员的培训落实（如限制处方、登记簿操作）。"
+        },
+        {
+          "key": "implementationEvidence",
+          "label": "实施证据",
+          "labelEn": "Implementation Evidence",
+          "type": "textarea",
+          "required": true,
+          "help": "发出记录、培训签到、登记簿运行情况等证明材料。"
+        },
+        {
+          "key": "implementationCheck",
+          "label": "实施核查",
+          "labelEn": "Implementation Check",
+          "type": "select",
+          "required": true,
+          "options": ["已核查", "待核查"],
+          "help": "QA核查实施证据的真实性与完整性。"
+        },
+        {
+          "key": "implRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：RMM的价值在做进日常并验证有效，不是写一份文件——审批后未实施的RMP等于不存在。怎么做：逐项落实说明书变更、DHPC与培训等动作，收集实施证据并核查。常见错：审批完就搁置、无实施证据、培训走过场。法规依据：GVP第87条风险控制措施实施；第90条有效性评估要求以实施为前提。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "training_status": "trainingStatus"
+      }
+    },
+    {
+      "code": "effectiveness",
+      "name": "有效性评估",
+      "nameEn": "Effectiveness Evaluation",
+      "role": ["qa_manager", "pv_head"],
+      "type": "signature",
+      "onComplete": "effectiveness",
+      "requiresFields": ["indicatorPlan", "evaluationData", "effectivenessResult", "effectivenessDate"],
+      "signatureMeaning": "assessed",
+      "form": [
+        {
+          "key": "indicatorPlan",
+          "label": "有效性指标",
+          "labelEn": "Effectiveness Indicators",
+          "type": "textarea",
+          "required": true,
+          "help": "依从性指标（随访率、登记入组率）与结局指标（事件发生率变化）。"
+        },
+        {
+          "key": "evaluationData",
+          "label": "评估数据",
+          "labelEn": "Evaluation Data",
+          "type": "textarea",
+          "required": true,
+          "help": "来自PASS、登记研究、处方/发放数据等。"
+        },
+        {
+          "key": "effectivenessResult",
+          "label": "评估结论",
+          "labelEn": "Effectiveness Result",
+          "type": "select",
+          "required": true,
+          "options": ["措施有效", "部分有效需改进", "无效需替代"],
+          "help": "有效的标准以事前定义为准，不是做完就有效。"
+        },
+        {
+          "key": "updateNeeded",
+          "label": "是否需要更新RMP",
+          "labelEn": "RMP Update Needed",
+          "type": "select",
+          "required": false,
+          "options": ["是", "否"],
+          "help": "评估发现不足时触发更新环节。"
+        },
+        {
+          "key": "effectivenessDate",
+          "label": "评估日期",
+          "labelEn": "Evaluation Date",
+          "type": "date",
+          "required": true,
+          "help": "评估完成时间戳。"
+        }
+      ],
+      "guidance": "为什么：GVP第90条要求评估RMM有效性，验证真的有用是验收环节，无效措施要替代而非保留。怎么做：用事前定义的指标评估依从性与结局变化，结论签名留档。常见错：没有指标就评估、只评做没做不评有没有用。法规依据：GVP第90条；EU GVP Module V Part V。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "effectiveness_result": "effectivenessResult",
+        "effectiveness_date": "effectivenessDate"
+      }
+    },
+    {
+      "code": "update",
+      "name": "定期更新",
+      "nameEn": "Periodic Update",
+      "role": ["pv_head"],
+      "type": "task",
+      "onComplete": "update",
+      "requiresFields": ["newRisks", "changeLog", "nextReview"],
+      "form": [
+        {
+          "key": "newRisks",
+          "label": "新风险认知",
+          "labelEn": "New Risk Knowledge",
+          "type": "textarea",
+          "required": true,
+          "help": "信号评估、PSUR、监管要求变化带来的新认知。"
+        },
+        {
+          "key": "changeLog",
+          "label": "变更内容清单",
+          "labelEn": "Change Log",
+          "type": "textarea",
+          "required": true,
+          "help": "版本变更记录：新增/修订的风险、活动、措施。"
+        },
+        {
+          "key": "updatedVersion",
+          "label": "新版本号",
+          "labelEn": "Updated Version",
+          "type": "text",
+          "required": false,
+          "help": "更新后的RMP版本号。"
+        },
+        {
+          "key": "nextReview",
+          "label": "下次更新/复核时间",
+          "labelEn": "Next Review Date",
+          "type": "date",
+          "required": true,
+          "help": "随风险认知变化更新，建议定期复核（GVP第97条）。"
+        },
+        {
+          "key": "updateRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：RMP是活文档，随风险认知变化持续更新（GVP第96-99条），否则会与实际风险脱节。怎么做：将新确认的风险、措施调整纳入新版本并记录变更日志，安排下次复核。常见错：RMP常年不更新、更新不记录变更原因。法规依据：GVP第97条随风险认知更新；ICH E2E更新要求。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "rmp_version": "updatedVersion",
+        "next_review": "nextReview"
+      }
+    },
+    {
+      "code": "closed",
+      "name": "结案归档",
+      "nameEn": "Closure & Archiving",
+      "role": ["pv_head"],
+      "type": "signature",
+      "onComplete": "closed",
+      "requiresFields": ["finalVersion", "archivePath", "closureDate"],
+      "signatureMeaning": "approved",
+      "form": [
+        {
+          "key": "finalVersion",
+          "label": "终版版本号",
+          "labelEn": "Final Version",
+          "type": "text",
+          "required": true,
+          "help": "结案对应的RMP最新版本。"
+        },
+        {
+          "key": "archivePath",
+          "label": "归档位置",
+          "labelEn": "Archive Location",
+          "type": "text",
+          "required": true,
+          "help": "终版与全部中间版本归档，保存至注册证书注销后10年。"
+        },
+        {
+          "key": "closureDate",
+          "label": "结案日期",
+          "labelEn": "Closure Date",
+          "type": "date",
+          "required": true,
+          "help": "结案签名日期。"
+        },
+        {
+          "key": "closureRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        },
+        {
+          "key": "closeReview",
+          "label": "结案复核",
+          "labelEn": "Closure Review",
+          "type": "select",
+          "required": false,
+          "options": ["已复核完整性", "待补充材料"],
+          "help": "确认版本链条与归档完整。"
+        }
+      ],
+      "guidance": "为什么：RMP档案按GVP第100-115条保存，涉及风险控制的版本历史必须完整可审计。怎么做：归档终版与全部中间版本并注明去向，QPPV核对版本链条后签名结案。常见错：只存最新版丢失历史、归档信息不全。法规依据：GVP第100-115条记录与文件管理。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "final_version": "finalVersion",
+        "archive_path": "archivePath"
+      }
+    },
+    {
+      "code": "cancel_record",
+      "name": "取消记录",
+      "nameEn": "Cancel Record",
+      "role": ["pv_head"],
+      "type": "task",
+      "onComplete": "cancelled",
+      "requiresFields": ["cancelReason", "cancelCheck", "cancelDate"],
+      "form": [
+        {
+          "key": "cancelReason",
+          "label": "取消原因",
+          "labelEn": "Cancellation Reason",
+          "type": "textarea",
+          "required": true,
+          "help": "如品种终止、误建记录，须说明理由并留档。"
+        },
+        {
+          "key": "cancelCheck",
+          "label": "取消前核对",
+          "labelEn": "Pre-cancellation Check",
+          "type": "select",
+          "required": true,
+          "options": ["关联记录已处理", "关联记录无需处理", "待核实"],
+          "help": "取消前确认已实施的RMM与下游记录处理完毕，避免风险管控断档。"
+        },
+        {
+          "key": "cancelNote",
+          "label": "补充说明",
+          "labelEn": "Supplementary Notes",
+          "type": "textarea",
+          "required": false,
+          "help": "其他补充说明。"
+        },
+        {
+          "key": "cancelApprover",
+          "label": "确认人",
+          "labelEn": "Confirmed By",
+          "type": "text",
+          "required": true,
+          "help": "QPPV或授权确认人签名留痕。"
+        },
+        {
+          "key": "cancelDate",
+          "label": "取消日期",
+          "labelEn": "Cancellation Date",
+          "type": "date",
+          "required": true,
+          "help": "取消动作留痕。"
+        }
+      ],
+      "guidance": "为什么：取消记录保留审计追踪，防止风险管控文件被无痕撤销。怎么做：由QPPV确认取消理由并留档。常见错：直接删除记录导致风险管控断档无法解释。",
+      "optional": true,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "cancel_reason": "cancelReason"
+      }
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "code": "LIT-CN",
+  "title": "医学文献监测核查表",
+  "titleEn": "Medical Literature Monitoring Checklist",
+  "scope": "self_inspection",
+  "category": "pharmacovigilance",
+  "gxpAreas": ["LIT"],
+  "regulation": "《药物警戒质量管理规范》第36、50条（监测国内外文献）；EU GVP Module VI.B（关键期刊清单、检索频率）",
+  "authority": "NMPA / EMA",
+  "version": "基于已核实条款：GVP 第36条、第50条；EU GVP Module VI.B",
+  "description": "核查医学文献监测是否真实运行：检索计划与关键期刊清单、定期检索与留档、人工筛查与四要素判定、可上报个例的转交时限、以及检索记录的完整性与可复核性。",
+  "descriptionEn": "Verifies that literature surveillance really runs: a search plan with a key-journal list, periodic searches with records, manual screening and four-element triage, handover timelines for reportable cases, and retrievable search archives.",
+  "items": [
+    {
+      "clauseRef": "GVP 第36、50条",
+      "requirement": "已建立覆盖国内外医学文献的监测安排，明确检索数据库、检索式、频率与责任人，并有文件化的检索计划",
+      "requirementEn": "A documented surveillance arrangement covers domestic and international medical literature, with databases, search strategies, frequency and ownership",
+      "guidance": "索取检索计划，核对数据库范围（中外文）、检索词组合与频率是否合理、责任人是否明确；常见缺陷是计划从模板拷贝、未以实际产品更新。",
+      "guidanceEn": "Request the search plan and check database coverage, strategy, frequency and ownership; template plans not aligned to the actual products are a finding.",
+      "riskLevel": "major",
+      "evidenceHint": "医学文献监测管理规程、检索计划、数据库与频率清单"
+    },
+    {
+      "clauseRef": "EU GVP Module VI.B / GVP 第50条",
+      "requirement": "检索按计划执行并留有记录：检索日期、数据库、检索式、命中篇数与人工筛查结果可复核",
+      "requirementEn": "Searches run on schedule with records: date, database, strategy, hit counts and screening results are retrievable",
+      "guidance": "抽查连续多个检索周期的记录，核对日期序列无间断、命中数与筛查结果对应；常见缺陷是检索记录缺失或补写。",
+      "guidanceEn": "Sample consecutive search cycles and check for an unbroken date sequence with consistent hit counts and screening results.",
+      "riskLevel": "critical",
+      "evidenceHint": "检索记录（日期/库/式/命中数）、筛查清单、归档检索报告"
+    },
+    {
+      "clauseRef": "GVP 第50条",
+      "requirement": "对命中的文献进行人工筛查，判断是否含可识别的个例不良反应，并记录筛查结论",
+      "requirementEn": "Hits are screened manually for identifiable individual adverse-reaction cases, and screening conclusions are recorded",
+      "guidance": "抽样核对文献筛查记录是否逐篇给结论（含/不含个例）；常见缺陷是只列了题录未写筛查判断，或未覆盖英文期刊。",
+      "guidanceEn": "Sample screening records for per-article conclusions; listing titles without a judgement, or skipping English journals, are common findings.",
+      "riskLevel": "major",
+      "evidenceHint": "筛查工作记录、通过与拒绝清单、筛查人署名"
+    },
+    {
+      "clauseRef": "GVP 第46、50条",
+      "requirement": "筛出的疑似个例按四要素判定是否构成有效个例报告，有效者按报告时限转入 ICSR 流程并记录转交",
+      "requirementEn": "Suspected cases are triaged against the four elements; valid ones enter the ICSR process within reporting timelines, with the handover recorded",
+      "guidance": "核对从文献到 ICSR 的记录关联与时序：文献首次可获取日为起点，转交不得延误报告时限；常见缺陷是文献个例无人转入系统。",
+      "guidanceEn": "Trace literature cases into the ICSR flow: the clock starts at first availability of the article, and handover must not delay the report.",
+      "riskLevel": "critical",
+      "evidenceHint": "文献转交记录、目标 ICSR 编号、首次可获取日与转交日"
+    },
+    {
+      "clauseRef": "GVP 第36条 / 数据完整性",
+      "requirement": "检索与筛查记录真实、完整、不可篡改（原始记录保留，修改留痕）",
+      "requirementEn": "Search and screening records are accurate, complete and tamper-evident, with originals retained and changes traceable",
+      "guidance": "抽查记录是否有事后补改痕迹、是否与检出时间戳一致；文献监测记录同样受 ALCOA+ 约束。",
+      "guidanceEn": "Sample records for retroactive edits and inconsistent timestamps; literature records are subject to ALCOA+ like any other data.",
+      "riskLevel": "major",
+      "evidenceHint": "检索记录时间戳、修改痕迹、审计追踪"
+    }
+  ]
+}

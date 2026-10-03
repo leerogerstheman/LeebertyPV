@@ -1,0 +1,589 @@
+{
+  "code": "SIG-EVAL",
+  "recordPrefix": "SIGA",
+  "name": "信号评估",
+  "nameEn": "Signal Assessment",
+  "category": "信号管理",
+  "gxpAreas": ["SIGNAL"],
+  "regulationRefs": [
+    "《药物警戒质量管理规范》（国家药监局2021年第65号公告）第58-68条",
+    "EU GVP Module IX (Signal Management, Rev 1)",
+    "《药品不良反应报告和监测管理办法》（卫生部令第81号）"
+  ],
+  "description": "承接信号检测产出的潜在信号，完成验证、确认、临床与流行病学评估，提交药品安全委员会审议，形成处置建议（说明书更新、DHPC、限制使用、撤市、转RMP或纳入PSUR），并审查风险最小化措施。",
+  "descriptionEn": "Assess potential signals from signal detection: validation, confirmation, clinical and epidemiological assessment, Drug Safety Committee review, disposition recommendation (label update, DHPC, restricted use, withdrawal, handover to RMP or PSUR), and review of risk minimisation measures.",
+  "slaDays": 60,
+  "requiresRootCause": false,
+  "requiresEffectivenessCheck": false,
+  "requiresQaApproval": true,
+  "criticalityLevels": ["minor", "major", "critical"],
+  "states": ["draft", "validation", "confirmation", "clinical_assessment", "committee", "action", "rmm_review", "closed", "cancelled"],
+  "initialState": "draft",
+  "terminalStates": ["closed", "cancelled"],
+  "fields": [
+    {
+      "key": "title",
+      "label": "评估标题",
+      "labelEn": "Assessment Title",
+      "type": "text",
+      "required": true,
+      "help": "建议格式：药品名+可疑风险+信号评估，例如产品X肝功能异常信号评估。"
+    },
+    {
+      "key": "summary",
+      "label": "评估概述",
+      "labelEn": "Summary",
+      "type": "textarea",
+      "required": false,
+      "help": "简述信号来源、主要证据与初步判断。"
+    },
+    {
+      "key": "sourceSignal",
+      "label": "关联信号检测记录",
+      "labelEn": "Source Signal Record",
+      "type": "text",
+      "required": true,
+      "help": "填写SIG-DET产出的信号检测记录编号（SIG-xxxx），信息可从检测记录带出。"
+    },
+    {
+      "key": "product",
+      "label": "怀疑药品",
+      "labelEn": "Suspect Product",
+      "type": "text",
+      "required": true,
+      "help": "与信号检测记录保持一致。"
+    },
+    {
+      "key": "eventTerms",
+      "label": "事件术语（MedDRA）",
+      "labelEn": "Event Terms (MedDRA)",
+      "type": "textarea",
+      "required": true,
+      "help": "使用MedDRA PT/LLT术语描述可疑事件，便于检索与统计。"
+    },
+    {
+      "key": "impact",
+      "label": "严重性/发生率评估",
+      "labelEn": "Severity & Incidence Impact",
+      "type": "textarea",
+      "required": true,
+      "help": "初步描述事件严重性与对患者的影响，供评估阶段展开。"
+    }
+  ],
+  "steps": [
+    {
+      "code": "validation",
+      "name": "信号验证",
+      "nameEn": "Signal Validation",
+      "role": ["pv_officer", "pv_medical"],
+      "type": "task",
+      "onComplete": "validation",
+      "requiresFields": ["sourceCheck", "duplicateExclusion", "validationBasis", "validationResult"],
+      "form": [
+        {
+          "key": "sourceCheck",
+          "label": "信号来源核对",
+          "labelEn": "Signal Source Check",
+          "type": "select",
+          "required": true,
+          "options": ["来自SIG-DET检测", "外部监管信息", "文献", "其他渠道"],
+          "help": "确认信号出处，保证来源可追溯。"
+        },
+        {
+          "key": "duplicateExclusion",
+          "label": "重复/伪信号排除",
+          "labelEn": "Duplicate/False Signal Exclusion",
+          "type": "select",
+          "required": true,
+          "options": ["已排除", "待复核", "确认为重复"],
+          "help": "核对是否重复报告、是否已评估过、是否有明确解释（如用法错误）。"
+        },
+        {
+          "key": "validationBasis",
+          "label": "验证依据",
+          "labelEn": "Validation Basis",
+          "type": "textarea",
+          "required": true,
+          "help": "记录支持验证为有效信号的依据，如个例时序、文献证据、机制解释。"
+        },
+        {
+          "key": "validationResult",
+          "label": "验证结论",
+          "labelEn": "Validation Conclusion",
+          "type": "select",
+          "required": true,
+          "options": ["有效信号", "伪信号（排除）", "信息不足暂缓"],
+          "help": "验证只判断是否值得评估，不确认因果关系。"
+        },
+        {
+          "key": "validationDate",
+          "label": "验证日期",
+          "labelEn": "Validation Date",
+          "type": "date",
+          "required": false,
+          "help": "建议在检测后尽快完成验证。"
+        },
+        {
+          "key": "validationRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：验证用于排除重复、伪信号和已知可解释的现象，避免浪费评估资源。怎么做：核对个例、文献与既往评估记录，判断是否存在合理解释。常见错：把验证与确认混为一谈，验证阶段就下因果结论。法规依据：GVP第60条及EU GVP Module IX信号管理流程（检测-验证-确认-评估）。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "validation_result": "validationResult"
+      }
+    },
+    {
+      "code": "confirmation",
+      "name": "信号确认",
+      "nameEn": "Signal Confirmation",
+      "role": ["pv_medical"],
+      "type": "task",
+      "onComplete": "confirmation",
+      "requiresFields": ["evidenceSummary", "causalityLevel", "confirmationResult"],
+      "form": [
+        {
+          "key": "evidenceSummary",
+          "label": "证据汇总",
+          "labelEn": "Evidence Summary",
+          "type": "textarea",
+          "required": true,
+          "help": "汇总个例、文献、流行病学、非临床与机制证据。"
+        },
+        {
+          "key": "causalityLevel",
+          "label": "关联性初步评价",
+          "labelEn": "Preliminary Causality",
+          "type": "select",
+          "required": true,
+          "options": ["肯定", "很可能", "可能", "可能无关", "待评价"],
+          "help": "参照WHO-UMC六级关联性评价。"
+        },
+        {
+          "key": "rechallengeInfo",
+          "label": "停药再激发信息",
+          "labelEn": "Dechallenge/Rechallenge",
+          "type": "select",
+          "required": false,
+          "options": ["再激发阳性", "仅有停药好转", "无信息", "不适用"],
+          "help": "停药后好转、再激发再现显著支持因果关系。"
+        },
+        {
+          "key": "biologicPlausibility",
+          "label": "生物学合理性",
+          "labelEn": "Biologic Plausibility",
+          "type": "select",
+          "required": false,
+          "options": ["有机制支持", "部分支持", "无机制解释"],
+          "help": "机制是否可解释该不良反应。"
+        },
+        {
+          "key": "confirmationResult",
+          "label": "确认结论",
+          "labelEn": "Confirmation Conclusion",
+          "type": "select",
+          "required": true,
+          "options": ["确认为信号", "未确认"],
+          "help": "确认后进入正式评估阶段。"
+        },
+        {
+          "key": "confirmRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：确认决定信号是否进入正式评估，且提信号的专员不得独自确认自己提出的信号，职责分离是药物警戒质量体系的基本要求。怎么做：由另一名医学评价员汇总证据并完成关联性评价，必要时请上级复核。常见错：检测人自我确认、证据不足就确认。法规依据：GVP第60条确认要求；职责分离属质量体系基本要求。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "confirmation_result": "confirmationResult",
+        "causality_level": "causalityLevel"
+      }
+    },
+    {
+      "code": "clinical_assessment",
+      "name": "临床与流行病学评估",
+      "nameEn": "Clinical & Epidemiological Assessment",
+      "role": ["pv_medical"],
+      "type": "task",
+      "onComplete": "clinical_assessment",
+      "requiresFields": ["assessSeverity", "assessIncidence", "riskType", "assessmentReport"],
+      "form": [
+        {
+          "key": "assessSeverity",
+          "label": "严重性评估",
+          "labelEn": "Severity Assessment",
+          "type": "select",
+          "required": true,
+          "options": ["死亡", "危及生命", "住院/残疾", "重要医学事件", "非严重"],
+          "help": "对照六条严重性标准（GVP第44条、ICH E2A）。"
+        },
+        {
+          "key": "assessIncidence",
+          "label": "发生率评估",
+          "labelEn": "Incidence Assessment",
+          "type": "text",
+          "required": true,
+          "help": "如每10万暴露患者年发生X例，注明分母来源与估计方法。"
+        },
+        {
+          "key": "timeRelation",
+          "label": "时间关系分析",
+          "labelEn": "Temporal Relationship",
+          "type": "textarea",
+          "required": false,
+          "help": "给药-事件时间顺序与潜伏期是否合理。"
+        },
+        {
+          "key": "dechallengeRechallenge",
+          "label": "停药/再激发",
+          "labelEn": "Dechallenge/Rechallenge",
+          "type": "select",
+          "required": false,
+          "options": ["停药好转且再激发阳性", "仅停药好转", "无信息", "不适用"],
+          "help": "作为因果支持证据，须在评估报告体现。"
+        },
+        {
+          "key": "riskType",
+          "label": "风险类型判定",
+          "labelEn": "Risk Type",
+          "type": "select",
+          "required": true,
+          "options": ["已识别风险", "潜在风险", "重要缺失信息"],
+          "help": "按GVP第67条风险分类判定。"
+        },
+        {
+          "key": "assessmentReport",
+          "label": "临床评估报告摘要",
+          "labelEn": "Assessment Report Summary",
+          "type": "textarea",
+          "required": true,
+          "help": "完整评估结论：证据强度、机制、对获益-风险平衡的影响及建议。"
+        }
+      ],
+      "guidance": "为什么：评估要回答是否真实、是否严重、机制如何、对获益-风险平衡影响多大，这是处置决策的基础。怎么做：按严重性、发生率、时间关系、停药再激发、生物学合理性逐项分析成文。常见错：用个例堆砌代替系统分析、发生率不写分母来源。法规依据：GVP第62-67条评估内容（机制、风险类型、获益-风险影响）。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "risk_type": "riskType",
+        "severity_level": "assessSeverity"
+      }
+    },
+    {
+      "code": "committee",
+      "name": "药品安全委员会审议",
+      "nameEn": "Drug Safety Committee Review",
+      "role": ["safety_committee", "pv_head"],
+      "type": "signature",
+      "onComplete": "committee",
+      "requiresFields": ["committeeDate", "committeeMembers", "committeeOpinion", "committeeDecision"],
+      "signatureMeaning": "reviewed",
+      "form": [
+        {
+          "key": "committeeDate",
+          "label": "审议日期",
+          "labelEn": "Review Date",
+          "type": "date",
+          "required": true,
+          "help": "记录委员会实际审议日期。"
+        },
+        {
+          "key": "committeeMembers",
+          "label": "参会委员",
+          "labelEn": "Committee Members",
+          "type": "textarea",
+          "required": true,
+          "help": "记录委员姓名与职务，委员会负责重大风险研判（GVP第20条）。"
+        },
+        {
+          "key": "materialList",
+          "label": "审议材料",
+          "labelEn": "Review Materials",
+          "type": "text",
+          "required": false,
+          "help": "评估报告、说明书、数据摘要等材料清单或链接。"
+        },
+        {
+          "key": "committeeOpinion",
+          "label": "委员会意见",
+          "labelEn": "Committee Opinion",
+          "type": "textarea",
+          "required": true,
+          "help": "对信号的研判结论与风险控制建议，须完整记录并进审计追踪。"
+        },
+        {
+          "key": "committeeDecision",
+          "label": "审议结论",
+          "labelEn": "Committee Decision",
+          "type": "select",
+          "required": true,
+          "options": ["同意处置建议", "要求补充分析", "同意继续监测"],
+          "help": "结论将作为处置建议的依据。"
+        },
+        {
+          "key": "committeeRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：重大风险的研判与风险控制决策依法由药品安全委员会作出（GVP第19-20条），意见必须留痕可审计。怎么做：提前分发评估材料，会上记录每位委员意见与最终结论。常见错：委员会流于形式、结论不落记录、意见与处置脱节。法规依据：GVP第20条委员会职责、第11-14条审计与记录要求。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "committee_decision": "committeeDecision",
+        "committee_date": "committeeDate"
+      }
+    },
+    {
+      "code": "action",
+      "name": "形成处置建议",
+      "nameEn": "Action Recommendation",
+      "role": ["pv_head"],
+      "type": "signature",
+      "onComplete": "action",
+      "requiresFields": ["actionType", "actionDetail", "targetRecord", "actionDeadline"],
+      "signatureMeaning": "approved",
+      "form": [
+        {
+          "key": "actionType",
+          "label": "处置类型",
+          "labelEn": "Action Type",
+          "type": "select",
+          "required": true,
+          "options": ["说明书更新", "致医务人员函（DHPC）", "限制使用", "暂停使用/撤市建议", "转RMP管理", "纳入PSUR分析", "继续监测"],
+          "help": "依据评估结论与委员会意见选择处置方向。"
+        },
+        {
+          "key": "actionDetail",
+          "label": "处置建议详情",
+          "labelEn": "Action Details",
+          "type": "textarea",
+          "required": true,
+          "help": "写明处置内容、责任人与完成时限，可执行可追踪。"
+        },
+        {
+          "key": "targetRecord",
+          "label": "关联记录编号",
+          "labelEn": "Linked Record No.",
+          "type": "text",
+          "required": true,
+          "help": "转RMP填RMP-xxxx，纳入PSUR填PSUR-xxxx，说明书变更填变更记录编号。"
+        },
+        {
+          "key": "riskCommunication",
+          "label": "风险沟通方式",
+          "labelEn": "Risk Communication",
+          "type": "select",
+          "required": false,
+          "options": ["无需", "DHPC", "患者安全用药提示", "公告", "发布会"],
+          "help": "按GVP第93条选择沟通方式。"
+        },
+        {
+          "key": "actionDeadline",
+          "label": "拟完成时限",
+          "labelEn": "Target Deadline",
+          "type": "date",
+          "required": true,
+          "help": "处置动作的完成截止日期。"
+        }
+      ],
+      "guidance": "为什么：评估的终点是明确、可执行、可追踪的行动，否则评估没有意义。怎么做：QPPV依据委员会意见签发处置建议，明确责任人与时限，关联RMP/PSUR等下游记录。常见错：处置建议含糊无责任人与时限、不关联下游流程导致跟踪中断。法规依据：GVP第66条风险评估与处置、第87条风险控制措施。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "action_type": "actionType",
+        "target_record": "targetRecord"
+      }
+    },
+    {
+      "code": "rmm_review",
+      "name": "风险最小化措施审查",
+      "nameEn": "Risk Minimisation Review",
+      "role": ["pv_head", "qa_manager"],
+      "type": "task",
+      "onComplete": "rmm_review",
+      "requiresFields": ["rmmType", "effectivenessPlan", "reviewOutcome"],
+      "form": [
+        {
+          "key": "rmmType",
+          "label": "拟采取措施类型",
+          "labelEn": "RMM Type",
+          "type": "select",
+          "required": true,
+          "options": ["常规RMM（说明书/标签）", "附加RMM-DHPC", "患者教育材料", "用药登记簿", "限制处方", "受控分发"],
+          "help": "按GVP第87-88条分类选择。"
+        },
+        {
+          "key": "effectivenessPlan",
+          "label": "有效性评估计划",
+          "labelEn": "Effectiveness Evaluation Plan",
+          "type": "textarea",
+          "required": true,
+          "help": "RMM执行后如何验证有效，如依从性指标、结局指标与数据来源。"
+        },
+        {
+          "key": "responsibleParty",
+          "label": "责任部门/人",
+          "labelEn": "Responsible Party",
+          "type": "text",
+          "required": false,
+          "help": "措施实施的责任部门与人。"
+        },
+        {
+          "key": "reviewOutcome",
+          "label": "审查结论",
+          "labelEn": "Review Outcome",
+          "type": "select",
+          "required": true,
+          "options": ["措施可行", "需调整", "暂缓实施"],
+          "help": "确认措施与风险匹配且可落地。"
+        },
+        {
+          "key": "rmmRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：风险控制措施必须与风险匹配并能落地，GVP第87-95条要求措施有效并持续评估。怎么做：审查措施类型是否对症、资源是否到位、有无有效性评估计划；复杂品种考虑转入RMP管理。常见错：选择无法执行或无法验证效果的措施。法规依据：GVP第87-90条（RMM与有效性评估、CAPA跟踪）。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "rmm_type": "rmmType",
+        "review_outcome": "reviewOutcome"
+      }
+    },
+    {
+      "code": "closed",
+      "name": "结案归档",
+      "nameEn": "Closure & Archiving",
+      "role": ["pv_head"],
+      "type": "signature",
+      "onComplete": "closed",
+      "requiresFields": ["closureCheck", "closureDate"],
+      "signatureMeaning": "approved",
+      "form": [
+        {
+          "key": "closureCheck",
+          "label": "处置闭环核对",
+          "labelEn": "Closure Verification",
+          "type": "select",
+          "required": true,
+          "options": ["已完成", "跟踪中", "已转出"],
+          "help": "确认所有处置动作完成或已转入下游流程。"
+        },
+        {
+          "key": "followupRecord",
+          "label": "跟踪记录编号",
+          "labelEn": "Follow-up Record No.",
+          "type": "text",
+          "required": false,
+          "help": "填写RMP/PSUR/变更等下游记录编号，保证可追溯。"
+        },
+        {
+          "key": "archiveNote",
+          "label": "归档说明",
+          "labelEn": "Archive Note",
+          "type": "text",
+          "required": false,
+          "help": "评估报告与委员会记录归档位置。"
+        },
+        {
+          "key": "closureDate",
+          "label": "结案日期",
+          "labelEn": "Closure Date",
+          "type": "date",
+          "required": true,
+          "help": "结案签名日期。"
+        },
+        {
+          "key": "closeRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：结案意味着处置闭环或已转入下游流程并登记跟踪，保证信号评估全链条可审计。怎么做：核对评估与处置动作完成情况，登记下游记录编号后由QPPV签名结案。常见错：处置未完成即结案、转出记录无编号无法追溯。参考：评估全过程的记录保存适用GVP第100-115条。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "closure_date": "closureDate",
+        "followup_record": "followupRecord"
+      }
+    },
+    {
+      "code": "cancel_record",
+      "name": "取消记录",
+      "nameEn": "Cancel Record",
+      "role": ["pv_head"],
+      "type": "task",
+      "onComplete": "cancelled",
+      "requiresFields": ["cancelReason", "cancelCheck", "cancelDate"],
+      "form": [
+        {
+          "key": "cancelReason",
+          "label": "取消原因",
+          "labelEn": "Cancellation Reason",
+          "type": "textarea",
+          "required": true,
+          "help": "如信号被验证为伪信号无须评估或重复建单，须说明理由。"
+        },
+        {
+          "key": "cancelCheck",
+          "label": "取消前核对",
+          "labelEn": "Pre-cancellation Check",
+          "type": "select",
+          "required": true,
+          "options": ["关联记录已处理", "关联记录无需处理", "待核实"],
+          "help": "取消前确认关联的信号检测记录与下游处置记录已妥善处理。"
+        },
+        {
+          "key": "cancelNote",
+          "label": "补充说明",
+          "labelEn": "Supplementary Notes",
+          "type": "textarea",
+          "required": false,
+          "help": "其他补充说明。"
+        },
+        {
+          "key": "cancelApprover",
+          "label": "确认人",
+          "labelEn": "Confirmed By",
+          "type": "text",
+          "required": true,
+          "help": "QPPV或授权确认人签名留痕。"
+        },
+        {
+          "key": "cancelDate",
+          "label": "取消日期",
+          "labelEn": "Cancellation Date",
+          "type": "date",
+          "required": true,
+          "help": "取消动作留痕。"
+        }
+      ],
+      "guidance": "为什么：取消记录同样进入审计范围，须保留原因与时间戳。怎么做：由QPPV确认后取消，记录保留不可删除。常见错：直接删除记录破坏审计链。",
+      "optional": true,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "cancel_reason": "cancelReason"
+      }
+    }
+  ]
+}

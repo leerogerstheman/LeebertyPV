@@ -1,0 +1,48 @@
+LeebertyPV - 桌面启动器
+LeebertyPV - desktop launcher
+
+用法 / Usage:
+  1. 把 LeebertyPV.exe 复制到包含 src\ 、web\ 、seed\ 的目录（即项目根目录）。
+     Copy LeebertyPV.exe into the folder that contains src\, web\ and seed\.
+  2. 双击运行。托盘出现蓝黑底色的 PV 图标。
+     Double-click it. A blue-black PV icon appears in the notification area.
+  3. 首次启动自动完成初始化：创建数据库、加载配置库、创建演示账号，
+     无记录时生成演示数据集，然后在独立窗口中打开工作台（无地址栏）。
+     First launch initialises everything automatically - database, config
+     library, demo accounts, and demo data when the instance is empty - then
+     opens the workbench in its own chrome-less window.
+
+  演示身份统一密码 / Demo password (13 identities, one password):
+      PV-Demo-2026!
+
+托盘菜单 / Tray menu:
+  打开工作台            重新打开原生窗口
+  生成演示数据          生成完整的虚构安全性记录场景
+  校验审计追踪          核对哈希链完整性
+  备份数据              备份数据库与审计链密钥
+  停止并退出            停止服务与后台工作流进程
+
+可选参数 / Optional:
+  LeebertyPV.exe --port 8793       换端口（默认 8793）
+  LeebertyPV.exe --selftest        无界面自检（验证启动与停止）
+  LeebertyPV.exe --repair-demo     无界面修复：把损坏的 data 文件夹移到
+                                   data-corrupt-<时间戳> 保留现场，下次启动
+                                   生成全新演示实例（适合演示环境）
+
+启动故障自动诊断 / Startup failure handling:
+  如果服务器未能就绪（例如 data 文件夹与审计链密钥不一致导致审计追踪
+  完整性校验失败），启动器会在约 22 秒后弹出解释窗口，并直接提供
+  「重置演示实例」一键修复——不再出现"窗口空白、无从下手"的情况。
+
+说明 / Notes:
+  * 本 exe 由 Windows 自带的 C# 编译器（csc.exe）现场编译，不依赖任何第三方组件；
+    可用 node scripts\build-desktop.js 重新构建。
+    Compiled locally by the C# compiler shipped with Windows. No third-party
+    components. Rebuild with: node scripts\build-desktop.js
+  * 窗口是**原生 WinForms 应用窗口**（自己的标题栏/任务栏图标/托盘），不依赖
+    Edge / WebView2 / 任何浏览器组件。
+    The window is a native WinForms application (own title bar, taskbar icon and
+    tray) - no Edge / WebView2 / browser component is involved.
+  * 数据仍在 data\ 目录（pv.db + audit-chain.key），与命令行启动完全一致，请整体备份。
+    Data still lives in data\ (pv.db + audit-chain.key), identical to the
+    command-line launchers. Back up the whole folder.

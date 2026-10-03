@@ -1,0 +1,150 @@
+{
+  "code": "ORDER81",
+  "title": "《药品不良反应报告和监测管理办法》合规自查",
+  "titleEn": "ADR Reporting & Monitoring Measures (MOH Order No.81) Compliance Check",
+  "scope": "self_inspection",
+  "category": "regulatory",
+  "gxpAreas": ["ICSR", "GVP"],
+  "regulation": "《药品不良反应报告和监测管理办法》（中华人民共和国卫生部令第81号）",
+  "authority": "中华人民共和国卫生部（第81号令发布机构）",
+  "version": "2011年版（卫生部令第81号，2011年7月1日施行）",
+  "description": "依据卫生部令第81号对药品生产企业/MAH不良反应报告与监测义务的自查，覆盖专门机构与人员、报告时限、死亡病例调查、群体不良事件、境外信息、PSUR、评价处置与罚则事项。部分条款号有待核实之处均在条文中标注。",
+  "descriptionEn": "Self-inspection of manufacturer/MAH ADR reporting and monitoring obligations under MOH Order No.81, covering dedicated organisation and staff, reporting deadlines, fatal case investigation, cluster events, overseas information, PSUR, evaluation/disposition and penalties. Article numbers pending verification are explicitly marked.",
+  "items": [
+    {
+      "clauseRef": "第13条",
+      "requirement": "药品生产企业设立监测不良反应的专门机构并配备专职人员，明确岗位职责，保障监测工作正常开展。",
+      "requirementEn": "The manufacturer establishes a dedicated unit and employs dedicated staff for ADR monitoring, with clearly defined duties ensuring normal monitoring operation.",
+      "guidance": "核查专门机构设立文件、专职人员名单与职责分工。常见缺陷：无专门机构、专职人员兼岗过多、职责与权限不清。",
+      "guidanceEn": "Check the establishment document of the dedicated unit, staff list and division of duties. Common defects: no dedicated unit, excessive dual roles, unclear responsibility and authority.",
+      "riskLevel": "major",
+      "evidenceHint": "专门机构设立文件、专职人员名单、岗位职责说明"
+    },
+    {
+      "clauseRef": "第17-18条（条款号待核实）",
+      "requirement": "药品生产企业、经营企业和医疗机构获知或发现可能与用药有关的不良反应时应向所在地监测机构报告；MAH应建立覆盖销售体系与医疗机构的报告信息传递机制（本条具体条号以现行有效文本为准）。",
+      "requirementEn": "Manufacturers, distributors and medical institutions report ADRs they become aware of to the local monitoring agency; the MAH maintains a reporting/information relay mechanism covering its sales network and medical institutions (exact article number subject to confirmation against the current text).",
+      "guidance": "核查销售/市场渠道的信息传递机制与直报路径，抽查医院、药店反馈信息的登记记录。注意：本条条号待核实，自查时应以现行有效文本核对。",
+      "guidanceEn": "Check the information relay mechanism across sales/marketing channels and direct reporting paths, and sample records of feedback from hospitals and pharmacies. Note: article number pending verification; confirm against the current effective text.",
+      "riskLevel": "major",
+      "evidenceHint": "报告义务制度文件、渠道信息传递机制说明、医院/药店反馈登记记录"
+    },
+    {
+      "clauseRef": "第21条",
+      "requirement": "新的、严重的药品不良反应自获知之日起15日内报告，其中死亡病例须立即报告，其他药品不良反应30日内报告；随访获得的新的不良反应信息按跟踪报告规定时限报告。",
+      "requirementEn": "New and serious ADRs are reported within 15 days of awareness, fatal cases immediately, and other ADRs within 30 days; new information obtained on follow-up is reported as follow-up reports within the applicable timelines.",
+      "guidance": "抽查近一年报告的系统提交时间与获知时间差，核对死亡病例是否当日处置并立即上报，核对跟踪报告是否按新获知日重新计时。常见缺陷：超时限、死亡未立即报告、跟踪报告按首次获知日计时。",
+      "guidanceEn": "Sample the gap between submission dates and awareness dates over the past year; verify that fatal cases are handled and reported immediately and that follow-up reports restart the clock at the new information date. Common defects: overdue, fatal cases not reported immediately, follow-ups timed from the original awareness date.",
+      "riskLevel": "critical",
+      "evidenceHint": "获知日期记录、提交回执、死亡病例首报时间记录、跟踪报告时限计算"
+    },
+    {
+      "clauseRef": "第22条",
+      "requirement": "对死亡病例，MAH除立即报告外，还须在15日内完成死亡病例调查报告并报告所在地省级药品不良反应监测机构。",
+      "requirementEn": "For fatal cases, in addition to immediate reporting, the MAH completes a case investigation report within 15 days and submits it to the provincial ADR monitoring agency.",
+      "guidance": "抽查死亡病例调查报告的完成日期是否在15日内，调查内容（患者情况、用药情况、死亡原因分析）是否完整并已报送。常见缺陷：无调查报告或严重超时、调查内容不完整。",
+      "guidanceEn": "Sample whether fatal-case investigation reports are completed within 15 days, complete in content (patient profile, drug exposure, cause-of-death analysis) and submitted. Common defects: missing or grossly late reports, incomplete content.",
+      "riskLevel": "critical",
+      "evidenceHint": "死亡病例调查报告及完成/报送日期、死亡病例台账"
+    },
+    {
+      "clauseRef": "第27条",
+      "requirement": "药品生产、经营企业和医疗机构获知群体不良事件后立即以电话或传真形式报告所在地县级药监部门、卫生行政部门和药品不良反应监测机构。",
+      "requirementEn": "Manufacturers, distributors and medical institutions, upon becoming aware of a cluster adverse event, immediately report by phone or fax to the local county-level drug regulator, health administration and ADR monitoring agency.",
+      "guidance": "核查群体不良事件台账与首次报告时间，验证立即报告是否落实（实务通常为当日）。常见缺陷：迟报、漏报、报告对象不全。",
+      "guidanceEn": "Check the cluster event register and first-report timing, verifying that immediate reporting is achieved (in practice the same day). Common defects: late or missed reporting, incomplete notification recipients.",
+      "riskLevel": "critical",
+      "evidenceHint": "群体不良事件台账、电话/传真报告记录与时间戳"
+    },
+    {
+      "clauseRef": "第29条",
+      "requirement": "药品生产企业发现群体不良事件后须在7日内完成调查报告，说明事件原因、涉及药品与批次、患者情况及处置措施。",
+      "requirementEn": "The manufacturer completes an investigation report within 7 days of discovering a cluster event, explaining the cause, the products and batches involved, patient status and dispositions taken.",
+      "guidance": "抽查群体事件调查报告的完成日期与内容完整性。常见缺陷：超7日、调查结论含糊、未说明涉事批次处置。",
+      "guidanceEn": "Sample the completion dates and completeness of cluster event investigation reports. Common defects: beyond 7 days, vague conclusions, batch dispositions not stated.",
+      "riskLevel": "critical",
+      "evidenceHint": "群体事件调查报告及完成日期、涉事批次处置记录"
+    },
+    {
+      "clauseRef": "第27-31条（条款号待核实）",
+      "requirement": "群体不良事件的调查处置全流程受控：事件识别、逐级报告、调查、采取控制措施、向药监部门反馈进展直至闭环（具体处置条款按81号令第三章执行，条款号待核实）。",
+      "requirementEn": "Cluster event investigation and disposition are fully controlled end-to-end: identification, tiered reporting, investigation, control measures and feedback to regulators until closure (per Chapter III of Order No.81; exact article numbers pending verification).",
+      "guidance": "核查群体事件从发现到闭环的记录链（报告、调查、控制措施、反馈），评估跨部门响应机制的有效性。常见缺陷：响应链条断裂、无控制措施、闭环无记录。",
+      "guidanceEn": "Review the record chain from discovery to closure (reporting, investigation, control measures, feedback) and assess the effectiveness of the cross-functional response. Common defects: broken response chain, no control measures, closure without records.",
+      "riskLevel": "major",
+      "evidenceHint": "群体事件处置记录链、控制措施与反馈记录、闭环结论"
+    },
+    {
+      "clauseRef": "第33条",
+      "requirement": "进口药品和国产药品在境外发生的严重不良反应，MAH在30日内报告国家药品不良反应监测中心；国家中心要求提供原始报表的，在5日内提交。",
+      "requirementEn": "Serious ADRs occurring abroad for imported and domestic products are reported within 30 days to the National ADR Monitoring Centre; when the Centre requests the original report, it is submitted within 5 days.",
+      "guidance": "抽查境外严重报告台账与报告的日期，核对境外信息来源渠道是否覆盖。常见缺陷：境外信息未收集、超30日、原始报表索要后未及时提交。",
+      "guidanceEn": "Sample the overseas serious-report register and dates, and verify overseas data sources are covered. Common defects: overseas information not collected, beyond 30 days, original reports not submitted within 5 days of request.",
+      "riskLevel": "critical",
+      "evidenceHint": "境外严重报告台账与报送日期、原始报表提交记录"
+    },
+    {
+      "clauseRef": "第35条",
+      "requirement": "药品在境外因不良反应被暂停销售、使用或撤市的，MAH在24小时内书面报告国家药监局和国家药品不良反应监测中心。",
+      "requirementEn": "When a product is suspended from sale/use or withdrawn abroad due to an ADR, the MAH reports in writing within 24 hours to the NMPA and the National ADR Monitoring Centre.",
+      "guidance": "核查境外监管措施跟踪清单与24小时书面报告记录。常见缺陷：无境外监管动态监测、对24小时条款适用情形理解错误（仅限境外暂停/撤市）。",
+      "guidanceEn": "Check the overseas regulatory-action tracking list and 24-hour written reports. Common defects: no monitoring of overseas regulatory actions, misapplication of the 24-hour rule (which applies only to overseas suspension/withdrawal).",
+      "riskLevel": "critical",
+      "evidenceHint": "境外监管措施监测台账、24小时书面报告记录"
+    },
+    {
+      "clauseRef": "第37条",
+      "requirement": "PSUR提交频率符合规定：设立监测期的国产药品自取得批准证明文件之日起每满1年1次直至首次再注册、之后每5年1次，其他国产药品每5年1次，首次进口药品每满1年1次直至首次再注册、之后每5年1次；上报日期在数据截止日后60日内。",
+      "requirementEn": "PSUR frequency complies with the requirements: domestically manufactured products under the monitoring period annually from approval until first re-registration and then every 5 years, other domestic products every 5 years, first-imported products annually until first re-registration and then every 5 years; submission is within 60 days after the data lock point.",
+      "guidance": "核对PSUR台账、批准日期/国际诞生日、DLP与提交日期。常见缺陷：频次错误、超DLP+60日、报告期不连续或重叠。",
+      "guidanceEn": "Check the PSUR register, approval date/IBD, DLP and submission dates. Common defects: wrong frequency, submission beyond DLP+60 days, discontinuous or overlapping report intervals.",
+      "riskLevel": "critical",
+      "evidenceHint": "PSUR台账、DLP与提交日期记录、历次PSUR报告期对照表"
+    },
+    {
+      "clauseRef": "第24-25条",
+      "requirement": "MAH配合监测机构对报告的核实与评价：对监测机构反馈的审核结论及时响应并提供补充资料（严重报告审核3个工作日、其他报告15个工作日、死亡病例调查15个工作日，属监测机构行政时限，MAH应作为配合方响应）。",
+      "requirementEn": "The MAH cooperates with the monitoring agency's verification and evaluation of reports, responding promptly to feedback and providing supplementary information (the 3/15/15 working-day limits are administrative deadlines of the agency; the MAH acts as the responding party).",
+      "guidance": "核查监测机构反馈意见的接收与响应记录。常见缺陷：对监管反馈不响应、无处理留痕。注意该时限为监测机构审核时限，不可误作MAH报告时限。",
+      "guidanceEn": "Check records of receiving and responding to agency feedback. Common defects: no response to regulatory feedback, no processing traces. Note: these deadlines belong to the agency's review process, not to MAH reporting.",
+      "riskLevel": "minor",
+      "evidenceHint": "监测机构反馈意见清单、补充资料提交记录"
+    },
+    {
+      "clauseRef": "评价与处置条款（条款号待核实）",
+      "requirement": "MAH对收集的不良反应信息开展调查、核实、分析评价并采取相应处置，评价结论与处置记录完整可追溯（具体条款号待核实）。",
+      "requirementEn": "The MAH investigates, verifies, evaluates and disposes of collected ADR information with complete and traceable evaluation conclusions and disposition records (exact article numbers pending verification).",
+      "guidance": "抽查报告的评价记录（关联性、严重性复核）与处置动作（随访、上报、风险沟通）。常见缺陷：只上报不评价、处置无记录。",
+      "guidanceEn": "Sample evaluation records (causality, seriousness re-check) and dispositions (follow-up, reporting, risk communication). Common defects: reports submitted without evaluation, dispositions without records.",
+      "riskLevel": "major",
+      "evidenceHint": "病例评价记录、处置动作台账、风险沟通记录"
+    },
+    {
+      "clauseRef": "监测年报相关条款（条款号待核实）",
+      "requirement": "MAH配合国家及省级监测机构年度汇总分析及监测年报相关工作，按监管通知要求及时提供数据与材料（具体条款号待核实）。",
+      "requirementEn": "The MAH supports the annual aggregation analysis and monitoring annual report activities of the national and provincial agencies, providing data and materials as notified (exact article numbers pending verification).",
+      "guidance": "核查监测机构年报/数据收集通知的响应记录与提交材料。注意：条款号待核实，以监测机构现行通知要求为准。",
+      "guidanceEn": "Check responses to annual-report/data-collection notices and submitted materials. Note: article numbers pending verification; follow current agency notices.",
+      "riskLevel": "minor",
+      "evidenceHint": "监测机构通知函、提交材料记录与回执"
+    },
+    {
+      "clauseRef": "罚则条款（条款号待核实）",
+      "requirement": "MAH知悉未按规定开展监测、未报告、隐瞒、缓报或谎报不良反应的法律责任，并建立防止此类行为的内部控制机制（罚则具体条款号待核实）。",
+      "requirementEn": "The MAH is aware of the legal liabilities for failing to monitor, failing to report, or concealing, delaying or falsifying ADR reports, and maintains internal controls preventing such conduct (exact penalty article numbers pending verification).",
+      "guidance": "核查质量体系中的合规控制与问责机制，抽查员工对报告义务与罚则的知晓程度。常见缺陷：无问责机制、报告义务培训缺失。",
+      "guidanceEn": "Check compliance controls and accountability mechanisms, and sample staff awareness of reporting obligations and penalties. Common defects: no accountability mechanism, no training on reporting obligations.",
+      "riskLevel": "major",
+      "evidenceHint": "合规控制制度、问责与奖惩记录、报告义务培训记录"
+    },
+    {
+      "clauseRef": "记录留存条款（条款号待核实）",
+      "requirement": "ADR报告、调查与处置相关记录按规定留存并可追溯（具体保存期限条款号待核实，建议参照《药物警戒质量管理规范》第113条保存至注册证书注销后10年执行）。",
+      "requirementEn": "ADR reports, investigation and disposition records are retained and traceable as required (exact retention article pending verification; recommended practice follows GVP Article 113: retain until 10 years after cancellation of the registration certificate).",
+      "guidance": "抽查报告台账与档案保存情况、电子记录的可追溯性。常见缺陷：记录分散、无保存期限制度。",
+      "guidanceEn": "Sample the report registers, archives and traceability of electronic records. Common defects: scattered records, no retention policy.",
+      "riskLevel": "major",
+      "evidenceHint": "报告台账、档案目录、记录保存制度"
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "code": "ICH-E2C",
+  "title": "定期获益-风险评估报告（PBRER/PSUR）核查",
+  "titleEn": "Periodic Benefit-Risk Evaluation Report (PBRER/PSUR) Check",
+  "scope": "self_inspection",
+  "category": "pharmacovigilance",
+  "gxpAreas": ["PSUR"],
+  "regulation": "《定期获益-风险评估报告指南》（ICH E2C(R2)）及《药品定期安全性更新报告撰写规范》（国食药监安〔2012〕264号）",
+  "authority": "ICH；国内实施主体：国家药品不良反应监测中心",
+  "version": "ICH E2C(R2)（正文17章结构）",
+  "description": "核查PBRER/PSUR的数据锁定点、报告期连续性、17章节完整性、病例呈现合计表、信号评估引用、获益-风险结论、附录清单、内部质量放行与按时提交。",
+  "descriptionEn": "Verifies PBRER/PSUR data lock point, continuous reporting intervals, completeness of the 17 sections, summary tabulations, signal assessment references, benefit-risk conclusions, appendices, internal quality release and timely submission.",
+  "items": [
+    {
+      "clauseRef": "数据锁定点DLP",
+      "requirement": "报告期数据锁定点（DLP）以首次取得药品批准证明文件之日或全球首个上市批准日（国际诞生日IBD）为起点按日历设定，与历次报告DLP衔接成连续性序列。",
+      "requirementEn": "The data lock point (DLP) is set on a calendar basis from the first product approval date or the international birth date (IBD), forming a continuous sequence with previous report DLPs.",
+      "guidance": "核对DLP计算依据（批准日/IBD）与历史报告DLP序列。常见缺陷：以首次销售日为起点、DLP设定与提交日历脱节、起点口径反复变更。",
+      "guidanceEn": "Verify the DLP basis (approval date/IBD) and the historical DLP sequence. Common defects: starting from the first sale date, DLP not aligned with the submission calendar, inconsistent starting points.",
+      "riskLevel": "major",
+      "evidenceHint": "DLP计算表、批准日期/IBD记录、历次报告DLP序列"
+    },
+    {
+      "clauseRef": "报告期连续性",
+      "requirement": "报告期连续、无重叠、无缺口，覆盖所有应含数据，前次报告期终点与本次报告期起点吻合。",
+      "requirementEn": "Reporting intervals are continuous, without overlap or gaps, covering all expected data, with the end of the previous interval matching the start of the current one.",
+      "guidance": "用序列核对报告期起止日期，检查是否漏覆盖DLP后新信息边界。常见缺陷：重叠或缺口导致数据重复或遗漏。",
+      "guidanceEn": "Check interval start/end dates as a sequence, and verify coverage of post-DLP information boundaries. Common defects: overlaps or gaps causing duplicated or missing data.",
+      "riskLevel": "critical",
+      "evidenceHint": "历次报告期起止对照表、DLP后新信息记录"
+    },
+    {
+      "clauseRef": "17章节结构完整性",
+      "requirement": "报告按第1-17章完整结构编制：1引言、2全球上市许可状况、3报告期安全性行动、4参考安全性信息变更、5患者暴露量、6汇总表数据、7临床试验重大发现、8非干预性研究、9其他来源信息、10非临床数据、11文献、12其他定期报告、13疗效缺乏、14迟发信息、15总体安全性评估、16结论与行动、17附录。",
+      "requirementEn": "The report follows the 1-17 section structure: Introduction, Worldwide Marketing Authorisation Status, Actions Taken for Safety Reasons, Changes to Reference Safety Information, Estimated Patient Exposure, Data in Summary Tabulations, Significant Findings from Clinical Trials, Non-interventional Studies, Information from Other Sources, Non-clinical Data, Literature, Other Periodic Reports, Lack of Efficacy, Late-Breaking Information, Overall Safety Assessment, Conclusions and Actions, and Appendices.",
+      "guidance": "对照17章目录逐章核验内容存在且顺序正确；某章确无内容时应有说明。常见缺陷：章节缺漏、顺序错乱、无内容章节不做说明。",
+      "guidanceEn": "Verify each of the 17 sections exists and is in the correct order; sections with no content must state this. Common defects: missing sections, wrong order, no explanation for empty sections.",
+      "riskLevel": "critical",
+      "evidenceHint": "报告目录与章节对照表、各章内容核验记录"
+    },
+    {
+      "clauseRef": "第1-2章",
+      "requirement": "引言与全球上市许可状况章节准确反映报告期内产品的全球上市、许可状态变化。",
+      "requirementEn": "The Introduction and Worldwide Marketing Authorisation Status sections accurately reflect global marketing and authorisation status changes during the interval.",
+      "guidance": "抽查授权状态表与公司内部记录、监管数据库的一致性。常见缺陷：上市状态缺失、撤市信息滞后。",
+      "guidanceEn": "Sample the authorisation status tables against internal records and regulatory databases. Common defects: marketing status missing, withdrawal information outdated.",
+      "riskLevel": "minor",
+      "evidenceHint": "报告第1-2章内容、授权状态对照记录"
+    },
+    {
+      "clauseRef": "第3章安全性行动",
+      "requirement": "报告期内因安全性原因采取的行动（说明书修订、致医务人员函、撤市等）完整记录并说明理由与时间。",
+      "requirementEn": "Actions taken for safety reasons during the interval (labelling changes, DHPCs, withdrawals, etc.) are fully recorded with rationale and timing.",
+      "guidance": "核对行动清单及其时间线、与监管沟通记录的一致性。常见缺陷：行动遗漏、行动时间与提交时点矛盾。",
+      "guidanceEn": "Check the action list and timeline for consistency with regulatory communications. Common defects: missing actions, action timing contradicting the reporting period.",
+      "riskLevel": "major",
+      "evidenceHint": "报告期行动清单、监管沟通记录、措施时间线"
+    },
+    {
+      "clauseRef": "第4章RSI变更",
+      "requirement": "参考安全性信息（RSI/核心数据表）的变更及其对预期性判断的影响清晰说明。",
+      "requirementEn": "Changes to the Reference Safety Information (RSI/CCDS) and their impact on expectedness determinations are clearly described.",
+      "guidance": "核对RSI版本与变更日期，抽查变更对预期性重判的影响。常见缺陷：RSI版本过期、变更未衔接预期性评价口径。",
+      "guidanceEn": "Verify the RSI version and change dates, and sample the impact on expectedness re-assessment. Common defects: outdated RSI, changes not reflected in expectedness evaluations.",
+      "riskLevel": "major",
+      "evidenceHint": "RSI版本变更记录、预期性评价口径对照"
+    },
+    {
+      "clauseRef": "第5章患者暴露量",
+      "requirement": "按销量、处方量或数据库估算各适应症与地区暴露量，估算方法说明清楚且单位一致。",
+      "requirementEn": "Patient exposure is estimated by sales, prescriptions or databases per indication and region, with clearly described methods and consistent units.",
+      "guidance": "抽查暴露量估算的数据来源与计算口径。常见缺陷：估算口径不清、数据来源不可考、不同章节暴露量数字不一致。",
+      "guidanceEn": "Sample the data sources and calculation approach of exposure estimates. Common defects: unclear methodology, unverifiable data sources, inconsistent exposure figures across sections.",
+      "riskLevel": "major",
+      "evidenceHint": "暴露量估算表、数据来源说明、跨章节数字核对记录"
+    },
+    {
+      "clauseRef": "第6章汇总表数据",
+      "requirement": "病例呈现合计表与行列表数据正确，与病例数据库一致，含严重与非严重、按地区与药品拆分。",
+      "requirementEn": "Summary tabulation and line listing data are correct and consistent with the case database, split by seriousness, region and product.",
+      "guidance": "抽样比对合计数字与ICSR数据库导出，检查拆分维度。常见缺陷：合计数字错误、行列表与库内数据不一致。",
+      "guidanceEn": "Sample totals against database exports and check split dimensions. Common defects: wrong totals, line listings inconsistent with the database.",
+      "riskLevel": "critical",
+      "evidenceHint": "汇总表、行列表、数据库导出比对记录"
+    },
+    {
+      "clauseRef": "第7-14章研究与非临床信息",
+      "requirement": "临床试验重大发现、非干预性研究、其他来源、非临床数据、文献、其他定期报告、疗效缺乏与迟发信息各章内容完整，与引用数据一致且出处可查。",
+      "requirementEn": "Sections on significant clinical trial findings, non-interventional studies, other sources, non-clinical data, literature, other periodic reports, lack of efficacy and late-breaking information are complete, consistent with the cited data and traceable to sources.",
+      "guidance": "抽查各章引用的研究或文献是否在附录有出处，迟发信息是否收录DLP后重要信息。常见缺陷：引用无出处、迟发信息遗漏。",
+      "guidanceEn": "Sample whether cited studies/literature are referenced in the appendices and whether late-breaking information covers important post-DLP data. Common defects: uncited references, late-breaking information omitted.",
+      "riskLevel": "minor",
+      "evidenceHint": "各章引用清单、附录出处对照、迟发信息清单"
+    },
+    {
+      "clauseRef": "第15章总体安全性评估",
+      "requirement": "总体安全性评估包含按重要性排序的安全问题清单、信号评估引用（来源与结论）、风险特征描述与安全性结论。",
+      "requirementEn": "The overall safety assessment includes a prioritised list of safety concerns, references to signal assessments (sources and conclusions), risk characterisation and safety conclusions.",
+      "guidance": "检查安全问题清单与信号评估报告引用是否一致、排序是否有依据。常见缺陷：信号引用缺失、结论缺少支撑证据。",
+      "guidanceEn": "Check that the safety concerns list is consistent with signal assessment references and that prioritisation is justified. Common defects: signal references missing, conclusions without supporting evidence.",
+      "riskLevel": "major",
+      "evidenceHint": "安全问题清单、信号评估引用列表、评估报告交叉核对记录"
+    },
+    {
+      "clauseRef": "第15-16章获益-风险评估结论与行动",
+      "requirement": "获益-风险评估基于所有用途、以批准适应症为基础，结论明确（风险可接受或需采取行动），并对应列出结论后的行动。",
+      "requirementEn": "The benefit-risk assessment is based on all uses and the approved indication, with a clear conclusion (risk acceptable or actions needed) and corresponding actions.",
+      "guidance": "核对获益与风险叙述的对称性、结论与行动措施对应关系。常见缺陷：结论含糊、行动与结论不一致或缺失。",
+      "guidanceEn": "Check the balance between benefit and risk narratives and the correspondence between conclusions and actions. Common defects: vague conclusions, actions missing or inconsistent with conclusions.",
+      "riskLevel": "critical",
+      "evidenceHint": "获益-风险结论章节、结论与行动对照表"
+    },
+    {
+      "clauseRef": "第17章附录清单",
+      "requirement": "附录清单完整（病例列表、汇总表、参考文献、样表等），编号与正文引用对应。",
+      "requirementEn": "The appendix list is complete (line listings, summary tabulations, references, templates) with numbering matching in-text citations.",
+      "guidance": "逐条核对附录与正文引用。常见缺陷：附录缺失、编号错乱、正文引用悬空。",
+      "guidanceEn": "Check each appendix against in-text citations. Common defects: missing appendices, disordered numbering, dangling citations.",
+      "riskLevel": "minor",
+      "evidenceHint": "附录目录、正文引用对照表"
+    },
+    {
+      "clauseRef": "内部质量放行",
+      "requirement": "报告经过撰写、质控、交叉审核与药物警戒负责人批准的内部流程，批准记录与签名留存。",
+      "requirementEn": "The report passes through authoring, quality control, cross-review and QPPV approval, with approval records and signatures retained.",
+      "guidance": "核查报告版本记录、质控意见与负责人批准签批。常见缺陷：无质控、批准缺失或事后补签。",
+      "guidanceEn": "Check version records, quality control comments and the QPPV approval signature. Common defects: no QC, missing or backdated approvals.",
+      "riskLevel": "major",
+      "evidenceHint": "版本记录、质控评审意见、QPPV批准签批记录"
+    },
+    {
+      "clauseRef": "按时提交",
+      "requirement": "报告在数据截止日（DLP）后60日内通过国家药品不良反应监测系统提交（提交PBRER替代PSUR的适用ICH格式与递交要求）。",
+      "requirementEn": "The report is submitted through the national ADR monitoring system within 60 days after the DLP (PBRER submitted as a PSUR substitute follows ICH format and filing requirements).",
+      "guidance": "核对提交回执日期与DLP+60日比对。常见缺陷：超期提交、未按系统要求格式上传、以纸质代替系统提交。",
+      "guidanceEn": "Compare receipt dates against DLP+60 days. Common defects: late submission, wrong upload format, paper instead of system submission.",
+      "riskLevel": "critical",
+      "evidenceHint": "提交回执、DLP计算记录、QPPV批准日期"
+    }
+  ]
+}

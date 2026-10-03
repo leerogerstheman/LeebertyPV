@@ -1,0 +1,123 @@
+{
+  "code": "ICH-E2D",
+  "title": "上市后安全性数据管理核查（ICH E2D）",
+  "titleEn": "Post-marketing Safety Data Management Check (ICH E2D)",
+  "scope": "self_inspection",
+  "category": "pharmacovigilance",
+  "gxpAreas": ["ICSR", "SIGNAL"],
+  "regulation": "《上市后安全性数据管理：快速报告的定义与标准》（ICH E2D）",
+  "authority": "ICH（国际人用药品注册技术要求协调会）",
+  "version": "ICH E2D（现行版）",
+  "description": "核查上市后快速报告标准、严重性与预期性判定、报告时限、境内外报告途径、文献报告时限起算、上市后研究病例、电子传输、随访与评估质量。",
+  "descriptionEn": "Verifies post-marketing expedited reporting criteria, seriousness and expectedness determinations, reporting timelines, domestic and international reporting channels, literature case clock start, post-marketing study cases, electronic transmission, follow-up and assessment quality under ICH E2D.",
+  "items": [
+    {
+      "clauseRef": "快速报告标准",
+      "requirement": "快速报告适用于严重且非预期的药品不良反应（反应符合六条严重性标准且不在说明书预期范围之内）。",
+      "requirementEn": "Expedited reporting applies to serious and unexpected adverse drug reactions (reactions meeting the six seriousness criteria and not within the expected scope of the labelling).",
+      "guidance": "抽查快速报告队列的严重加非预期双重判定记录。常见缺陷：把非预期写成预期以规避快速报告、严重性漏判。",
+      "guidanceEn": "Sample the seriousness+unexpectedness determination records of the expedited cohort. Common defects: unexpected re-labelled as expected to avoid expedited reporting, seriousness missed.",
+      "riskLevel": "critical",
+      "evidenceHint": "快速报告清单、严重性与预期性判定记录"
+    },
+    {
+      "clauseRef": "严重性判定",
+      "requirement": "按六条严重性标准（死亡、危及生命、住院/延长、永久或显著残疾、先天性异常、其他重要医学事件）逐条适用并留有判定记录。",
+      "requirementEn": "Seriousness is assessed against the six criteria (death, life-threatening, hospitalisation/prolongation, significant disability, congenital anomaly, other medically important condition) with assessment records.",
+      "guidance": "抽查判定记录与边缘案例处理。常见缺陷：以免于快速报告为目的判为非严重、重要医学事件误判。",
+      "guidanceEn": "Sample assessment records and borderline cases. Common defects: judged non-serious to avoid expedited reporting, medically important conditions misjudged.",
+      "riskLevel": "major",
+      "evidenceHint": "严重性判定记录、边缘案例评审记录"
+    },
+    {
+      "clauseRef": "预期性判定",
+      "requirement": "预期性对照当前批准的说明书（或核心数据表CCDS）判断，并记录对照版本与日期。",
+      "requirementEn": "Expectedness is determined against the current approved labelling (or CCDS) with the reference version and date documented.",
+      "guidance": "抽查对照说明书版本的时效性与对照留痕。常见缺陷：对照过期说明书、无对照记录。",
+      "guidanceEn": "Sample the timeliness of the labelling version used and the documentation of the comparison. Common defects: outdated labelling, no comparison records.",
+      "riskLevel": "major",
+      "evidenceHint": "预期性判定记录、对照说明书版本/日期记录"
+    },
+    {
+      "clauseRef": "快速报告时限",
+      "requirement": "严重非预期ADR自获知起15日内快速报告；致死或危及生命病例应尽快报告，境内按《药品不良反应报告和监测管理办法》第21条对死亡病例立即报告。",
+      "requirementEn": "Serious unexpected ADRs are reported expedited within 15 days of awareness; fatal or life-threatening cases are reported as soon as possible, and within China fatal cases are reported immediately per Article 21 of MOH Order No.81.",
+      "guidance": "抽查获知到报告的时间差，核对死亡病例首报时间与升级流程。常见缺陷：超15日、死亡病例迟报、节假日顺延。",
+      "guidanceEn": "Sample the gap between awareness and reporting, and verify first-report timing and escalation for fatal cases. Common defects: beyond 15 days, late fatal reporting, holiday extensions.",
+      "riskLevel": "critical",
+      "evidenceHint": "获知日期与提交日期对照、死亡病例首报记录"
+    },
+    {
+      "clauseRef": "非严重与预期信息定期汇总",
+      "requirement": "非严重、预期反应的病例资料通过PSUR等定期报告汇总呈现，不逐例快速报告。",
+      "requirementEn": "Non-serious and expected reactions are aggregated in periodic reports such as the PSUR, not reported individually on an expedited basis.",
+      "guidance": "抽查定期报告是否覆盖全部非严重预期病例（与个例台账比对）。常见缺陷：汇总遗漏、误按快速报告处理。",
+      "guidanceEn": "Sample whether periodic reports cover all non-serious expected cases (compare with the case register). Common defects: aggregation omissions, cases wrongly expedited.",
+      "riskLevel": "minor",
+      "evidenceHint": "个例台账与定期报告病例比对表"
+    },
+    {
+      "clauseRef": "境内外报告途径",
+      "requirement": "快速报告同时向负有安全管理责任的各管辖机构（MAH所在国及各上市国监管机构）报告；中国境内向国家药品不良反应监测中心报告，境外严重报告按81号令第33条在30日内报告国家中心。",
+      "requirementEn": "Expedited reports are submitted to all responsible authorities (the MAH's home country and every country where the product is marketed); within China they go to the National ADR Monitoring Centre, with overseas serious reports reported within 30 days per Article 33 of Order No.81.",
+      "guidance": "抽查境内外报告对象与时限记录。常见缺陷：仅报境内、境外上市国漏报、境外严重报告超时。",
+      "guidanceEn": "Sample reporting recipients and timelines for domestic and overseas cases. Common defects: domestic-only reporting, overseas markets omitted, overseas serious reports late.",
+      "riskLevel": "major",
+      "evidenceHint": "境内外报告台账、各监管机构提交回执"
+    },
+    {
+      "clauseRef": "文献报告时限起算",
+      "requirement": "文献报道的可疑ADR自文献可获取之日（出版或可检索获得之日）起开始计算快速报告时限。",
+      "requirementEn": "For literature cases, the expedited reporting clock starts on the date the literature becomes available (date of publication or retrievability).",
+      "guidance": "抽查文献来源ICSR的获知日期是否设定为检索到文献的日期。常见缺陷：以翻译或审核完成日作为获知日，导致时限虚增。",
+      "guidanceEn": "Sample whether the awareness date for literature cases equals the date the article was retrieved. Common defects: using translation/review completion dates as the awareness date, inflating the timeline.",
+      "riskLevel": "critical",
+      "evidenceHint": "文献检索记录、文献来源ICSR获知日期、提交日期对照"
+    },
+    {
+      "clauseRef": "上市后研究/数据收集项目",
+      "requirement": "来自上市后研究、有组织的数据收集项目的严重非预期ADR按快速报告要求报告，项目协议明确报告责任与传递时限。",
+      "requirementEn": "Serious unexpected ADRs from post-marketing studies and organised data collection programmes are reported expedited as required, with reporting responsibilities and transfer timelines defined in programme agreements.",
+      "guidance": "抽查研究项目病例的处理流程与时限。常见缺陷：研究中心未及时传递、项目协议未约定报告责任、病例滞留研究方。",
+      "guidanceEn": "Sample the processing of study cases and timelines. Common defects: centres not transferring cases promptly, agreements lacking reporting clauses, cases retained at the study side.",
+      "riskLevel": "major",
+      "evidenceHint": "项目协议报告条款、研究病例接收-报告时限记录"
+    },
+    {
+      "clauseRef": "随访与信息更新",
+      "requirement": "对信息不完整的快速报告积极随访，随访信息按快速报告时限补充提交，首次报告不得因等待随访而延误。",
+      "requirementEn": "Expedited reports with incomplete information are actively followed up, follow-up information is submitted within the expedited timelines, and the initial report is not delayed awaiting follow-up.",
+      "guidance": "抽查随访记录与补充报告时限。常见缺陷：先随访后报告导致超时、随访无记录、长期无补充信息。",
+      "guidanceEn": "Sample follow-up records and supplementary report timelines. Common defects: follow-up before initial reporting causing delays, no follow-up records, prolonged absence of updates.",
+      "riskLevel": "major",
+      "evidenceHint": "随访任务清单、随访记录、补充报告提交日期"
+    },
+    {
+      "clauseRef": "电子传输",
+      "requirement": "优先采用ICH E2B电子格式传输快速报告，并确保与国家监测系统兼容、回执正常。",
+      "requirementEn": "Expedited reports are preferentially transmitted in ICH E2B electronic format, compatible with the national monitoring system with normal acknowledgements.",
+      "guidance": "检查传输格式、回执状态与错误处理。常见缺陷：纸面传输、格式不兼容被拒、回执长期不正常。",
+      "guidanceEn": "Check transmission format, acknowledgement status and error handling. Common defects: paper transmission, format incompatibility rejections, persistently abnormal acknowledgements.",
+      "riskLevel": "major",
+      "evidenceHint": "传输日志、回执记录"
+    },
+    {
+      "clauseRef": "报告评估质量",
+      "requirement": "每例报告完成因果关系评价与医学审核，评价结论与病例文本一致，四要素与完整性校验通过后提交。",
+      "requirementEn": "Each report undergoes causality assessment and medical review, conclusions are consistent with the case text, and the four elements and completeness checks pass before submission.",
+      "guidance": "抽查评价记录与提交前完整性校验结果。常见缺陷：无医学审核、质量校验形同虚设、评价结论与描述不符。",
+      "guidanceEn": "Sample assessment records and pre-submission completeness checks. Common defects: no medical review, pro-forma quality checks, assessment conclusions inconsistent with the narrative.",
+      "riskLevel": "major",
+      "evidenceHint": "因果评价记录、医学审核意见、提交前校验结果"
+    },
+    {
+      "clauseRef": "数据保护与记录",
+      "requirement": "报告处理符合个人信息保护要求，传输与存储保密，报告与随访记录按规定保存。",
+      "requirementEn": "Case handling complies with personal data protection requirements, transmission and storage are confidential, and case and follow-up records are retained as required.",
+      "guidance": "检查脱敏、权限控制与保存期限制度。常见缺陷：信息越权访问、传输未加密、记录保存不足。",
+      "guidanceEn": "Check de-identification, access control and retention policies. Common defects: unauthorised access, unencrypted transmission, insufficient record retention.",
+      "riskLevel": "major",
+      "evidenceHint": "脱敏与权限配置、传输加密配置、保存期限制度"
+    }
+  ]
+}

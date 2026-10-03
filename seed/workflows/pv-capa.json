@@ -1,0 +1,282 @@
+{
+  "code": "PV-CAPA",
+  "recordPrefix": "CAPA",
+  "name": "纠正与预防措施",
+  "nameEn": "Corrective and Preventive Actions",
+  "category": "quality",
+  "gxpAreas": ["GVP"],
+  "regulationRefs": [
+    "ICH Q10 §3.2.2（纠正和预防措施）",
+    "GVP Module I（质量管理体系）",
+    "《药物警戒质量管理规范》第13条（CAPA）"
+  ],
+  "description": "对偏差、内审发现、检查缺陷、时限超期、信号相关等问题实施纠正与预防措施，覆盖措施计划、实施、有效性核查与关闭，要求执行者不得自评有效性。",
+  "descriptionEn": "Implements corrective and preventive actions for deviations, audit findings, inspection observations, late reports and signal-related issues, covering planning, implementation, effectiveness verification and closure. Implementers may not self-assess effectiveness.",
+  "slaDays": 90,
+  "requiresRootCause": false,
+  "requiresEffectivenessCheck": true,
+  "requiresQaApproval": true,
+  "criticalityLevels": ["minor", "major", "critical"],
+  "states": ["draft", "plan", "implement", "effectiveness", "closed", "cancelled"],
+  "initialState": "draft",
+  "terminalStates": ["closed", "cancelled"],
+  "fields": [
+    {
+      "key": "title",
+      "label": "CAPA标题",
+      "labelEn": "CAPA Title",
+      "type": "text",
+      "required": true,
+      "help": "简明描述需要纠正与预防的问题。"
+    },
+    {
+      "key": "summary",
+      "label": "问题概述",
+      "labelEn": "Summary",
+      "type": "textarea",
+      "required": true,
+      "help": "描述问题事实、来源与影响。"
+    },
+    {
+      "key": "sourceType",
+      "label": "来源类型",
+      "labelEn": "Source Type",
+      "type": "select",
+      "required": true,
+      "options": ["质量偏差", "内审发现", "外审/检查缺陷", "时限超期", "信号相关", "监管反馈", "其他"],
+      "help": "选择CAPA触发来源。"
+    },
+    {
+      "key": "dueDate",
+      "label": "承诺完成期限",
+      "labelEn": "Commitment Due Date",
+      "type": "date",
+      "required": true,
+      "help": "对措施完成与有效性确认的承诺期限。"
+    }
+  ],
+  "steps": [
+    {
+      "code": "plan",
+      "name": "措施计划",
+      "nameEn": "CAPA Planning",
+      "role": ["qa_specialist", "pv_officer"],
+      "type": "task",
+      "onComplete": "plan",
+      "requiresFields": ["sourceType", "dueDate"],
+      "form": [
+        {
+          "key": "plan_corrective",
+          "label": "纠正措施",
+          "labelEn": "Corrective Action",
+          "type": "textarea",
+          "required": true,
+          "help": "消除已发生问题的影响，必要时含即时补救。"
+        },
+        {
+          "key": "plan_preventive",
+          "label": "预防措施",
+          "labelEn": "Preventive Action",
+          "type": "textarea",
+          "required": true,
+          "help": "针对根本原因防止问题再次发生。"
+        },
+        {
+          "key": "plan_owners",
+          "label": "措施责任人",
+          "labelEn": "Action Owners",
+          "type": "textarea",
+          "required": true,
+          "help": "逐条措施的责任人（可多人）。"
+        },
+        {
+          "key": "plan_due",
+          "label": "计划完成日期",
+          "labelEn": "Planned Completion",
+          "type": "date",
+          "required": true,
+          "help": "与承诺期限一致的完成日期。"
+        },
+        {
+          "key": "plan_review",
+          "label": "计划评审意见",
+          "labelEn": "Plan Review",
+          "type": "textarea",
+          "required": false,
+          "help": "QA对计划充分性的评审意见。"
+        }
+      ],
+      "guidance": "CAPA计划须明确纠正措施（消除已发生问题）与预防措施（消除根本原因、防止再发），并为每条措施指派责任人与完成期限。计划应经QA评审，并完整登记来源信息（偏差、内审、检查缺陷、信号等）。常见缺陷：只有纠正无预防、责任不清、期限不现实。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "implement",
+      "name": "实施",
+      "nameEn": "Implementation",
+      "role": ["pv_officer", "qa_specialist", "pv_writer", "literature_reviewer"],
+      "type": "task",
+      "onComplete": "implement",
+      "form": [
+        {
+          "key": "imp_actions",
+          "label": "已实施措施",
+          "labelEn": "Implemented Actions",
+          "type": "textarea",
+          "required": true,
+          "help": "逐条列出实际完成的措施。"
+        },
+        {
+          "key": "imp_evidence",
+          "label": "实施证据",
+          "labelEn": "Evidence",
+          "type": "textarea",
+          "required": true,
+          "help": "如修订后的SOP、培训签到、系统截图等。"
+        },
+        {
+          "key": "imp_date",
+          "label": "完成日期",
+          "labelEn": "Completion Date",
+          "type": "date",
+          "required": true,
+          "help": "实际完成日期。"
+        },
+        {
+          "key": "imp_obstacles",
+          "label": "障碍与调整",
+          "labelEn": "Obstacles & Adjustments",
+          "type": "textarea",
+          "required": false,
+          "help": "实施中的困难与方案调整及原因。"
+        },
+        {
+          "key": "imp_status",
+          "label": "措施完成情况",
+          "labelEn": "Implementation Status",
+          "type": "select",
+          "required": true,
+          "options": ["全部完成", "部分完成", "延期"],
+          "help": "客观评估措施完成状态。"
+        }
+      ],
+      "guidance": "实施记录须能证明措施真实落地，例如发布修订后的SOP、完成的培训签到、改造后的系统截图。实施中出现障碍导致延期或变更方案的，须更新计划并重新评审。常见缺陷：声称已实施但无证据、措施打折执行、延期无记录。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "effectiveness",
+      "name": "有效性核查",
+      "nameEn": "Effectiveness Verification",
+      "role": ["qa_manager"],
+      "type": "signature",
+      "onComplete": "effectiveness",
+      "form": [
+        {
+          "key": "eff_recurrence",
+          "label": "问题是否再发生",
+          "labelEn": "Recurrence",
+          "type": "select",
+          "required": true,
+          "options": ["未复发", "已复发", "无法判断"],
+          "help": "观察期内同类问题是否再次出现。"
+        },
+        {
+          "key": "eff_timeline",
+          "label": "时限是否恢复合规",
+          "labelEn": "Timelines Compliant",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "相关报告时限指标是否恢复达标。"
+        },
+        {
+          "key": "eff_conclusion",
+          "label": "有效性结论",
+          "labelEn": "Effectiveness Conclusion",
+          "type": "select",
+          "required": true,
+          "options": ["有效", "部分有效", "无效"],
+          "help": "综合判断措施是否达到预期。"
+        },
+        {
+          "key": "eff_followup",
+          "label": "是否需要追加措施",
+          "labelEn": "Follow-up Needed",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "无效或部分有效时须追加措施。"
+        },
+        {
+          "key": "eff_method",
+          "label": "核查方法与观察期",
+          "labelEn": "Verification Method & Observation Period",
+          "type": "textarea",
+          "required": true,
+          "help": "描述核查方式（复发监测、指标统计、抽查）与观察期长度。"
+        }
+      ],
+      "guidance": "有效性核查须由质量负责人独立完成，执行者不得自评。核查方式包括观察期内同类问题是否再发、时限指标是否恢复合规、数据质量抽查。常见缺陷：实施后立即关闭不做观察期、自评有效但同类问题继续发生、无量化依据。",
+      "signatureMeaning": "独立评价：确认措施有效性核查结果（是否复发、时限是否恢复合规），执行人不得自行评价。",
+      "optional": false,
+      "independentOfAuthor": true
+    },
+    {
+      "code": "close",
+      "name": "关闭/签名",
+      "nameEn": "Closure",
+      "role": ["qa_manager", "pv_head"],
+      "type": "signature",
+      "onComplete": "closed",
+      "form": [
+        {
+          "key": "clo_comment",
+          "label": "关闭意见",
+          "labelEn": "Closure Comments",
+          "type": "textarea",
+          "required": true,
+          "help": "确认措施实施与有效性核查均已完成。"
+        },
+        {
+          "key": "clo_lessons",
+          "label": "经验教训",
+          "labelEn": "Lessons Learned",
+          "type": "textarea",
+          "required": false,
+          "help": "记录可供体系借鉴的经验。"
+        },
+        {
+          "key": "clo_date",
+          "label": "关闭日期",
+          "labelEn": "Closure Date",
+          "type": "date",
+          "required": true,
+          "help": "实际关闭日期。"
+        },
+        {
+          "key": "clo_effectivenessConfirmed",
+          "label": "有效性核查是否通过",
+          "labelEn": "Effectiveness Confirmed",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "须在有效性核查通过后方可关闭。"
+        },
+        {
+          "key": "clo_relatedClosed",
+          "label": "关联偏差/发现是否已关闭",
+          "labelEn": "Related Findings Closed",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "关联的偏差或内审发现须同步闭环。"
+        }
+      ],
+      "guidance": "关闭前核验：所有措施已实施且有效性核查通过、涉及记录的偏差已闭环、培训与文档已更新。质量负责人或药物警戒负责人签署后关闭。常见缺陷：有效性未确认即关闭、关联偏差状态未同步更新。",
+      "signatureMeaning": "签名确认CAPA已实施且有效性符合要求，同意关闭归档。",
+      "optional": false,
+      "independentOfAuthor": false
+    }
+  ]
+}

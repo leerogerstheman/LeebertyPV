@@ -1,0 +1,213 @@
+{
+  "code": "GVP-CN-2021",
+  "title": "《药物警戒质量管理规范》自查",
+  "titleEn": "GVP (Quality Management Standard for Pharmacovigilance) Self-Inspection",
+  "scope": "self_inspection",
+  "category": "regulatory",
+  "gxpAreas": ["GVP"],
+  "regulation": "《药物警戒质量管理规范》（国家药品监督管理局2021年第65号公告，2021年12月1日施行）",
+  "authority": "国家药品监督管理局（NMPA）",
+  "version": "2021年第65号公告版（共9章134条）",
+  "description": "依据《药物警戒质量管理规范》对MAH药物警戒体系开展的合规自查，覆盖注册登记、组织机构、人员培训、信息收集、个例报告、信号检测、定期报告、风险控制、主文件与记录保存等要求。",
+  "descriptionEn": "Compliance self-inspection of the MAH pharmacovigilance system against the Quality Management Standard for Pharmacovigilance (NMPA Announcement No.65 of 2021), covering registration, organisation, staffing and training, information collection, ICSR handling, signal detection, periodic reports, risk control, PSMF and record retention.",
+  "items": [
+    {
+      "clauseRef": "第10条",
+      "requirement": "MAH在取得首个药品批准证明文件后30日内于国家药品不良反应监测系统完成注册登记，登记信息（含药物警戒负责人）发生变更时在30日内更新。",
+      "requirementEn": "The MAH completes registration in the national ADR monitoring system within 30 days of obtaining its first drug approval certificate and updates registered information, including the QPPV, within 30 days of any change.",
+      "guidance": "比对系统注册日期与产品批准日期，检查登记信息是否完整、药物警戒负责人变更是否在30日内更新。常见缺陷：注册超时、负责人变更后未及时更新、登记范围与在售品种不符。",
+      "guidanceEn": "Compare the system registration date against the approval date and verify that registered data, including the QPPV, is complete and updated within 30 days of any change. Common defects: late registration, failure to update QPPV changes, and registered scope not matching marketed products.",
+      "riskLevel": "major",
+      "evidenceHint": "国家药品不良反应监测系统注册截图/回执、登记信息变更记录、产品批准证明文件日期对照表"
+    },
+    {
+      "clauseRef": "第9条",
+      "requirement": "MAH制定并定期衡量关键流程指标，包括报告合规性、PSUR合规性、信号检测和评价及时性、主文件更新及时性、药物警戒计划执行、培训计划执行，并有记录的定期评审。",
+      "requirementEn": "The MAH defines and regularly measures key process indicators (reporting compliance, PSUR compliance, timeliness of signal detection and assessment, PSMF update timeliness, pharmacovigilance plan execution, training plan execution) with documented periodic reviews.",
+      "guidance": "调取KPI台账及评审会议纪要，核实指标口径、统计周期与超标后的纠正动作。常见缺陷：指标停留在纸面未实际统计、无评审记录、超标无处置。",
+      "guidanceEn": "Review the KPI register and review meeting minutes, checking indicator definitions, statistics periods and corrective actions for out-of-tolerance results. Common defects: indicators defined but never measured, no review records, and no action on exceedances.",
+      "riskLevel": "major",
+      "evidenceHint": "KPI台账/统计报表、季度或年度指标评审会议纪要、超标的纠正记录"
+    },
+    {
+      "clauseRef": "第19-20条",
+      "requirement": "MAH建立药品安全委员会并明确其职责，包括重大风险研判、重大或紧急事件处置、风险控制决策，有章程与运行记录证明其实际履职。",
+      "requirementEn": "The MAH establishes a Drug Safety Committee with defined responsibilities (review of major risks, handling of serious/urgent events, risk control decisions), supported by a charter and operation records proving actual functioning.",
+      "guidance": "核查安全委员会章程或制度、成员名单与近一年会议纪要，抽查重大事件是否实际提交讨论并有决策。常见缺陷：有名无实、无会议记录、决策未落实到风险控制行动。",
+      "guidanceEn": "Check the committee charter, member list and meeting minutes for the past year, and verify that major events were actually discussed with decisions. Common defects: committee exists on paper only, no minutes, decisions not followed by risk control actions.",
+      "riskLevel": "major",
+      "evidenceHint": "药品安全委员会章程/任命文件、成员名单、会议纪要、重大事件决策记录"
+    },
+    {
+      "clauseRef": "第24条",
+      "requirement": "药物警戒负责人具备医学、药学、流行病学或相关专业背景，本科及以上学历或中级及以上专业技术职称，3年以上药物警戒相关工作经历，熟悉我国药物警戒法规，并在国家系统完成登记且任职状态与登记一致。",
+      "requirementEn": "The QPPV has a medical, pharmaceutical, epidemiological or related background, a bachelor's degree or above or an intermediate or above professional title, at least 3 years of pharmacovigilance experience, familiarity with Chinese PV regulations, and is registered in the national system with registration matching the actual role.",
+      "guidance": "审核负责人学历/职称/经历证明文件与系统登记记录，核对任职与实际履职时间。常见缺陷：资质不符、登记缺失、挂名不履职。",
+      "guidanceEn": "Review the QPPV's qualifications (education, title, experience) and system registration, and verify the actual term of service. Common defects: unqualified QPPV, missing registration, or nominal appointment without actual duties.",
+      "riskLevel": "critical",
+      "evidenceHint": "学历/职称证书、工作经历证明、国家系统登记记录、负责人任命文件"
+    },
+    {
+      "clauseRef": "第26条",
+      "requirement": "MAH配备足够数量、具备医学/药学/流行病学等专业知识并经培训的专职药物警戒人员，人员配置与品种数量、监测工作量相匹配。",
+      "requirementEn": "The MAH employs a sufficient number of dedicated PV staff with medical, pharmaceutical or epidemiological expertise and training, with staffing level commensurate with the product portfolio and monitoring workload.",
+      "guidance": "对照产品管线与报告工作量评估人员配置，核查专职人员名单、岗位说明与资质证明。常见缺陷：兼岗过多、覆盖不足、资质与岗位不匹配。",
+      "guidanceEn": "Assess staffing against the product portfolio and report volume, and check the dedicated staff list, job descriptions and qualification records. Common defects: excessive dual roles, insufficient coverage, mismatched qualifications.",
+      "riskLevel": "major",
+      "evidenceHint": "专职人员名单与岗位说明书、资质与培训记录、工作量与配置评估记录"
+    },
+    {
+      "clauseRef": "第27-28条",
+      "requirement": "MAH制定年度培训计划，按岗位开展培训并评估培训效果，保留包括新员工上岗培训在内的培训记录。",
+      "requirementEn": "The MAH prepares an annual training plan, delivers role-based training, evaluates training effectiveness and retains training records including onboarding training for new staff.",
+      "guidance": "抽查年度培训计划、签到表、考核成绩与培训效果评估记录，核对新员工上岗前培训是否完成。常见缺陷：计划未执行、无效果评估、培训记录缺失或补造。",
+      "guidanceEn": "Sample the annual training plan, attendance sheets, assessment results and effectiveness evaluations, and verify onboarding training for new staff. Common defects: plan not executed, no effectiveness evaluation, missing or backdated records.",
+      "riskLevel": "major",
+      "evidenceHint": "年度培训计划、培训签到表、考核成绩、培训效果评估记录、新员工上岗培训记录"
+    },
+    {
+      "clauseRef": "第36、38、50条",
+      "requirement": "MAH定期检索学术文献并制定合理检索策略，检索频率依据品种安全性特征确定且时间范围连续；对境内外均上市的品种收集境外安全性信息；文献报道的可疑ADR按个例报告处理，不能确定归属的在PSUR中分析。",
+      "requirementEn": "The MAH regularly screens scientific literature with a defined search strategy, frequency based on product safety characteristics and continuous time coverage; collects overseas safety information for products marketed both domestically and abroad; processes literature ADRs as individual case reports when attributable, and analyses unattributable cases in the PSUR.",
+      "guidance": "检查文献检索SOP、检索记录（检索式/数据库/日期/结果数）与境外信息收集流程，抽查文献来源个例的提交时限。常见缺陷：无检索记录、中文文献漏检、境外信息未收集、文献个案漏报。",
+      "guidanceEn": "Check the literature screening SOP, search logs (strategy/database/date/hit counts) and overseas information collection process, and sample the reporting timelines of literature cases. Common defects: no search logs, Chinese literature missed, overseas information not collected, literature cases not reported.",
+      "riskLevel": "major",
+      "evidenceHint": "文献检索策略与SOP、检索执行记录、境外信息收集台账、文献来源ICSR清单及提交记录"
+    },
+    {
+      "clauseRef": "第42条",
+      "requirement": "MAH对获知的疑似不良反应及时接收、登记并按规定开展随访，随访不延误首次报告；随访获得的信息按个例报告时限提交跟踪报告。",
+      "requirementEn": "The MAH records suspected ADRs promptly upon receipt of information and performs follow-up without delaying the initial report; follow-up information is submitted as a follow-up report within the applicable case reporting timelines.",
+      "guidance": "抽查接收登记台账、获知时间戳与随访记录，核对严重/非预期报告缺失信息是否开展随访。常见缺陷：登记不及时、随访无记录、先随访后报告导致超时限。",
+      "guidanceEn": "Sample the intake register, awareness timestamps and follow-up records, and verify that missing information in serious/unexpected reports is followed up. Common defects: late registration, no follow-up records, follow-up before initial report causing delays.",
+      "riskLevel": "major",
+      "evidenceHint": "接收登记台账、随访记录与跟踪报告、首次报告与跟踪报告提交时间对照"
+    },
+    {
+      "clauseRef": "第46条",
+      "requirement": "有效个例报告须同时具备可识别的患者、可识别的报告者、怀疑药品和不良反应信息四要素；信息不齐的应通过随访补齐而非直接判为无效。",
+      "requirementEn": "A valid case report contains four elements: an identifiable patient, an identifiable reporter, a suspect product and information on the adverse reaction; incomplete cases must be completed through follow-up rather than being discarded as invalid.",
+      "guidance": "抽查已判定有效的报告，逐项核对四要素；检查被判无效报告的判定依据与留档。常见缺陷：缺要素仍判定有效并提交、把应随访补齐的信息当作无效删除。",
+      "guidanceEn": "Sample reports judged valid and verify the four elements; review the basis and records for reports judged invalid. Common defects: missing elements still accepted, or information that should be completed by follow-up wrongly discarded.",
+      "riskLevel": "critical",
+      "evidenceHint": "有效/无效判定记录、四要素核验表、随访任务清单、判无效报告的原因说明"
+    },
+    {
+      "clauseRef": "第44条",
+      "requirement": "MAH按六条严重性标准（死亡、危及生命、住院或住院时间延长、永久或显著残疾、先天性异常或出生缺陷、其他重要医学事件）判定严重性并记录判定依据。",
+      "requirementEn": "The MAH assesses seriousness against the six criteria (death, life-threatening, hospitalisation or prolongation, significant disability, congenital anomaly/birth defect, other medically important condition) and records the basis of the assessment.",
+      "guidance": "抽查严重报告对应命中的标准条款，检查边缘案例的判定逻辑与医学审核意见。常见缺陷：判定随意、重要医学事件标准滥用、无判定记录。",
+      "guidanceEn": "Sample serious reports against the criteria invoked, and review the rationale and medical review for borderline cases. Common defects: arbitrary assessment, misuse of the medically important condition criterion, no assessment records.",
+      "riskLevel": "major",
+      "evidenceHint": "严重性判定记录（命中条款）、医学审核意见、边缘案例评审记录"
+    },
+    {
+      "clauseRef": "第43条",
+      "requirement": "MAH按当前批准说明书或核心数据表判定预期性，反应的性质、严重程度、特征或结果与说明不一致即判定为非预期。",
+      "requirementEn": "The MAH determines expectedness against the current approved labelling or core data sheet; a reaction whose nature, severity, characteristics or outcome is inconsistent with the labelling is judged unexpected.",
+      "guidance": "抽查非预期报告所对照的说明书版本与日期，核查核心数据表与说明书一致性。常见缺陷：对照过期说明书、无对照留痕、把非预期写成预期。",
+      "guidanceEn": "Sample the labelling version and date used for expectedness decisions and verify consistency between the CCDS and the labelling. Common defects: outdated labelling used, no documentation of the comparison, unexpected coded as expected.",
+      "riskLevel": "major",
+      "evidenceHint": "预期性判定记录及对照说明书版本/日期、核心数据表与说明书对照记录"
+    },
+    {
+      "clauseRef": "第45条",
+      "requirement": "MAH按国家药品不良反应监测机构发布的关联性分级评价标准进行因果关系评价；对自发报告，报告者未提供评价意见时默认存在关联性；初始报告人已评价的，无确凿医学证据原则上不降级。",
+      "requirementEn": "The MAH assesses causality per the graded standards issued by the national ADR monitoring authority; for spontaneous reports without a reporter opinion, a causal link is assumed by default; reports already assessed by the initial reporter are in principle not downgraded without solid medical evidence.",
+      "guidance": "抽查因果关系评价记录与所用标准，检查不同评价员对同类案例的一致性。常见缺陷：无标准可依、随意降级、未执行默认关联原则。",
+      "guidanceEn": "Sample causality assessment records and the standards used, and check inter-assessor consistency on similar cases. Common defects: no reference standard, arbitrary downgrading, default-association principle not applied.",
+      "riskLevel": "major",
+      "evidenceHint": "因果关系评价记录、关联性分级标准文件、案例复评记录"
+    },
+    {
+      "clauseRef": "第49条",
+      "requirement": "严重不良反应不迟于获知后15日、非严重不迟于获知后30日报告，死亡病例立即报告；时限自首次获知且符合最低报告要求（四要素齐备）之日起算，工作日与节假日不除外。",
+      "requirementEn": "Serious ADRs are reported within 15 days and non-serious within 30 days of awareness, with fatal cases reported immediately; the clock starts on the first day the information is known and meets the minimum reporting criteria (four elements complete), with no exclusion of weekends or holidays.",
+      "guidance": "抽查报告的系统接收日期与获知日期对比，检查起算日认定（获知日而非录入日）、死亡病例是否立即处置。常见缺陷：起算错误导致超期、节假日顺延、死亡病例未立即报告。",
+      "guidanceEn": "Compare submission dates against awareness dates, and verify that the clock starts on the awareness date rather than the entry date and that fatal cases are handled immediately. Common defects: wrong clock start causing delays, holiday extensions, fatal cases not reported immediately.",
+      "riskLevel": "critical",
+      "evidenceHint": "获知日期记录、四要素核验通过日期、提交回执日期、超期预警与处理记录"
+    },
+    {
+      "clauseRef": "第55-57条",
+      "requirement": "MAH制定信号检测制度并按规定频率开展信号检测，创新药、改良型新药及监管关注品种应增加检测频率，保存检测记录与数据来源。",
+      "requirementEn": "The MAH has a signal detection procedure and performs detection at defined frequencies, with higher frequency for innovative drugs, improved new drugs and regulatory focus products, retaining detection records and data sources.",
+      "guidance": "核查信号检测SOP、检测排程与执行记录，抽查检测输出的信号清单与统计方法。常见缺陷：无检测制度、频率不达标、无检测记录。",
+      "guidanceEn": "Check the signal detection SOP, schedule and execution records, and sample the resulting signal lists and statistical methods. Common defects: no procedure, frequency not met, no detection records.",
+      "riskLevel": "major",
+      "evidenceHint": "信号检测制度/SOP、检测排程表、检测执行记录、初筛信号清单"
+    },
+    {
+      "clauseRef": "第58-59条",
+      "requirement": "MAH重点关注说明书未提及（尤其严重）、已知反应频率或严重程度明显增加、新的相互作用、特殊人群用药变化、疑似聚集性等重点信号，并按严重性、暴露量、高风险人群等开展优先级判定。",
+      "requirementEn": "The MAH prioritises key signals such as labelling-unmentioned (especially serious) reactions, marked increases in frequency/severity of known reactions, new interactions, special-population use changes and suspected clusters, and determines priority using seriousness, exposure and high-risk populations.",
+      "guidance": "抽查信号清单是否覆盖重点信号类型，检查优先级判定的因素记录。常见缺陷：只做统计不识别重点信号、优先级判定无依据。",
+      "guidanceEn": "Check whether signal lists cover the key signal types and review the basis of priority decisions. Common defects: statistics without identifying key signals, priority decisions without documented basis.",
+      "riskLevel": "major",
+      "evidenceHint": "信号清单、重点信号识别记录、优先级判定表"
+    },
+    {
+      "clauseRef": "第60-68条",
+      "requirement": "MAH对检测信号开展验证、确认与评估，形成包含数据来源、发生率与证据强度、机制、风险类型、对获益-风险平衡的影响及风险控制建议的信号评估报告，并经第二评价员交叉审阅；确认或紧急风险及时采取风险控制或紧急控制措施。",
+      "requirementEn": "The MAH validates, confirms and assesses detected signals, producing a signal assessment report covering data sources, incidence and strength of evidence, mechanism, risk type, impact on the benefit-risk balance and risk control recommendations, with second-assessor review; confirmed or urgent risks trigger timely risk control or emergency control measures.",
+      "guidance": "抽查信号评估报告完整性、交叉审阅记录，核验聚集性事件是否及时调查。常见缺陷：评估报告缺失或过于简略、无交叉审阅、紧急风险未控制。",
+      "guidanceEn": "Sample signal assessment reports and cross-review records, and verify timely investigation of cluster events. Common defects: missing or superficial reports, no cross-review, urgent risks not controlled.",
+      "riskLevel": "critical",
+      "evidenceHint": "信号评估报告、交叉审阅签名、聚集性事件调查记录、风险控制措施执行记录"
+    },
+    {
+      "clauseRef": "第80-84条",
+      "requirement": "MAH按时提交PSUR：设立监测期的品种自取得批准证明文件之日起每满1年1次直至首次再注册、之后每5年1次，其他品种每5年1次；上报日期在数据截止日（DLP）后60日内，由药物警戒负责人批准后经国家系统提交，可提交PBRER替代。",
+      "requirementEn": "The MAH submits PSURs on time: products under the new-drug monitoring period annually from the approval date until first re-registration and then every 5 years, other products every 5 years; submission occurs within 60 days after the data lock point (DLP), approved by the QPPV and filed through the national system, with PBRER acceptable as a substitute.",
+      "guidance": "核对PSUR日历、DLP计算（批准日/国际诞生日）与提交回执日期，抽查报告期是否连续无重叠。常见缺陷：DLP起算错误、超60日、未由负责人批准、报告期不连续。",
+      "guidanceEn": "Check the PSUR calendar, DLP calculation (approval date/IBD) and submission receipt dates, and verify continuous non-overlapping intervals. Common defects: wrong DLP basis, submission beyond 60 days, no QPPV approval, discontinuous intervals.",
+      "riskLevel": "critical",
+      "evidenceHint": "PSUR编排日历、DLP计算表、QPPV批准记录、国家系统提交回执"
+    },
+    {
+      "clauseRef": "第87条",
+      "requirement": "MAH根据风险评估结果采取常规风险控制措施（修订说明书、标签、包装，改变包装规格与药品管理状态等）和特殊风险控制措施（医务人员和患者沟通教育、使用环节限制、患者登记等），并对措施效果开展评估。",
+      "requirementEn": "The MAH implements routine risk minimisation measures (labelling, package and management-status changes) and additional measures (communication and education for healthcare professionals and patients, use restrictions, patient registries) based on risk assessment, and evaluates their effectiveness.",
+      "guidance": "抽查风险控制措施台账（说明书修订、致医务人员函、患者登记）与执行证据，核查措施与已确认风险的对应关系。常见缺陷：确认风险后无行动、措施未评估有效性。",
+      "guidanceEn": "Review the risk minimisation register (labelling changes, DHPC, patient registries) and evidence of execution, and check that measures correspond to confirmed risks. Common defects: no action after risk confirmation, effectiveness not evaluated.",
+      "riskLevel": "major",
+      "evidenceHint": "风险控制措施台账、说明书修订批件、致医务人员函发出记录、患者登记册、有效性评估报告"
+    },
+    {
+      "clauseRef": "第96-99条",
+      "requirement": "MAH对存在重要风险的已上市药品制定并实施药物警戒计划（上市后风险管理计划的组成部分），随风险认知更新，并报药品安全委员会审核。",
+      "requirementEn": "The MAH prepares and implements a pharmacovigilance plan (part of the post-marketing risk management plan) for marketed products with important risks, updates it as risk knowledge evolves, and submits it to the Drug Safety Committee for review.",
+      "guidance": "核查药物警戒计划文本、覆盖品种、更新记录与药品安全委员会审核记录。常见缺陷：无计划、长期不更新、未报委员会审核。",
+      "guidanceEn": "Check the pharmacovigilance plan content, coverage, update history and committee review records. Common defects: no plan, no updates, no committee review.",
+      "riskLevel": "major",
+      "evidenceHint": "药物警戒计划文本及版本记录、安全委员会审核记录、计划执行评估"
+    },
+    {
+      "clauseRef": "第104-106条",
+      "requirement": "MAH建立并维护药物警戒体系主文件（PSMF），内容完整（含组织机构、委托管理、流程与系统等），体系发生重大变化时及时更新并由药物警戒负责人签发。",
+      "requirementEn": "The MAH establishes and maintains the Pharmacovigilance System Master File (PSMF) with complete content (organisation, delegation, processes and systems), updates it promptly on major system changes and has it signed by the QPPV.",
+      "guidance": "核查PSMF文本、版本与更新日志，核对内容与实际体系的一致性。常见缺陷：PSMF缺失、内容过时、更新与体系变更脱节。",
+      "guidanceEn": "Review the PSMF content, version control and update log, and verify consistency with the actual system. Common defects: missing PSMF, outdated content, updates not aligned with system changes.",
+      "riskLevel": "major",
+      "evidenceHint": "PSMF文本、版本与更新日志、QPPV签发记录、与组织/流程/系统一致性核对记录"
+    },
+    {
+      "clauseRef": "第113条",
+      "requirement": "MAH将药物警戒相关记录保存至药品注册证书注销后10年，电子记录具有权限控制与审计追踪。",
+      "requirementEn": "The MAH retains PV records until 10 years after the drug registration certificate is cancelled, with access control and audit trails for electronic records.",
+      "guidance": "抽查记录保存制度与档案库，抽查电子记录系统的权限与审计追踪功能是否生效。常见缺陷：保存期限制度缺失、到期记录未按制度处置、电子记录可无痕修改。",
+      "guidanceEn": "Sample the record retention policy and archives, and verify access control and audit trail functions of electronic record systems. Common defects: no retention policy, retention not enforced, electronic records modifiable without trace.",
+      "riskLevel": "major",
+      "evidenceHint": "记录保存管理制度、档案目录与盘点记录、系统权限矩阵、审计追踪日志样本"
+    },
+    {
+      "clauseRef": "第11-14条",
+      "requirement": "MAH建立质量保证体系，定期开展内审并在体系发生重大变化时及时内审，内审发现的问题经偏差与纠正预防措施（CAPA）管理并跟踪评估有效性，变更受控管理。",
+      "requirementEn": "The MAH operates a quality assurance system with periodic internal audits and timely audits on major system changes; findings are managed through deviation and CAPA processes with effectiveness tracking; changes are controlled.",
+      "guidance": "核查内审计划、内审报告（覆盖范围与频次）、偏差台账、CAPA关闭率与变更管理记录。常见缺陷：无内审或内审走过场、CAPA长期未关闭、发现问题未追溯根因。",
+      "guidanceEn": "Check audit plans and reports (scope and frequency), the deviation register, CAPA closure rates and change control records. Common defects: no audits or perfunctory audits, CAPA left open, findings not traced to root causes.",
+      "riskLevel": "critical",
+      "evidenceHint": "内审计划与报告、偏差台账、CAPA统计与关闭记录、变更控制台账"
+    }
+  ]
+}

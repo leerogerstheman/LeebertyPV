@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>LeebertyPV · 药物警戒工作台</title>
+  <meta name="description" content="LeebertyPV - configuration-driven pharmacovigilance workbench: ICSR processing, causality assessment, signal detection, PSUR, risk management, AEFI, medical literature monitoring and GVP compliance, with a hash-chained audit trail and electronic signatures.">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div id="root" class="root">
+    <div class="boot-splash">
+      <div class="brand-mark brand-mark-lg"><img class="brand-logo-lg" src="/logo-lg.png" alt="LeebertyPV"></div>
+      <h1>LeebertyPV</h1>
+      <p>Loading…</p>
+      <noscript>
+        <p><strong>JavaScript is required.</strong> This workbench runs entirely in your browser against the local API.</p>
+      </noscript>
+    </div>
+  </div>
+
+  <!-- Zero-dependency, no build step. Load order matters: i18n and UI define the
+       primitives that the shell and every view build on.
+
+       The views call window.Views.register(...) as they execute, but the shell
+       that owns window.Views (app.js) must load last so that every view file is
+       already defined by the time it reads the registry. The stub below resolves
+       that ordering: it accepts registrations into a queue, and app.js takes the
+       queue over when it loads. Without it every view throws
+       "Cannot read properties of undefined (reading 'register')" and the screen
+       stays on the boot splash. -->
+  <script>
+    (function () {
+      var pending = [];
+      window.Views = {
+        pending: pending,
+        register: function (name, view) { pending.push([name, view]); },
+      };
+    })();
+  </script>
+  <script src="/js/i18n.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/ui.js"></script>
+  <script src="/js/views/inbox.js"></script>
+  <script src="/js/views/explorer.js"></script>
+  <script src="/js/views/dashboard.js"></script>
+  <script src="/js/views/records.js"></script>
+<script src="/js/views/signal.js"></script>
+  <script src="/js/views/documents.js"></script>
+  <script src="/js/views/inspections.js"></script>
+  <script src="/js/views/training.js"></script>
+  <script src="/js/views/audit.js"></script>
+  <script src="/js/views/compliance.js"></script>
+  <script src="/js/views/users.js"></script>
+  <script src="/js/views/account.js"></script>
+  <script src="/js/views/philosophy.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

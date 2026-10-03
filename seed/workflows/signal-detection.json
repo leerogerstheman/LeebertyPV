@@ -1,0 +1,539 @@
+{
+  "code": "SIG-DET",
+  "recordPrefix": "SIG",
+  "name": "信号检测",
+  "nameEn": "Signal Detection",
+  "category": "信号管理",
+  "gxpAreas": ["SIGNAL"],
+  "regulationRefs": [
+    "《药物警戒质量管理规范》（国家药监局2021年第65号公告）第55-68条",
+    "EU GVP Module IX (Signal Management)",
+    "《药品不良反应报告和监测管理办法》（卫生部令第81号）"
+  ],
+  "description": "对上市后各途径收集的疑似不良反应信息开展信号检测，采用比例失衡法与人工审阅相结合，按严重性、新药状态、暴露量、可预防性进行优先排序，形成可追溯的信号检测记录，并衔接信号评估流程。",
+  "descriptionEn": "Perform signal detection on post-marketing suspected ADR data from all collection channels, combining disproportionality analysis with manual review, prioritise signals by severity, novelty, exposure and preventability, and produce an auditable detection record linked to signal assessment.",
+  "slaDays": 30,
+  "requiresRootCause": false,
+  "requiresEffectivenessCheck": false,
+  "requiresQaApproval": true,
+  "criticalityLevels": ["minor", "major", "critical"],
+  "states": ["draft", "data_prep", "computation", "screening", "prioritisation", "documented", "closed", "cancelled"],
+  "initialState": "draft",
+  "terminalStates": ["closed", "cancelled"],
+  "fields": [
+    {
+      "key": "title",
+      "label": "信号标题",
+      "labelEn": "Signal Title",
+      "type": "text",
+      "required": true,
+      "help": "建议格式：药品名+可疑不良反应事件，例如产品X肝功能异常信号。"
+    },
+    {
+      "key": "summary",
+      "label": "信号概述",
+      "labelEn": "Summary",
+      "type": "textarea",
+      "required": false,
+      "help": "简述检测背景、疑似风险来源与初步判断。"
+    },
+    {
+      "key": "product",
+      "label": "怀疑药品",
+      "labelEn": "Suspect Product",
+      "type": "text",
+      "required": true,
+      "help": "填写药品通用名与商品名，含批号/剂型信息（如适用）。"
+    },
+    {
+      "key": "observationWindow",
+      "label": "观察期",
+      "labelEn": "Observation Window",
+      "type": "select",
+      "required": true,
+      "options": ["近3个月", "近6个月", "近12个月", "近24个月", "自定义"],
+      "help": "按品种上市时间与风险特征选择，创新药建议缩短窗口、增加检测频率。"
+    },
+    {
+      "key": "method",
+      "label": "检测方法",
+      "labelEn": "Detection Method",
+      "type": "select",
+      "required": true,
+      "options": ["PRR", "ROR", "EBGM", "BCPNN", "综合方法"],
+      "help": "比例失衡法为参考依据，建议多方法交叉验证。"
+    },
+    {
+      "key": "thresholdUsed",
+      "label": "参考阈值",
+      "labelEn": "Reference Threshold",
+      "type": "select",
+      "required": true,
+      "options": ["PRR≥2 且 χ²≥4 且 n≥3（MHRA）", "ROR 95%CI下限≥1", "EB05≥2（EBGM/MGPS）", "IC025>0（BCPNN）", "综合阈值（多方法交叉）"],
+      "help": "阈值是参考性筛选用，命中阈值不等于确认信号。"
+    }
+  ],
+  "steps": [
+    {
+      "code": "data_prep",
+      "name": "数据准备与观察期设定",
+      "nameEn": "Data Preparation & Observation Window",
+      "role": ["pv_officer", "pv_data_entry"],
+      "type": "task",
+      "onComplete": "data_prep",
+      "requiresFields": ["dataSource", "dbSnapshotDate", "observationWindowSet", "windowStart", "windowEnd"],
+      "form": [
+        {
+          "key": "dataSource",
+          "label": "数据来源",
+          "labelEn": "Data Source",
+          "type": "select",
+          "required": true,
+          "options": ["自发报告数据库", "医院集中监测", "文献数据库", "上市后研究项目", "多来源汇总"],
+          "help": "注明数据来源以便解释偏倚，自发报告常存在低报与报告行为差异。"
+        },
+        {
+          "key": "dbSnapshotDate",
+          "label": "数据库切片时间",
+          "labelEn": "Database Snapshot Date",
+          "type": "date",
+          "required": true,
+          "help": "统计结果只对切片时刻有效，必须记录；不同切片结果不可直接对比。"
+        },
+        {
+          "key": "backgroundDb",
+          "label": "背景数据库说明",
+          "labelEn": "Background Database",
+          "type": "text",
+          "required": false,
+          "help": "注明背景数据库名称与版本（如国家中心库/自有全球库），比例失衡法依赖背景对照。"
+        },
+        {
+          "key": "windowStart",
+          "label": "观察期开始",
+          "labelEn": "Window Start",
+          "type": "date",
+          "required": true,
+          "help": "观察期起算日期，应与数据切片范围一致。"
+        },
+        {
+          "key": "windowEnd",
+          "label": "观察期结束",
+          "labelEn": "Window End",
+          "type": "date",
+          "required": true,
+          "help": "观察期截止日期。"
+        },
+        {
+          "key": "observationWindowSet",
+          "label": "观察期（档位）",
+          "labelEn": "Observation Window Options",
+          "type": "select",
+          "required": true,
+          "options": ["近3个月", "近6个月", "近12个月", "近24个月", "自定义"],
+          "help": "与主表观察期字段保持一致。"
+        },
+        {
+          "key": "productFilter",
+          "label": "品种筛选范围",
+          "labelEn": "Product Filter Scope",
+          "type": "text",
+          "required": false,
+          "help": "是否纳入同类药/对照药，写明筛选口径，防止口径漂移。"
+        }
+      ],
+      "guidance": "为什么：比例失衡法需要固定数据切片与背景库，否则统计量不可复现。怎么做：先锁定数据库与切片时间，再按品种特性设定观察期并记录筛选口径。常见错：漏记切片时间、观察期与背景库不一致、不同切片结果混比。法规依据：GVP第55-58条要求按品种确定检测频率并留存检测记录。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "db_snapshot_date": "dbSnapshotDate",
+        "observation_window": "observationWindowSet",
+        "data_source": "dataSource"
+      }
+    },
+    {
+      "code": "computation",
+      "name": "比例失衡计算",
+      "nameEn": "Disproportionality Computation",
+      "role": ["pv_officer"],
+      "type": "task",
+      "onComplete": "computation",
+      "requiresFields": ["methodUsed", "thresholdUsedSet", "minCaseCount", "outputFile"],
+      "form": [
+        {
+          "key": "methodUsed",
+          "label": "计算方法",
+          "labelEn": "Computation Method",
+          "type": "select",
+          "required": true,
+          "options": ["PRR", "ROR", "EBGM", "BCPNN", "综合方法"],
+          "help": "EBGM与BCPNN适用于稀疏数据，PRR/ROR核算简单直观。"
+        },
+        {
+          "key": "thresholdUsedSet",
+          "label": "采用阈值",
+          "labelEn": "Threshold Applied",
+          "type": "select",
+          "required": true,
+          "options": ["PRR≥2 且 χ²≥4 且 n≥3（MHRA）", "ROR 95%CI下限≥1", "EB05≥2（EBGM）", "IC025>0（BCPNN）", "综合阈值"],
+          "help": "MHRA阈值为参考：PRR≥2 且 χ²≥4 且 n≥3。"
+        },
+        {
+          "key": "minCaseCount",
+          "label": "最小例数设置",
+          "labelEn": "Minimum Case Count",
+          "type": "text",
+          "required": false,
+          "help": "如n≥3，过滤个位例数组合产生的假信号，写明设定值。"
+        },
+        {
+          "key": "stratification",
+          "label": "分层变量",
+          "labelEn": "Stratification",
+          "type": "text",
+          "required": false,
+          "help": "如按年龄、性别、适应症分层计算，减少混杂（可选）。"
+        },
+        {
+          "key": "outputFile",
+          "label": "计算结果附件/链接",
+          "labelEn": "Output File/Link",
+          "type": "text",
+          "required": true,
+          "help": "计算结果表或系统链接，须与切片时间对应以便追溯。"
+        },
+        {
+          "key": "computationNote",
+          "label": "计算说明",
+          "labelEn": "Computation Notes",
+          "type": "textarea",
+          "required": false,
+          "help": "记录统计工具、参数设定与异常情况。"
+        }
+      ],
+      "guidance": "为什么：比例失衡是频数统计，只能发现报告多于预期的组合，不等于因果结论。怎么做：按设定阈值运行PRR/ROR/EBGM/BCPNN，输出统计量并注明工具与参数。常见错：只用单一方法、忽略最小例数过滤、把统计信号直接当成已确认风险。法规依据：GVP第55-57条，方法选择与检测频率应写入SOP并留痕。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "method_used": "methodUsed",
+        "threshold_used": "thresholdUsedSet"
+      }
+    },
+    {
+      "code": "screening",
+      "name": "阈值筛查与人工审阅",
+      "nameEn": "Threshold Screening & Manual Review",
+      "role": ["pv_officer", "pv_medical"],
+      "type": "task",
+      "onComplete": "screening",
+      "requiresFields": ["hitsList", "manualReview", "screeningResult"],
+      "form": [
+        {
+          "key": "hitsList",
+          "label": "初筛信号清单",
+          "labelEn": "Initial Hit List",
+          "type": "textarea",
+          "required": true,
+          "help": "列出命中阈值的药品-事件组合及对应统计量。"
+        },
+        {
+          "key": "manualReview",
+          "label": "人工审阅意见",
+          "labelEn": "Manual Review Notes",
+          "type": "textarea",
+          "required": true,
+          "help": "逐条核对原始个例：重复报告、人口学偏倚、适应证偏倚、用法错误等。"
+        },
+        {
+          "key": "duplicateCheck",
+          "label": "去重/伪信号检查",
+          "labelEn": "Duplicate/Pseudo-signal Check",
+          "type": "select",
+          "required": false,
+          "options": ["通过", "存在问题", "待复核"],
+          "help": "重复报告放大统计量是伪信号最常见来源。"
+        },
+        {
+          "key": "biasNote",
+          "label": "偏倚与混杂说明",
+          "labelEn": "Bias & Confounding Notes",
+          "type": "textarea",
+          "required": false,
+          "help": "如适应证偏倚（该药仅用于高危人群）会导致假信号，须写明。"
+        },
+        {
+          "key": "screeningResult",
+          "label": "筛查结论",
+          "labelEn": "Screening Conclusion",
+          "type": "select",
+          "required": true,
+          "options": ["保留", "排除", "待进一步分析"],
+          "help": "排除的信号应记录原因，便于审计。"
+        }
+      ],
+      "guidance": "为什么：统计信号可能来自重复报告、适应证偏倚或报告行为差异，必须人工审阅原始个例。怎么做：逐条核对病例，检查去重与机制合理性；基线低的组合容易出现假信号。常见错：只看统计量不查病例、把伪信号带入下一阶段浪费评估资源。法规依据：GVP第58条重点信号类型；评估应结合个例与临床信息。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "screening_result": "screeningResult"
+      }
+    },
+    {
+      "code": "prioritisation",
+      "name": "优先排序",
+      "nameEn": "Signal Prioritisation",
+      "role": ["pv_medical", "safety_committee"],
+      "type": "task",
+      "onComplete": "prioritisation",
+      "requiresFields": ["severityLevel", "noveltyLevel", "exposureLevel", "preventability", "priorityLevel"],
+      "form": [
+        {
+          "key": "severityLevel",
+          "label": "严重性",
+          "labelEn": "Severity",
+          "type": "select",
+          "required": true,
+          "options": ["死亡/危及生命", "住院/残疾", "其他重要医学事件", "非严重"],
+          "help": "严重性越高优先级越高。"
+        },
+        {
+          "key": "noveltyLevel",
+          "label": "新药/新风险",
+          "labelEn": "Novelty",
+          "type": "select",
+          "required": false,
+          "options": ["创新药/改良型新药", "说明书未提及", "已知风险频率增加", "已知风险"],
+          "help": "说明书未提及的严重反应应升级优先处理。"
+        },
+        {
+          "key": "exposureLevel",
+          "label": "暴露量",
+          "labelEn": "Exposure",
+          "type": "select",
+          "required": false,
+          "options": ["高", "中", "低", "无法估计"],
+          "help": "暴露量大时即使信号弱也需关注。"
+        },
+        {
+          "key": "preventability",
+          "label": "可预防性",
+          "labelEn": "Preventability",
+          "type": "select",
+          "required": false,
+          "options": ["高（可干预）", "中", "低"],
+          "help": "可通过说明书、处方限制预防的风险优先级更高。"
+        },
+        {
+          "key": "priorityLevel",
+          "label": "优先级结论",
+          "labelEn": "Priority Level",
+          "type": "select",
+          "required": true,
+          "options": ["高优先", "中优先", "低优先"],
+          "help": "综合严重性/新药/暴露量/可预防性判定。"
+        },
+        {
+          "key": "priorityRationale",
+          "label": "排序理由",
+          "labelEn": "Prioritisation Rationale",
+          "type": "textarea",
+          "required": false,
+          "help": "记录各因素的综合权衡过程。"
+        }
+      ],
+      "guidance": "为什么：评估资源有限，必须把高风险信号排在前面。怎么做：按GVP第59条考虑严重性、暴露量、高风险人群、中断治疗影响与拟采取控制措施；新药与说明书未提及的严重反应应升级。常见错：仅按统计量大小排序、忽略可预防性。法规依据：《药物警戒质量管理规范》第59条，第61条聚集性事件须及时调查。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "priority_level": "priorityLevel"
+      }
+    },
+    {
+      "code": "documented",
+      "name": "形成信号检测记录",
+      "nameEn": "Document Signal Detection Record",
+      "role": ["pv_officer", "pv_head"],
+      "type": "signature",
+      "onComplete": "documented",
+      "requiresFields": ["detectionRecord", "detectionConclusion", "actionRecommendation"],
+      "signatureMeaning": "confirmed",
+      "form": [
+        {
+          "key": "detectionRecord",
+          "label": "信号检测记录内容",
+          "labelEn": "Detection Record Content",
+          "type": "textarea",
+          "required": true,
+          "help": "完整记录检测时间、切片、方法、阈值、审阅与排序过程，形成可追溯档案。"
+        },
+        {
+          "key": "detectionConclusion",
+          "label": "检测结论",
+          "labelEn": "Detection Conclusion",
+          "type": "select",
+          "required": true,
+          "options": ["检出信号", "未检出信号"],
+          "help": "检出信号时建议转入信号评估流程。"
+        },
+        {
+          "key": "actionRecommendation",
+          "label": "后续建议",
+          "labelEn": "Action Recommendation",
+          "type": "select",
+          "required": true,
+          "options": ["转入信号评估（SIG-EVAL）", "继续常规监测", "先补充数据分析", "无后续"],
+          "help": "明确信号去向，避免检出后无人跟进。"
+        },
+        {
+          "key": "linkedRecordNo",
+          "label": "关联记录编号",
+          "labelEn": "Linked Record No.",
+          "type": "text",
+          "required": false,
+          "help": "如转入信号评估，填写SIGA-xxxx编号。"
+        },
+        {
+          "key": "attachmentLink",
+          "label": "附件/链接",
+          "labelEn": "Attachment/Link",
+          "type": "text",
+          "required": false,
+          "help": "挂载统计结果与审阅记录的链接。"
+        },
+        {
+          "key": "documentRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他需要说明的事项。"
+        }
+      ],
+      "guidance": "为什么：信号检测记录是监管检查必查项，无记录等于未开展检测。怎么做：完整留存检测日期、数据切片、方法、阈值、审阅与排序全过程，检出信号后优先转入SIG-EVAL评估。常见错：只存统计结果不存过程、信号无处衔接丢失跟踪。法规依据：GVP第55-58条要求按SOP执行检测并留存记录。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "detection_conclusion": "detectionConclusion",
+        "action_recommendation": "actionRecommendation",
+        "linked_record_no": "linkedRecordNo"
+      }
+    },
+    {
+      "code": "closed",
+      "name": "结案归档",
+      "nameEn": "Closure & Archiving",
+      "role": ["pv_head"],
+      "type": "signature",
+      "onComplete": "closed",
+      "requiresFields": ["closureSummary", "closureDate", "archivePath"],
+      "signatureMeaning": "approved",
+      "form": [
+        {
+          "key": "closureSummary",
+          "label": "结案说明",
+          "labelEn": "Closure Summary",
+          "type": "textarea",
+          "required": true,
+          "help": "汇总检测与分流结果，确认信号去向均已落实。"
+        },
+        {
+          "key": "closureDate",
+          "label": "结案日期",
+          "labelEn": "Closure Date",
+          "type": "date",
+          "required": true,
+          "help": "结案签名日期，审计以时间戳为准。"
+        },
+        {
+          "key": "archivePath",
+          "label": "归档位置",
+          "labelEn": "Archive Location",
+          "type": "text",
+          "required": true,
+          "help": "归档至药物警戒体系对应目录，保存至注册证书注销后10年。"
+        },
+        {
+          "key": "followupPlan",
+          "label": "后续跟踪安排",
+          "labelEn": "Follow-up Plan",
+          "type": "text",
+          "required": false,
+          "help": "如安排下期复检或转入评估跟踪，写明时间。"
+        },
+        {
+          "key": "closureRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：记录保存是GVP硬性要求，结案保证档案完整可审计。怎么做：QPPV核对检测记录完整后签名结案，注明归档位置与后续跟踪安排。常见错：未归档就结案、结案后补写记录破坏审计链。法规依据：《药物警戒质量管理规范》第100-115条记录保存要求。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "closure_date": "closureDate",
+        "archive_path": "archivePath"
+      }
+    },
+    {
+      "code": "cancel_record",
+      "name": "取消记录",
+      "nameEn": "Cancel Record",
+      "role": ["pv_head"],
+      "type": "task",
+      "onComplete": "cancelled",
+      "requiresFields": ["cancelReason", "cancelCheck", "cancelDate"],
+      "form": [
+        {
+          "key": "cancelReason",
+          "label": "取消原因",
+          "labelEn": "Cancellation Reason",
+          "type": "textarea",
+          "required": true,
+          "help": "如数据重复创建、误建记录，必须说明正当理由。"
+        },
+        {
+          "key": "cancelCheck",
+          "label": "取消前核对",
+          "labelEn": "Pre-cancellation Check",
+          "type": "select",
+          "required": true,
+          "options": ["关联记录已处理", "关联记录无需处理", "待核实"],
+          "help": "取消前确认已转交/关联的ICSR与下游流程记录已妥善处理，避免跟踪断链。"
+        },
+        {
+          "key": "cancelNote",
+          "label": "补充说明",
+          "labelEn": "Supplementary Notes",
+          "type": "textarea",
+          "required": false,
+          "help": "其他补充说明。"
+        },
+        {
+          "key": "cancelApprover",
+          "label": "确认人",
+          "labelEn": "Confirmed By",
+          "type": "text",
+          "required": true,
+          "help": "QPPV或授权确认人签名留痕。"
+        },
+        {
+          "key": "cancelDate",
+          "label": "取消日期",
+          "labelEn": "Cancellation Date",
+          "type": "date",
+          "required": true,
+          "help": "取消动作留痕。"
+        }
+      ],
+      "guidance": "为什么：记录一经创建即纳入审计范围，取消不等于删除。怎么做：由QPPV确认取消理由并留档，取消后的记录保留审计追踪。常见错：直接删除记录破坏审计链。",
+      "optional": true,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "cancel_reason": "cancelReason"
+      }
+    }
+  ]
+}

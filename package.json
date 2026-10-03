@@ -1,0 +1,40 @@
+{
+  "name": "leeberty-pv",
+  "version": "1.0.0",
+  "description": "LeebertyPV - a configuration-driven pharmacovigilance workbench for ICSR processing, signal detection, periodic safety reports, risk management and GVP compliance",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "seed": "node scripts/seed.js",
+    "test": "node test/run-all.js",
+    "verify-audit": "node scripts/verify-audit.js",
+    "backup": "node scripts/backup.js",
+    "build:exe": "node scripts/build-exe.js"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "keywords": [
+    "pharmacovigilance",
+    "pv",
+    "drug-safety",
+    "adverse-event",
+    "icsr",
+    "signal-detection",
+    "psur",
+    "pbrer",
+    "rmp",
+    "gvp",
+    "ich-e2",
+    "causality-assessment",
+    "audit-trail",
+    "data-integrity",
+    "alcoa-plus",
+    "electronic-signature",
+    "21-cfr-part-11"
+  ]
+}

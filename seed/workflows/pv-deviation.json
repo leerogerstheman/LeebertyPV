@@ -1,0 +1,409 @@
+{
+  "code": "PV-DEV",
+  "recordPrefix": "DEV",
+  "name": "药物警戒质量偏差",
+  "nameEn": "PV Quality Deviation",
+  "category": "quality",
+  "gxpAreas": ["GVP"],
+  "regulationRefs": [
+    "GVP Module I（质量管理体系：偏差管理）",
+    "ICH Q10 药品质量体系",
+    "《药物警戒质量管理规范》第11-14条（内审、偏差、CAPA）"
+  ],
+  "description": "管理药物警戒体系运行中发现的偏差（如报告超时、漏报、记录错误、流程违规），覆盖发现与即时遏制、根本原因调查、影响评估、CAPA制定、审批与关闭全过程，要求根因分析与独立审批。",
+  "descriptionEn": "Manages deviations in PV system operation (e.g., late or missed reports, recording errors, process breaches) from detection and immediate containment, root cause investigation, impact assessment, CAPA planning, approval to closure. Root cause analysis and independent approval are mandatory.",
+  "slaDays": 30,
+  "requiresRootCause": true,
+  "requiresEffectivenessCheck": false,
+  "requiresQaApproval": true,
+  "criticalityLevels": ["minor", "major", "critical"],
+  "states": ["draft", "report", "investigate", "impact", "capa", "approve", "closed", "cancelled"],
+  "initialState": "draft",
+  "terminalStates": ["closed", "cancelled"],
+  "fields": [
+    {
+      "key": "title",
+      "label": "偏差标题",
+      "labelEn": "Deviation Title",
+      "type": "text",
+      "required": true,
+      "help": "简明描述偏差事实，如某严重报告超期提交。"
+    },
+    {
+      "key": "summary",
+      "label": "偏差概述",
+      "labelEn": "Summary",
+      "type": "textarea",
+      "required": true,
+      "help": "记录偏差发生的时间、过程与初步事实。"
+    },
+    {
+      "key": "occurredAt",
+      "label": "偏差发生/发现时间",
+      "labelEn": "Occurred At",
+      "type": "date",
+      "required": true,
+      "help": "记录偏差发生时间或首次发现时间。"
+    },
+    {
+      "key": "processArea",
+      "label": "受影响流程",
+      "labelEn": "Process Area",
+      "type": "select",
+      "required": true,
+      "options": ["ICSR接收与处理", "报告提交与时限", "信号检测与评估", "PSUR/PBRER", "文献监测", "委托方管理", "系统与数据管理", "培训管理"],
+      "help": "选择偏差所属流程。"
+    },
+    {
+      "key": "impactOnTimelines",
+      "label": "是否影响报告时限",
+      "labelEn": "Impact on Timelines",
+      "type": "select",
+      "required": true,
+      "options": ["是", "否"],
+      "help": "判定是否造成或可能造成报告超时或漏报。"
+    }
+  ],
+  "steps": [
+    {
+      "code": "report",
+      "name": "发现与即时遏制",
+      "nameEn": "Discovery & Immediate Containment",
+      "role": ["pv_officer", "pv_data_entry", "literature_reviewer", "pv_writer", "pv_regulatory", "qa_specialist"],
+      "type": "task",
+      "onComplete": "report",
+      "form": [
+        {
+          "key": "rep_discoveredBy",
+          "label": "发现人",
+          "labelEn": "Discovered By",
+          "type": "text",
+          "required": true,
+          "help": "记录发现偏差的人员姓名与岗位。"
+        },
+        {
+          "key": "rep_deviationType",
+          "label": "偏差类型",
+          "labelEn": "Deviation Type",
+          "type": "select",
+          "required": true,
+          "options": ["报告时限偏差", "漏报", "记录/数据错误", "文档与SOP缺陷", "系统故障", "流程违规", "受托方问题", "其他"],
+          "help": "选择最贴近的偏差类型。"
+        },
+        {
+          "key": "rep_containment",
+          "label": "即时遏制措施",
+          "labelEn": "Immediate Containment",
+          "type": "textarea",
+          "required": true,
+          "help": "如立即补报、冻结错误数据、暂停相关操作。"
+        },
+        {
+          "key": "rep_affectedRecords",
+          "label": "受影响记录/范围",
+          "labelEn": "Affected Records",
+          "type": "textarea",
+          "required": false,
+          "help": "列出受影响的病例、报告或数据范围。"
+        },
+        {
+          "key": "rep_detail",
+          "label": "偏差事实描述",
+          "labelEn": "Deviation Description",
+          "type": "textarea",
+          "required": true,
+          "help": "客观描述发生了什么、何时、何地、涉及什么。"
+        }
+      ],
+      "guidance": "偏差应坚持任何人都可报告、无责上报原则，发现后立即记录事实并实施即时遏制，例如补报超期报告、冻结错误数据或暂停相关操作。疑似影响报告时限或数据完整性的偏差须当日口头升级至质量与药物警戒负责人。常见缺陷：隐瞒不报、补报后不立案、即时遏制措施无记录。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "investigate",
+      "name": "根本原因调查",
+      "nameEn": "Root Cause Investigation",
+      "role": ["qa_specialist", "pv_officer"],
+      "type": "task",
+      "onComplete": "investigate",
+      "requiresFields": ["processArea"],
+      "form": [
+        {
+          "key": "inv_method",
+          "label": "调查方法",
+          "labelEn": "Investigation Method",
+          "type": "textarea",
+          "required": true,
+          "help": "如5Why、鱼骨图、访谈、记录审查、系统日志分析。"
+        },
+        {
+          "key": "inv_evidence",
+          "label": "证据清单",
+          "labelEn": "Evidence",
+          "type": "textarea",
+          "required": true,
+          "help": "系统日志、时间戳、邮件、审批记录等客观证据。"
+        },
+        {
+          "key": "inv_rootCause",
+          "label": "根本原因",
+          "labelEn": "Root Cause",
+          "type": "textarea",
+          "required": true,
+          "help": "须追溯到流程、系统、培训或管理层面，而非止步于操作人员疏忽。"
+        },
+        {
+          "key": "inv_factors",
+          "label": "促成因素",
+          "labelEn": "Contributing Factors",
+          "type": "textarea",
+          "required": false,
+          "help": "记录使偏差发生的间接因素。"
+        },
+        {
+          "key": "inv_conclusion",
+          "label": "调查结论",
+          "labelEn": "Investigation Conclusion",
+          "type": "textarea",
+          "required": true,
+          "help": "明确根因成立的逻辑链与结论。"
+        }
+      ],
+      "guidance": "根本原因调查应按5Why或鱼骨图等方法追溯至流程、系统、培训或管理层面，不能止步于操作人员疏忽等表面原因。调查须引用客观证据（系统日志、时间戳、邮件记录）。常见缺陷：原因归纳到人而系统无防错、证据链条断裂、与时限问题的因果链未说清。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "impact",
+      "name": "影响评估",
+      "nameEn": "Impact Assessment",
+      "role": ["qa_manager", "pv_head"],
+      "type": "task",
+      "onComplete": "impact",
+      "requiresFields": ["impactOnTimelines"],
+      "form": [
+        {
+          "key": "imp_scope",
+          "label": "影响范围",
+          "labelEn": "Impact Scope",
+          "type": "textarea",
+          "required": true,
+          "help": "描述受影响的患者、报告、流程与时限。"
+        },
+        {
+          "key": "imp_timeline",
+          "label": "是否造成报告超期/漏报",
+          "labelEn": "Reports Overdue/Missed",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "判断是否已构成报告时限违规。"
+        },
+        {
+          "key": "imp_overdue",
+          "label": "超期/漏报数量",
+          "labelEn": "Overdue/Missed Count",
+          "type": "text",
+          "required": false,
+          "help": "量化受影响报告数量。"
+        },
+        {
+          "key": "imp_dataIntegrity",
+          "label": "数据完整性影响",
+          "labelEn": "Data Integrity Impact",
+          "type": "select",
+          "required": true,
+          "options": ["严重", "中等", "轻微", "无"],
+          "help": "评估对数据可信度的影响。"
+        },
+        {
+          "key": "imp_regulatory",
+          "label": "监管合规影响",
+          "labelEn": "Regulatory Impact",
+          "type": "textarea",
+          "required": true,
+          "help": "评估是否需要向药监部门说明或补救。"
+        },
+        {
+          "key": "imp_severity",
+          "label": "偏差严重度",
+          "labelEn": "Severity",
+          "type": "select",
+          "required": true,
+          "options": ["critical", "major", "minor"],
+          "help": "综合评估偏差严重程度。"
+        }
+      ],
+      "guidance": "影响评估须覆盖报告时限、数据完整性、监管沟通三方面；凡已造成超期或漏报的，应评估是否需要立即向药监部门说明并补救，同时评估受影响数据的可信度。常见缺陷：只评估个案影响而忽略体系性影响、严重度定级偏低导致后续CAPA力度不足。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "capa",
+      "name": "制定CAPA计划",
+      "nameEn": "CAPA Planning",
+      "role": ["qa_specialist"],
+      "type": "task",
+      "onComplete": "capa",
+      "form": [
+        {
+          "key": "cap_corrective",
+          "label": "纠正措施",
+          "labelEn": "Corrective Action",
+          "type": "textarea",
+          "required": true,
+          "help": "消除已发生问题的影响。"
+        },
+        {
+          "key": "cap_preventive",
+          "label": "预防措施",
+          "labelEn": "Preventive Action",
+          "type": "textarea",
+          "required": true,
+          "help": "防止问题再次发生，如规程修订、系统校验、培训强化。"
+        },
+        {
+          "key": "cap_owner",
+          "label": "措施责任人",
+          "labelEn": "Action Owner",
+          "type": "text",
+          "required": true,
+          "help": "明确每条措施的责任人。"
+        },
+        {
+          "key": "cap_due",
+          "label": "完成期限",
+          "labelEn": "Due Date",
+          "type": "date",
+          "required": true,
+          "help": "承诺完成的日期。"
+        },
+        {
+          "key": "cap_review",
+          "label": "计划评审意见",
+          "labelEn": "Review Comments",
+          "type": "textarea",
+          "required": false,
+          "help": "QA对计划的评审意见。"
+        }
+      ],
+      "guidance": "CAPA应针对根本原因而非表面现象制定：纠正措施消除已发生问题，预防措施防止再发，例如规程修订、系统校验与培训强化。每条措施须有责任人与期限，并在实施后跟踪有效性。常见缺陷：只纠正未预防、措施与根因脱节、无期限管理。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "approve",
+      "name": "审批",
+      "nameEn": "Approval",
+      "role": ["qa_manager"],
+      "type": "signature",
+      "onComplete": "approve",
+      "form": [
+        {
+          "key": "app_conclusion",
+          "label": "审批结论",
+          "labelEn": "Approval Decision",
+          "type": "select",
+          "required": true,
+          "options": ["批准", "驳回"],
+          "help": "决定是否批准执行。"
+        },
+        {
+          "key": "app_comment",
+          "label": "审批意见",
+          "labelEn": "Approval Comments",
+          "type": "textarea",
+          "required": true,
+          "help": "说明批准依据或驳回理由。"
+        },
+        {
+          "key": "app_date",
+          "label": "审批日期",
+          "labelEn": "Approval Date",
+          "type": "date",
+          "required": true,
+          "help": "记录审批时间。"
+        },
+        {
+          "key": "app_rootCauseAdequate",
+          "label": "根因分析是否充分",
+          "labelEn": "Root Cause Adequate",
+          "type": "select",
+          "required": true,
+          "options": ["充分", "不充分"],
+          "help": "评估调查是否追溯到流程/系统/管理层面。"
+        },
+        {
+          "key": "app_capaAdequate",
+          "label": "CAPA是否足以防止再发",
+          "labelEn": "CAPA Sufficient",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "判断纠正与预防措施是否针对根本原因。"
+        }
+      ],
+      "guidance": "偏差调查报告与CAPA计划须由质量负责人独立审批，提出人或调查人不得自我批准。审批重点：根因是否成立、影响评估是否充分、CAPA是否足以防止再发。常见缺陷：审批流于形式、无独立签批、驳回后无重新提交记录。",
+      "signatureMeaning": "独立审批：确认偏差调查、影响评估与CAPA计划完整合理，批准进入执行；偏差提出人不得自我批准。",
+      "optional": false,
+      "independentOfAuthor": true
+    },
+    {
+      "code": "close",
+      "name": "关闭/签名",
+      "nameEn": "Closure",
+      "role": ["qa_manager", "pv_head"],
+      "type": "signature",
+      "onComplete": "closed",
+      "form": [
+        {
+          "key": "clo_comment",
+          "label": "关闭说明",
+          "labelEn": "Closure Comments",
+          "type": "textarea",
+          "required": true,
+          "help": "确认CAPA完成、影响处置完毕。"
+        },
+        {
+          "key": "clo_capaLink",
+          "label": "关联CAPA编号",
+          "labelEn": "Linked CAPA ID",
+          "type": "text",
+          "required": false,
+          "help": "如已转独立CAPA流程则回填编号。"
+        },
+        {
+          "key": "clo_psmf",
+          "label": "是否需更新PSMF",
+          "labelEn": "PSMF Update Needed",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "体系性问题需评估更新主文件。"
+        },
+        {
+          "key": "clo_capaClosed",
+          "label": "CAPA是否已关闭",
+          "labelEn": "CAPA Closed",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "关联CAPA须完成有效性确认后关闭。"
+        },
+        {
+          "key": "clo_reportsResolved",
+          "label": "受影响报告是否已补报/评估",
+          "labelEn": "Reports Resolved",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "超期或漏报报告须完成补报或风险评估。"
+        }
+      ],
+      "guidance": "关闭前须确认：CAPA已实施并完成有效性确认、受影响的报告已按法规补报或评估、培训与文档已更新。属于体系性问题的应评估是否更新PSMF。常见缺陷：CAPA未完成即关闭、补报情况未核实、关闭签批缺失。",
+      "signatureMeaning": "签名确认偏差及其CAPA已闭环、影响均已处置，同意关闭归档。",
+      "optional": false,
+      "independentOfAuthor": true
+    }
+  ]
+}

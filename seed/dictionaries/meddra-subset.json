@@ -1,0 +1,337 @@
+{
+  "version": "LeebertyPV-MedDRA-subset-2026.1",
+  "versionLabel": "MedDRA 常用术语子集（26.1 版）",
+  "versionLabelEn": "MedDRA common-term subset (release 26.1)",
+  "notice": "本文件为本地工作用 MedDRA 子集，覆盖中国上市药品常见不良反应术语，用于演示与本地化编码。正式注册申报必须使用经许可的完整 MedDRA 版本，并由授权用户维护；本子集不替代正式词典。",
+  "noticeEn": "A local working subset of MedDRA covering common adverse-reaction terms for this demonstration instance. Regulatory submissions require a licensed, complete MedDRA release maintained by authorised users; this subset is not a substitute for the official dictionary.",
+  "structure": ["SOC", "HLGT", "HLT", "PT", "LLT"],
+  "socs": [
+    {
+      "code": "10005329",
+      "name": "肝胆系统疾病",
+      "nameEn": "Hepatobiliary disorders",
+      "hlts": [
+        {
+          "code": "10019805",
+          "name": "肝脏异常",
+          "nameEn": "Hepatic disorders",
+          "pts": [
+            { "code": "10019851", "name": "肝损伤", "nameEn": "Hepatitis", "llts": ["药物性肝损伤", "肝损害", "肝功能异常加重", "急性肝损伤", "drug induced liver injury", "drug-induced liver injury", "liver injury"] },
+            { "code": "10019852", "name": "肝功能异常", "nameEn": "Hepatic function abnormal", "llts": ["转氨酶升高", "ALT升高", "AST升高"] },
+            { "code": "10019853", "name": "黄疸", "nameEn": "Jaundice", "llts": ["皮肤黄染", "巩膜黄染"] },
+            { "code": "10019854", "name": "急性肝衰竭", "nameEn": "Hepatic failure", "llts": ["肝衰竭"] },
+            { "code": "10019855", "name": "肝硬化", "nameEn": "Hepatic cirrhosis", "llts": [] }
+          ]
+        },
+        {
+          "code": "10019806",
+          "name": "胆道疾病",
+          "nameEn": "Biliary disorders",
+          "pts": [
+            { "code": "10019861", "name": "胆汁淤积", "nameEn": "Cholestasis", "llts": ["胆汁淤积性黄疸"] }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "10010331",
+      "name": "神经系统及躯体运动系统疾病",
+      "nameEn": "Nervous system and musculoskeletal disorders",
+      "hlts": [
+        {
+          "code": "10014698",
+          "name": "中枢神经系统异常",
+          "nameEn": "Central nervous system disorders",
+          "pts": [
+            { "code": "10014709", "name": "嗜睡", "nameEn": "Somnolence", "llts": ["困倦", "嗜睡乏力"] },
+            { "code": "10014710", "name": "头晕", "nameEn": "Dizziness", "llts": ["眩晕", "头晕眼花"] },
+            { "code": "10014711", "name": "头痛", "nameEn": "Headache", "llts": ["偏头痛"] },
+            { "code": "10014712", "name": "癫痫发作", "nameEn": "Seizure", "llts": ["惊厥", "抽搐"] },
+            { "code": "10014713", "name": "意识障碍", "nameEn": "Confusional state", "llts": ["意识模糊"] },
+            { "code": "10014714", "name": "晕厥", "nameEn": "Syncope", "llts": ["晕厥"] }
+          ]
+        },
+        {
+          "code": "10014750",
+          "name": "周围神经系统异常",
+          "nameEn": "Peripheral nervous system disorders",
+          "pts": [
+            { "code": "10014755", "name": "周围神经病变", "nameEn": "Peripheral neuropathy", "llts": ["手足麻木", "肢端麻木"] },
+            { "code": "10014756", "name": "感觉异常", "nameEn": "Sensory disturbance", "llts": ["感觉减退", "麻木感"] }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "10007541",
+      "name": "胃肠系统疾病",
+      "nameEn": "Gastrointestinal disorders",
+      "hlts": [
+        {
+          "code": "10007572",
+          "name": "恶心及呕吐",
+          "nameEn": "Nausea and vomiting",
+          "pts": [
+            { "code": "10007577", "name": "恶心", "nameEn": "Nausea", "llts": ["恶心感", "欲吐"] },
+            { "code": "10007578", "name": "呕吐", "nameEn": "Vomiting", "llts": ["呕吐物", "喷射性呕吐"] }
+          ]
+        },
+        {
+          "code": "10007605",
+          "name": "腹泻",
+          "nameEn": "Diarrhoea",
+          "pts": [
+            { "code": "10007613", "name": "腹泻", "nameEn": "Diarrhoea", "llts": ["稀便", "水样便", "大便次数增多"] }
+          ]
+        },
+        {
+          "code": "10007634",
+          "name": "便秘",
+          "nameEn": "Constipation",
+          "pts": [
+            { "code": "10007635", "name": "便秘", "nameEn": "Constipation", "llts": ["排便困难"] }
+          ]
+        },
+        {
+          "code": "10007636",
+          "name": "消化不良及其他胃肠道症状",
+          "nameEn": "Dyspepsia and related gastrointestinal symptoms",
+          "pts": [
+            { "code": "10007637", "name": "消化不良", "nameEn": "Dyspepsia", "llts": ["上腹不适", "胃部不适", "消化不良伴恶心"] },
+            { "code": "10007638", "name": "腹痛", "nameEn": "Abdominal pain", "llts": ["上腹痛", "下腹痛", "腹痛"] },
+            { "code": "10007639", "name": "胃胀", "nameEn": "Abdominal distension", "llts": ["腹胀", "胃胀"] }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "10010326",
+      "name": "皮肤及皮下组织疾病",
+      "nameEn": "Skin and subcutaneous tissue disorders",
+      "hlts": [
+        {
+          "code": "10021428",
+          "name": "皮疹",
+          "nameEn": "Rash",
+          "pts": [
+            { "code": "10021432", "name": "皮疹", "nameEn": "Rash", "llts": ["斑丘疹", "红色皮疹", "出疹"] },
+            { "code": "10021433", "name": "瘙痒", "nameEn": "Pruritus", "llts": ["皮肤瘙痒", "全身瘙痒"] },
+            { "code": "10021434", "name": "荨麻疹", "nameEn": "Urticaria", "llts": ["风团", "急性荨麻疹"] }
+          ]
+        },
+        {
+          "code": "10021429",
+          "name": "严重皮肤反应",
+          "nameEn": "Severe skin reactions",
+          "pts": [
+            { "code": "10021435", "name": "Stevens-Johnson综合征", "nameEn": "Stevens-Johnson syndrome", "llts": ["SJS"] },
+            { "code": "10021436", "name": "中毒性表皮坏死松解症", "nameEn": "Toxic epidermal necrolysis", "llts": ["TEN"] }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "10010331B",
+      "codeNote": "placeholder",
+      "name": "心脏及血管疾病",
+      "nameEn": "Cardiac and vascular disorders",
+      "hlts": [
+        {
+          "code": "10011095",
+          "name": "心律失常",
+          "nameEn": "Arrhythmias",
+          "pts": [
+            { "code": "10011096", "name": "心律失常", "nameEn": "Arrhythmia", "llts": ["心律不齐"] },
+            { "code": "10011097", "name": "心动过速", "nameEn": "Tachycardia", "llts": ["心率增快"] },
+            { "code": "10011098", "name": "心动过缓", "nameEn": "Bradycardia", "llts": ["心率减慢"] }
+          ]
+        },
+        {
+          "code": "10011099",
+          "name": "心肌与心包疾病",
+          "nameEn": "Myocardial and pericardial disorders",
+          "pts": [
+            { "code": "10011100", "name": "心肌炎", "nameEn": "Myocarditis", "llts": ["急性心肌炎"] },
+            { "code": "10011101", "name": "心力衰竭", "nameEn": "Heart failure", "llts": ["心衰"] }
+          ]
+        },
+        {
+          "code": "10011102",
+          "name": "高血压及低血压",
+          "nameEn": "Hypertension and hypotension",
+          "pts": [
+            { "code": "10011103", "name": "高血压", "nameEn": "Hypertension", "llts": ["血压升高"] },
+            { "code": "10011104", "name": "低血压", "nameEn": "Hypotension", "llts": ["血压下降", "体位性低血压"] }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "10010332",
+      "name": "血液及淋巴系统疾病",
+      "nameEn": "Blood and lymphatic system disorders",
+      "hlts": [
+        {
+          "code": "10018707",
+          "name": "红细胞异常",
+          "nameEn": "Red blood cell abnormalities",
+          "pts": [
+            { "code": "10018708", "name": "贫血", "nameEn": "Anaemia", "llts": ["血红蛋白下降", "轻度贫血"] },
+            { "code": "10018709", "name": "粒细胞缺乏", "nameEn": "Agranulocytosis", "llts": ["中性粒细胞缺乏"] }
+          ]
+        },
+        {
+          "code": "10018710",
+          "name": "血小板异常",
+          "nameEn": "Platelet abnormalities",
+          "pts": [
+            { "code": "10018711", "name": "血小板减少", "nameEn": "Thrombocytopenia", "llts": ["血小板计数降低"] },
+            { "code": "10018712", "name": "血小板增多", "nameEn": "Thrombocytosis", "llts": [] }
+          ]
+        },
+        {
+          "code": "10018713",
+          "name": "凝血异常",
+          "nameEn": "Coagulation abnormalities",
+          "pts": [
+            { "code": "10018714", "name": "凝血功能障碍", "nameEn": "Coagulation disorder", "llts": ["凝血时间延长", "INR升高"] },
+            { "code": "10018715", "name": "出血", "nameEn": "Haemorrhage", "llts": ["牙龈出血", "消化道出血"] }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "10010338",
+      "name": "免疫系统疾病",
+      "nameEn": "Immune system disorders",
+      "hlts": [
+        {
+          "code": "10021427",
+          "name": "超敏反应",
+          "nameEn": "Hypersensitivity",
+          "pts": [
+            { "code": "10021438", "name": "过敏反应", "nameEn": "Hypersensitivity", "llts": ["过敏样反应", "速发型过敏"] },
+            { "code": "10021439", "name": "过敏性休克", "nameEn": "Anaphylactic shock", "llts": ["过敏性休克", " anaphylaxis"] },
+            { "code": "10021440", "name": "血管性水肿", "nameEn": "Angioedema", "llts": ["喉头水肿"] }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "10010331D",
+      "name": "全身及各种器官疾病",
+      "nameEn": "General disorders and administration site conditions",
+      "hlts": [
+        {
+          "code": "10014219",
+          "name": "一般状态异常",
+          "nameEn": "General disorders",
+          "pts": [
+            { "code": "10014220", "name": "死亡", "nameEn": "Death", "llts": ["患者死亡", "死亡", "死亡原因待查"] },
+            { "code": "10014221", "name": "乏力", "nameEn": "Fatigue", "llts": ["疲乏", "全身乏力", "倦怠"] },
+            { "code": "10014222", "name": "发热", "nameEn": "Pyrexia", "llts": ["体温升高", "高热", "低热"] },
+            { "code": "10014223", "name": "疼痛", "nameEn": "Pain", "llts": ["全身疼痛", "疼痛"] },
+            { "code": "10014224", "name": "胸痛", "nameEn": "Chest pain", "llts": ["胸部疼痛"] }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "10010331C",
+      "name": "呼吸系统及胸腔疾病",
+      "nameEn": "Respiratory, thoracic and mediastinal disorders",
+      "hlts": [
+        {
+          "code": "10022613",
+          "name": "呼吸道异常",
+          "nameEn": "Respiratory tract disorders",
+          "pts": [
+            { "code": "10022614", "name": "呼吸困难", "nameEn": "Dyspnoea", "llts": ["气促", "呼吸费劲"] },
+            { "code": "10022615", "name": "咳嗽", "nameEn": "Cough", "llts": ["干咳", "刺激性咳嗽"] },
+            { "code": "10022616", "name": "支气管痉挛", "nameEn": "Bronchospasm", "llts": ["喘鸣"] }
+          ]
+        },
+        {
+          "code": "10022617",
+          "name": "间质性肺病",
+          "nameEn": "Interstitial lung disorders",
+          "pts": [
+            { "code": "10022618", "name": "间质性肺病", "nameEn": "Interstitial lung disease", "llts": ["肺间质病变"] },
+            { "code": "10022619", "name": "肺水肿", "nameEn": "Pulmonary oedema", "llts": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "10010342",
+      "name": "生殖系统及乳房疾病",
+      "nameEn": "Reproductive system and breast disorders",
+      "hlts": [
+        {
+          "code": "10014164",
+          "name": "月经异常",
+          "nameEn": "Menstrual disorders",
+          "pts": [
+            { "code": "10014165", "name": "月经不调", "nameEn": "Menstrual disorder", "llts": ["月经紊乱"] },
+            { "code": "10014166", "name": "闭经", "nameEn": "Amenorrhoea", "llts": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "10007546",
+      "name": "代谢及营养类疾病",
+      "nameEn": "Metabolism and nutrition disorders",
+      "hlts": [
+        {
+          "code": "10028142",
+          "name": "血糖异常",
+          "nameEn": "Blood glucose abnormalities",
+          "pts": [
+            { "code": "10028143", "name": "低血糖", "nameEn": "Hypoglycaemia", "llts": ["血糖降低", "低血糖昏迷"] },
+            { "code": "10028144", "name": "高血糖", "nameEn": "Hyperglycaemia", "llts": ["血糖升高"] }
+          ]
+        },
+        {
+          "code": "10028145",
+          "name": "电解质异常",
+          "nameEn": "Electrolyte abnormalities",
+          "pts": [
+            { "code": "10028146", "name": "低钾血症", "nameEn": "Hypokalaemia", "llts": ["血钾降低"] },
+            { "code": "10028147", "name": "低钠血症", "nameEn": "Hyponatraemia", "llts": ["血钠降低"] }
+          ]
+        }
+      ]
+    }
+  ],
+  "smqs": [
+    {
+      "code": "SMQ-HEPATIC",
+      "name": "肝脏严重损伤",
+      "nameEn": "Serious hepatic injury",
+      "scope": "narrow",
+      "pts": ["10019851", "10019854", "10019855"]
+    },
+    {
+      "code": "SMQ-HYPERSENS",
+      "name": "超敏反应",
+      "nameEn": "Hypersensitivity",
+      "scope": "narrow",
+      "pts": ["10021438", "10021439", "10021440"]
+    },
+    {
+      "code": "SMQ-SEVERE-SKIN",
+      "name": "严重皮肤反应",
+      "nameEn": "Severe skin reaction",
+      "scope": "narrow",
+      "pts": ["10021435", "10021436"]
+    },
+    {
+      "code": "SMQ-BLEEDING",
+      "name": "出血及凝血异常",
+      "nameEn": "Haemorrhage and coagulation disorders",
+      "scope": "broad",
+      "pts": ["10018711", "10018712", "10018714", "10018715"]
+    }
+  ]
+}

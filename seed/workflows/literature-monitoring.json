@@ -1,0 +1,558 @@
+{
+  "code": "LIT-MON",
+  "recordPrefix": "LIT",
+  "name": "医学文献监测",
+  "nameEn": "Medical Literature Monitoring",
+  "category": "文献监测",
+  "gxpAreas": ["LIT"],
+  "regulationRefs": [
+    "《药物警戒质量管理规范》（国家药监局2021年第65号公告）第36、50条",
+    "EU GVP Module VI.B (Literature Monitoring)",
+    "《药品不良反应报告和监测管理办法》（卫生部令第81号）第21条（文献个例报告时限）"
+  ],
+  "description": "按品种化检索计划对国内外医学文献进行定期检索与人工筛查，判定文献中的个例是否满足四要素并按时限转交ICSR受理，检索式、日期与结果数全程留档，未归属文献登记供PSUR分析。",
+  "descriptionEn": "Perform scheduled literature searches per product-specific plans, screen titles and abstracts manually, determine whether literature cases meet the four minimal criteria and hand over to ICSR processing within reporting timeframes, archive all search strategies, dates and hit counts, and log unconfirmed-attribution literature for PSUR analysis.",
+  "slaDays": 30,
+  "requiresRootCause": false,
+  "requiresEffectivenessCheck": false,
+  "requiresQaApproval": true,
+  "criticalityLevels": ["minor", "major", "critical"],
+  "states": ["draft", "schedule", "search", "screen", "triage", "handover", "archive", "closed", "cancelled"],
+  "initialState": "draft",
+  "terminalStates": ["closed", "cancelled"],
+  "fields": [
+    {
+      "key": "title",
+      "label": "检索周期标题",
+      "labelEn": "Monitoring Cycle Title",
+      "type": "text",
+      "required": true,
+      "help": "建议格式：药品名+文献监测周期（如2026年第1期）。"
+    },
+    {
+      "key": "summary",
+      "label": "周期概述",
+      "labelEn": "Summary",
+      "type": "textarea",
+      "required": false,
+      "help": "简述本周期检索与筛查结果概要。"
+    },
+    {
+      "key": "product",
+      "label": "监测药品",
+      "labelEn": "Monitored Product",
+      "type": "text",
+      "required": true,
+      "help": "填药品通用名，检索式按品种中英文名、成分与别名构建。"
+    },
+    {
+      "key": "database",
+      "label": "检索数据库",
+      "labelEn": "Search Databases",
+      "type": "select",
+      "required": true,
+      "options": ["PubMed/Medline", "Embase", "CNKI", "万方", "维普", "多库联合"],
+      "help": "除英文库外须包含中文库（CNKI/万方/维普），覆盖中外文献。"
+    },
+    {
+      "key": "frequency",
+      "label": "检索频率",
+      "labelEn": "Search Frequency",
+      "type": "select",
+      "required": true,
+      "options": ["weekly", "biweekly", "monthly", "quarterly"],
+      "help": "按品种安全性特征确定（GVP第36条），EMA覆盖品种周检、其余建议至少月检。"
+    }
+  ],
+  "steps": [
+    {
+      "code": "schedule",
+      "name": "建立检索计划",
+      "nameEn": "Search Plan Setup",
+      "role": ["literature_reviewer", "pv_officer"],
+      "type": "task",
+      "onComplete": "schedule",
+      "requiresFields": ["databaseList", "searchFrequency", "searchStrategy", "scheduleConfirm"],
+      "form": [
+        {
+          "key": "databaseList",
+          "label": "数据库清单",
+          "labelEn": "Database List",
+          "type": "textarea",
+          "required": true,
+          "help": "PubMed/Embase与中文库CNKI、万方、维普等，确保覆盖中英文文献。"
+        },
+        {
+          "key": "journalList",
+          "label": "关键期刊清单",
+          "labelEn": "Key Journal List",
+          "type": "textarea",
+          "required": false,
+          "help": "按品种确定的核心期刊清单（对应EU GVP Module VI.B原则）。"
+        },
+        {
+          "key": "searchFrequency",
+          "label": "检索频率",
+          "labelEn": "Search Frequency",
+          "type": "select",
+          "required": true,
+          "options": ["weekly", "biweekly", "monthly", "quarterly"],
+          "help": "与品种风险特征匹配，写入检索SOP。"
+        },
+        {
+          "key": "searchStrategy",
+          "label": "检索式草案",
+          "labelEn": "Search Strategy Draft",
+          "type": "textarea",
+          "required": true,
+          "help": "品种中英文名、成分、别名及组合逻辑，说明书变更时须更新。"
+        },
+        {
+          "key": "retentionPlan",
+          "label": "留痕计划",
+          "labelEn": "Retention Plan",
+          "type": "text",
+          "required": false,
+          "help": "检索式、日期、结果数、审阅记录的保存位置与格式。"
+        },
+        {
+          "key": "scheduleConfirm",
+          "label": "计划确认",
+          "labelEn": "Plan Confirmation",
+          "type": "select",
+          "required": true,
+          "options": ["已确认", "需调整"],
+          "help": "计划确认后按期执行，保证时间范围连续。"
+        }
+      ],
+      "guidance": "为什么：检索计划保证检索没有停——GVP第36条要求定期检索且时间范围连续，检查以记录为证。怎么做：按品种建立数据库、期刊清单、检索式与频率（EMA覆盖品种周检，其余至少月检）。常见错：无书面检索式、频率与品种风险不匹配、计划不更新。法规依据：GVP第36条；EU GVP Module VI.B。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "search_frequency": "searchFrequency",
+        "database_list": "databaseList"
+      }
+    },
+    {
+      "code": "search",
+      "name": "定期检索",
+      "nameEn": "Scheduled Search",
+      "role": ["literature_reviewer"],
+      "type": "task",
+      "onComplete": "search",
+      "requiresFields": ["searchDate", "searchText", "hitCount", "coveragePeriod"],
+      "form": [
+        {
+          "key": "searchDate",
+          "label": "检索执行日期",
+          "labelEn": "Search Execution Date",
+          "type": "date",
+          "required": true,
+          "help": "实际执行检索的日期，与计划频率核对。"
+        },
+        {
+          "key": "searchText",
+          "label": "本次检索式",
+          "labelEn": "Search String Used",
+          "type": "textarea",
+          "required": true,
+          "help": "与计划检索式一致，如调整须记录原因。"
+        },
+        {
+          "key": "hitCount",
+          "label": "命中文献数",
+          "labelEn": "Hit Count",
+          "type": "text",
+          "required": true,
+          "help": "记录结果数，用于核实检索确实执行。"
+        },
+        {
+          "key": "coveragePeriod",
+          "label": "覆盖时间范围",
+          "labelEn": "Coverage Period",
+          "type": "text",
+          "required": true,
+          "help": "与上次检索连续衔接，不得中断。"
+        },
+        {
+          "key": "engineVersion",
+          "label": "数据库/检索系统版本",
+          "labelEn": "Engine Version",
+          "type": "text",
+          "required": false,
+          "help": "注明数据库检索日期与界面/版本信息（如适用）。"
+        },
+        {
+          "key": "searchRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：检索记录是检索行为存在的唯一证据，检查缺陷常是无检索记录等于未检索。怎么做：每次检索记录日期、检索式、数据库、结果数，时间窗必须连续无断档。常见错：漏记录检索式、结果数随手填、覆盖期与上期脱节。法规依据：GVP第36条检索策略与连续性；EU GVP Module VI.B。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "search_date": "searchDate",
+        "hit_count": "hitCount"
+      }
+    },
+    {
+      "code": "screen",
+      "name": "人工筛查标题摘要",
+      "nameEn": "Manual Screening",
+      "role": ["literature_reviewer", "pv_medical"],
+      "type": "task",
+      "onComplete": "screen",
+      "requiresFields": ["hitsList", "relevantSelection", "screenResult"],
+      "form": [
+        {
+          "key": "hitsList",
+          "label": "命中文献清单",
+          "labelEn": "Hit List",
+          "type": "textarea",
+          "required": true,
+          "help": "列出命中文献的标题、作者与年份。"
+        },
+        {
+          "key": "relevantSelection",
+          "label": "可能相关文献",
+          "labelEn": "Relevant Selections",
+          "type": "textarea",
+          "required": true,
+          "help": "筛出可能含本产品个例或安全性信息的文献。"
+        },
+        {
+          "key": "screenCriteria",
+          "label": "筛查标准",
+          "labelEn": "Screening Criteria",
+          "type": "text",
+          "required": false,
+          "help": "如是否涉及本产品、是否个例报道、是否新增安全性信息。"
+        },
+        {
+          "key": "screenResult",
+          "label": "筛查结论",
+          "labelEn": "Screening Conclusion",
+          "type": "select",
+          "required": true,
+          "options": ["有疑似个例", "仅安全性信息", "无相关内容"],
+          "help": "有疑似个例的文献进入分流判定。"
+        },
+        {
+          "key": "screenRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：文献通常以摘要判断是否需要全文处理，漏筛会导致个例漏报与信号漏检。怎么做：逐条筛查标题摘要，标注涉及本产品的疑似个例与安全性信息，复杂文献由医学人员复核。常见错：只读标题不读摘要、跳过中文文献、判断无记录。法规依据：GVP第50条文献个例处理；EU GVP Module VI.B。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "screen_result": "screenResult"
+      }
+    },
+    {
+      "code": "triage",
+      "name": "个例上报判定（分流）",
+      "nameEn": "Triage for Reportability",
+      "role": ["literature_reviewer", "pv_officer"],
+      "type": "task",
+      "onComplete": "triage",
+      "requiresFields": ["fourElements", "attribution", "seriousness", "reportDeadline", "triageResult"],
+      "form": [
+        {
+          "key": "fourElements",
+          "label": "四要素判定",
+          "labelEn": "Four Elements Check",
+          "type": "select",
+          "required": true,
+          "options": ["齐备", "部分缺失", "不适用"],
+          "help": "可识别患者、可识别报告者、怀疑药品、不良反应信息（GVP第46条）。"
+        },
+        {
+          "key": "attribution",
+          "label": "归属判定",
+          "labelEn": "Attribution",
+          "type": "select",
+          "required": true,
+          "options": ["可疑药品为本产品", "归属不确定", "非本产品"],
+          "help": "归属不确定时登记清单并供PSUR分析（GVP第50条）。"
+        },
+        {
+          "key": "seriousness",
+          "label": "严重性初步判定",
+          "labelEn": "Preliminary Seriousness",
+          "type": "select",
+          "required": true,
+          "options": ["严重", "非严重", "待医学判断"],
+          "help": "对照六条严重性标准（GVP第44条、ICH E2A）。"
+        },
+        {
+          "key": "reportDeadline",
+          "label": "报告时限起算日",
+          "labelEn": "Reporting Clock Start",
+          "type": "date",
+          "required": true,
+          "help": "从文献首次可获取之日起算（GVP第49条口径），严重15日/非严重30日。"
+        },
+        {
+          "key": "triageResult",
+          "label": "分流结论",
+          "labelEn": "Triage Result",
+          "type": "select",
+          "required": true,
+          "options": ["转入ICSR受理", "登记待归属", "无需上报"],
+          "help": "满足四要素且属本产品的个例必须转交ICSR受理。"
+        }
+      ],
+      "guidance": "为什么：文献个例同样是ICSR，满足四要素即触发报告时限——自首次可获取之日起算，而非内部登记日。怎么做：按四要素、归属与严重性判定，立即估算截止日并启动受理。常见错：不按时限上报、起算日记错、归属不确定就不处理。法规依据：GVP第46、49、50条；81号令第21条。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "triage_result": "triageResult",
+        "report_deadline": "reportDeadline"
+      }
+    },
+    {
+      "code": "handover",
+      "name": "转交ICSR受理并记录",
+      "nameEn": "Handover to ICSR Processing",
+      "role": ["pv_officer"],
+      "type": "task",
+      "onComplete": "handover",
+      "requiresFields": ["targetCaseNo", "caseSummary", "handoverDate", "literatureRef"],
+      "form": [
+        {
+          "key": "targetCaseNo",
+          "label": "目标ICSR记录编号",
+          "labelEn": "Target ICSR Case No.",
+          "type": "text",
+          "required": true,
+          "help": "填写ICSR受理记录编号，保证文献个例可追溯。"
+        },
+        {
+          "key": "caseSummary",
+          "label": "个例摘要",
+          "labelEn": "Case Summary",
+          "type": "textarea",
+          "required": true,
+          "help": "患者、药品、事件、时间等核心信息摘要。"
+        },
+        {
+          "key": "handoverDate",
+          "label": "转交日期",
+          "labelEn": "Handover Date",
+          "type": "date",
+          "required": true,
+          "help": "转交日期须早于报告截止日，留出受理时间。"
+        },
+        {
+          "key": "literatureRef",
+          "label": "文献引用",
+          "labelEn": "Literature Citation",
+          "type": "text",
+          "required": true,
+          "help": "完整引文，供ICSR归档与审计。"
+        },
+        {
+          "key": "receivedConfirm",
+          "label": "受理确认",
+          "labelEn": "Receipt Confirmation",
+          "type": "select",
+          "required": false,
+          "options": ["已受理", "待受理"],
+          "help": "跟进受理确认，闭环转交。"
+        }
+      ],
+      "guidance": "为什么：转交必须有据可查——目标记录编号与日期保证从文献到ICSR的链条不断。怎么做：填写受理记录编号、核心摘要与完整引文，跟进受理确认。常见错：口头转交无编号、引文不全无法复核、转交过晚挤压受理时限。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "target_icsr_no": "targetCaseNo",
+        "handover_date": "handoverDate"
+      }
+    },
+    {
+      "code": "archive",
+      "name": "检索记录归档",
+      "nameEn": "Archive Search Records",
+      "role": ["literature_reviewer"],
+      "type": "task",
+      "onComplete": "archive",
+      "requiresFields": ["searchRecords", "archiveDate", "archivePath"],
+      "form": [
+        {
+          "key": "searchRecords",
+          "label": "检索记录汇总",
+          "labelEn": "Search Records Summary",
+          "type": "textarea",
+          "required": true,
+          "help": "本周期检索式、日期、结果数、筛查与分流结论。"
+        },
+        {
+          "key": "missingLog",
+          "label": "未归属文献登记",
+          "labelEn": "Unconfirmed Attribution Log",
+          "type": "textarea",
+          "required": false,
+          "help": "归属不确定的文献登记清单，供PSUR分析（GVP第50条）。"
+        },
+        {
+          "key": "archivePath",
+          "label": "归档位置",
+          "labelEn": "Archive Location",
+          "type": "text",
+          "required": true,
+          "help": "检索记录集中归档位置。"
+        },
+        {
+          "key": "retentionNote",
+          "label": "保存期限说明",
+          "labelEn": "Retention Note",
+          "type": "text",
+          "required": false,
+          "help": "按GVP第115条保存（至注册证书注销后10年）。"
+        },
+        {
+          "key": "archiveDate",
+          "label": "归档日期",
+          "labelEn": "Archive Date",
+          "type": "date",
+          "required": true,
+          "help": "归档完成时间戳。"
+        }
+      ],
+      "guidance": "为什么：归档使检索没有停可被证明，也是下次检索连续性的凭据。怎么做：将检索式、日期、结果数、审阅记录打包归档，登记未归属文献供PSUR使用。常见错：检索记录散落各处、未登记未归属文献、保存期限不清。法规依据：GVP第36、50条；第115条记录保存要求。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "archive_path": "archivePath",
+        "archive_date": "archiveDate"
+      }
+    },
+    {
+      "code": "closed",
+      "name": "周期结案",
+      "nameEn": "Cycle Closure",
+      "role": ["pv_head"],
+      "type": "signature",
+      "onComplete": "closed",
+      "requiresFields": ["cycleSummary", "nextSchedule", "closureDate"],
+      "signatureMeaning": "approved",
+      "form": [
+        {
+          "key": "cycleSummary",
+          "label": "本周期总结",
+          "labelEn": "Cycle Summary",
+          "type": "textarea",
+          "required": true,
+          "help": "检索-筛查-分流全链路结果与异常事项。"
+        },
+        {
+          "key": "nextSchedule",
+          "label": "下次检索安排",
+          "labelEn": "Next Search Schedule",
+          "type": "text",
+          "required": true,
+          "help": "确认下次检索日期，保证连续性。"
+        },
+        {
+          "key": "closureDate",
+          "label": "结案日期",
+          "labelEn": "Closure Date",
+          "type": "date",
+          "required": true,
+          "help": "结案签名日期。"
+        },
+        {
+          "key": "closeRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        },
+        {
+          "key": "closeVerify",
+          "label": "结案核对",
+          "labelEn": "Closure Verification",
+          "type": "select",
+          "required": false,
+          "options": ["已核对转交闭环", "待跟进"],
+          "help": "确认所有转交个例已受理。"
+        }
+      ],
+      "guidance": "为什么：结案确认整个监测周期闭环并锁定下次检索计划，防止周期断档。怎么做：QPPV核对检索记录与分流结果后签名结案，登记下次检索日期。常见错：结案时无下次计划、文献个例尚未转交即结案。参考：文献监测记录保存适用GVP第36、100-115条。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "closure_date": "closureDate",
+        "next_schedule": "nextSchedule"
+      }
+    },
+    {
+      "code": "cancel_record",
+      "name": "取消记录",
+      "nameEn": "Cancel Record",
+      "role": ["pv_head"],
+      "type": "task",
+      "onComplete": "cancelled",
+      "requiresFields": ["cancelReason", "cancelCheck", "cancelDate"],
+      "form": [
+        {
+          "key": "cancelReason",
+          "label": "取消原因",
+          "labelEn": "Cancellation Reason",
+          "type": "textarea",
+          "required": true,
+          "help": "如重复建单、品种终止监测，须说明理由并留档。"
+        },
+        {
+          "key": "cancelCheck",
+          "label": "取消前核对",
+          "labelEn": "Pre-cancellation Check",
+          "type": "select",
+          "required": true,
+          "options": ["关联记录已处理", "关联记录无需处理", "待核实"],
+          "help": "取消前确认已转交的文献个例已受理登记。"
+        },
+        {
+          "key": "cancelNote",
+          "label": "补充说明",
+          "labelEn": "Supplementary Notes",
+          "type": "textarea",
+          "required": false,
+          "help": "其他补充说明。"
+        },
+        {
+          "key": "cancelApprover",
+          "label": "确认人",
+          "labelEn": "Confirmed By",
+          "type": "text",
+          "required": true,
+          "help": "QPPV或授权确认人签名留痕。"
+        },
+        {
+          "key": "cancelDate",
+          "label": "取消日期",
+          "labelEn": "Cancellation Date",
+          "type": "date",
+          "required": true,
+          "help": "取消动作留痕。"
+        }
+      ],
+      "guidance": "为什么：取消记录保留审计追踪，防止检索连续性被无痕中断。怎么做：由QPPV确认取消理由并留档。常见错：直接删除记录导致检索断档无法解释。",
+      "optional": true,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "cancel_reason": "cancelReason"
+      }
+    }
+  ]
+}

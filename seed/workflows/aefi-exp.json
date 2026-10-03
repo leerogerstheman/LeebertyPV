@@ -1,0 +1,179 @@
+{
+  "code": "AEFI-EXP",
+  "recordPrefix": "AEFI",
+  "name": "疑似预防接种异常反应快速处置",
+  "nameEn": "Suspected AEFI Expedited Handling",
+  "category": "vaccine",
+  "gxpAreas": ["AEFI", "GVP"],
+  "regulationRefs": [
+    "《中华人民共和国疫苗管理法》（2019年12月1日施行）第52条：预防接种异常反应定义及不属于异常反应的六种情形",
+    "《疫苗管理法》第54条：疫苗上市许可持有人设立专门机构、配备专职人员，主动收集跟踪分析疑似AEFI，向疾控机构报告，并将质量分析报告提交省级药监部门",
+    "《疫苗管理法》第55条：疾控机构及时报告、组织调查诊断；死亡、严重残疾、群体性AEFI由设区的市级以上卫健/药监按职责组织调查处理",
+    "《疫苗管理法》第56条：国家实行预防接种异常反应补偿制度，非免疫规划疫苗补偿费用由相关MAH承担",
+    "《全国疑似预防接种异常反应监测方案》（2010年）：发现疑似AEFI后48小时内填报个案报告卡报告；死亡、严重残疾、群体性AEFI、对社会有重大影响的AEFI于2小时内报告"
+  ],
+  "description": "疑似预防接种异常反应（AEFI）快速处置流程：接收与初步核实、六类分类判定、临床与流行病学调查、因果评价（WHO AEFI分类）、上报疾控与药监、公众沟通与后续处置、结案。一般反应按48小时内填报个案报告卡；死亡、严重残疾、群体性或对社会有重大影响的事件须2小时内报告并组织调查。",
+  "descriptionEn": "Expedited handling workflow for suspected Adverse Events Following Immunisation (AEFI): receipt and initial verification, classification into six categories, clinical and epidemiological investigation, causality assessment (WHO AEFI classification), reporting to CDC and drug regulators, public communication and follow-up actions, and closure. Common reactions are reported via the case report card within 48 hours; fatal, seriously disabling, cluster or socially significant events must be reported within 2 hours with an investigation initiated.",
+  "slaDays": 2,
+  "requiresRootCause": false,
+  "requiresEffectivenessCheck": false,
+  "requiresQaApproval": true,
+  "criticalityLevels": ["minor", "major", "critical"],
+  "states": ["draft", "receive", "classify", "investigate", "causality", "report", "response", "closed", "cancelled"],
+  "initialState": "draft",
+  "terminalStates": ["closed", "cancelled"],
+  "fields": [
+    { "key": "title", "label": "报告标题", "labelEn": "Report Title", "type": "text", "required": true, "help": "简要描述事件，如：某地区报告接种某疫苗后发热疑似AEFI事件。" },
+    { "key": "summary", "label": "事件摘要", "labelEn": "Event Summary", "type": "textarea", "required": true, "help": "概述接种、临床表现、时间地点与当前状态。" },
+    { "key": "product", "label": "疫苗名称/批号", "labelEn": "Vaccine Name / Lot Number", "type": "text", "required": true, "help": "疫苗名称与批号必须完整，批号缺失将无法开展追溯调查。" },
+    { "key": "occurredAt", "label": "事件发生日期", "labelEn": "Event Date", "type": "date", "required": true, "help": "接种后不良反应发生（或发现）日期。" },
+    { "key": "population", "label": "接种人群年龄组", "labelEn": "Vaccinated Population", "type": "select", "required": true, "options": ["婴幼儿（0-6岁）", "儿童（7-17岁）", "成人（18-59岁）", "老年（60岁及以上）", "全人群"], "help": "年龄组影响异常反应背景发生率评估。" },
+    { "key": "severityClass", "label": "严重性类别", "labelEn": "Severity Class", "type": "select", "required": true, "options": ["死亡", "严重残疾", "群体性事件", "对社会有重大影响", "一般"], "help": "死亡、严重残疾、群体性、重大影响事件须2小时内报告。" },
+    { "key": "reportChannel", "label": "信息来源渠道", "labelEn": "Information Source", "type": "select", "required": true, "options": ["疾控中心反馈", "接种单位", "医疗机构", "热线/公众报告", "文献", "监管机构"], "help": "明确来源渠道，便于核实与随访。" }
+  ],
+  "steps": [
+    {
+      "code": "receive",
+      "name": "接收与初步核实",
+      "nameEn": "Receipt and Initial Verification",
+      "role": ["pv_officer", "pv_data_entry"],
+      "type": "task",
+      "onComplete": "receive",
+      "requiresFields": ["reporterInfo", "vaccinationDate", "lotNumber", "initialSeverity", "verificationResult", "reportMode"],
+      "form": [
+        { "key": "reporterInfo", "label": "报告者信息", "labelEn": "Reporter Information", "type": "text", "required": true, "help": "疾控/接种单位/医疗机构/公众的姓名与联系方式。" },
+        { "key": "vaccinationDate", "label": "接种日期", "labelEn": "Vaccination Date", "type": "date", "required": true, "help": "与事件发生日期的间隔用于时间关联判断。" },
+        { "key": "lotNumber", "label": "疫苗批号", "labelEn": "Vaccine Lot Number", "type": "text", "required": true, "help": "批号是质量追溯与聚集性判断的关键。" },
+        { "key": "doseNumber", "label": "接种剂次", "labelEn": "Dose Number", "type": "text", "required": false, "help": "第几剂次接种后发生。" },
+        { "key": "initialSeverity", "label": "严重性初步标记", "labelEn": "Initial Severity Flag", "type": "select", "required": true, "options": ["死亡", "严重残疾", "群体性事件", "对社会有重大影响", "一般"], "help": "命中前四类须立即按2小时时限升级报告。" },
+        { "key": "verificationResult", "label": "初步核实结果", "labelEn": "Initial Verification Result", "type": "textarea", "required": true, "help": "核实是否真实接种、时间地点、疫苗信息是否与接种记录一致。" },
+        { "key": "reportMode", "label": "上报方式判定", "labelEn": "Reporting Mode", "type": "select", "required": true, "options": ["2小时加急报告", "48小时个案卡", "待确认"], "help": "按严重性初步标记确定上报时限。" }
+      ],
+      "guidance": "接种信息与AEFI信息须在获知时立即登记核实：是否为真实接种、时间地点、疫苗名称与批号、接种剂次。初步标记严重性：死亡、严重残疾、群体性、对社会有重大影响的事件须2小时内报告（监测方案2010），一般个案48小时内填报个案报告卡。常见错误：信息不全不登记、批号缺失导致无法追溯。依据：疫苗管理法第54条。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "classify",
+      "name": "分类判定（六类）",
+      "nameEn": "Classification (Six Categories)",
+      "role": ["pv_officer"],
+      "type": "task",
+      "onComplete": "classify",
+      "requiresFields": ["aefiCategory", "classifyBasis", "exclusionCheck", "severityConfirm", "reportTimeline"],
+      "form": [
+        { "key": "aefiCategory", "label": "AEFI六类分类", "labelEn": "AEFI Category", "type": "select", "required": true, "options": ["一般反应", "异常反应", "心因性反应", "偶合症", "疫苗质量事故", "接种事故"], "help": "与疫苗管理法第52条六种情形对应衔接。" },
+        { "key": "classifyBasis", "label": "分类判定依据", "labelEn": "Classification Basis", "type": "textarea", "required": true, "help": "依据临床表现、时间关联与接种规范符合性说明。" },
+        { "key": "exclusionCheck", "label": "疫苗管理法第52条排除情形", "labelEn": "Exclusion Check (Art. 52)", "type": "select", "required": true, "options": ["否", "是-不属于异常反应"], "help": "一般反应、质量问题、违规接种、偶合发病、禁忌未告知、心因性反应不属于异常反应。" },
+        { "key": "severityConfirm", "label": "严重性确认（决定时限）", "labelEn": "Severity Confirmation", "type": "select", "required": true, "options": ["死亡/严重残疾/群体性/重大影响（2小时）", "一般（48小时）"], "help": "一般反应与异常反应的区分决定报告时限与后续处置。" },
+        { "key": "reportTimeline", "label": "报告时限判定", "labelEn": "Reporting Timeline", "type": "select", "required": true, "options": ["2小时加急", "48小时个案卡"], "help": "按严重性确认结果选定。" },
+        { "key": "classificationNote", "label": "分类备注", "labelEn": "Classification Note", "type": "textarea", "required": false, "help": "争议情形的补充说明。" }
+      ],
+      "guidance": "六类分类决定报告时限与公众沟通方式：一般反应多不需特殊处置，异常反应、疫苗质量事故、接种事故的路径与处置完全不同，偶合症与心因性反应需谨慎鉴别。分类错误会导致漏报或过度响应。依据：监测方案（2010）分类口径；疫苗管理法第52条。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "investigate",
+      "name": "调查（临床+流行病学）",
+      "nameEn": "Investigation (Clinical and Epidemiological)",
+      "role": ["pv_officer", "qa_specialist", "pv_medical"],
+      "type": "task",
+      "onComplete": "investigate",
+      "requiresFields": ["clinicalData", "epidemiologicalData", "lotDisposition", "preliminaryFindings", "qualityReportPlan"],
+      "form": [
+        { "key": "clinicalData", "label": "临床资料收集", "labelEn": "Clinical Data", "type": "textarea", "required": true, "help": "病历、症状体征、辅助检查、治疗与转归。" },
+        { "key": "epidemiologicalData", "label": "流行病学调查资料", "labelEn": "Epidemiological Data", "type": "textarea", "required": true, "help": "同批号接种人数、同批号其他事件、时间地点分布、是否聚集。" },
+        { "key": "lotDisposition", "label": "批号与留样处置", "labelEn": "Lot and Retained Sample Handling", "type": "select", "required": true, "options": ["无需处置", "封存留样", "已送检", "暂停使用相关批号"], "help": "质量事故线索应立即封存留样并暂停相关批号使用。" },
+        { "key": "investigationTeam", "label": "调查组人员组成", "labelEn": "Investigation Team", "type": "text", "required": false, "help": "临床、流行病学、质量人员的组成。" },
+        { "key": "preliminaryFindings", "label": "初步调查结论", "labelEn": "Preliminary Findings", "type": "textarea", "required": true, "help": "现阶段的调查发现与初步判断。" },
+        { "key": "cdcCoordination", "label": "与疾控/药监协同记录", "labelEn": "CDC / Regulator Coordination", "type": "textarea", "required": false, "help": "死亡、严重残疾、群体性事件由市级以上部门组织调查，企业须配合。" },
+        { "key": "qualityReportPlan", "label": "质量分析报告计划", "labelEn": "Quality Analysis Report Plan", "type": "select", "required": true, "options": ["不需要", "已提交省级药监", "待提交"], "help": "按疫苗管理法第54条提交省级药监部门。" }
+      ],
+      "guidance": "调查分临床与流行病学两条线：临床收集病历、转归与诊断资料；流行病学核查同批号接种情况、是否聚集、时间地点分布。疫苗质量事故线索应立即封存留样、暂停相关批号使用。死亡、严重残疾、群体性事件由设区的市级以上卫健/药监组织调查，企业应配合并提供质量分析报告（疫苗管理法第55、54条）。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "causality",
+      "name": "因果评价（WHO AEFI分类）",
+      "nameEn": "Causality Assessment (WHO AEFI)",
+      "role": ["pv_medical"],
+      "type": "signature",
+      "onComplete": "causality",
+      "requiresFields": ["causalityConclusion", "evidenceBasis", "alternativeExplanation", "timeAssociation", "classificationImpact"],
+      "form": [
+        { "key": "causalityConclusion", "label": "因果评价结论", "labelEn": "Causality Conclusion", "type": "select", "required": true, "options": ["肯定（与疫苗相关）", "很可能相关", "可能相关", "不可能相关（偶合症）", "与接种操作相关（接种事故）", "无法分类"], "help": "与WHO AEFI因果关系分类对齐。" },
+        { "key": "evidenceBasis", "label": "判定证据（临床+流行病学）", "labelEn": "Evidence Basis", "type": "textarea", "required": true, "help": "综合临床、流行病学与批号调查证据说明。" },
+        { "key": "alternativeExplanation", "label": "其他解释", "labelEn": "Alternative Explanation", "type": "textarea", "required": true, "help": "疾病潜伏期、前驱期偶合、心因性等替代解释须说明。" },
+        { "key": "timeAssociation", "label": "时间关联性", "labelEn": "Time Association", "type": "select", "required": true, "options": ["合理", "不合理", "无法判断"], "help": "接种与事件发生的时间间隔合理性。" },
+        { "key": "classificationImpact", "label": "对六类分类的影响", "labelEn": "Impact on Category", "type": "select", "required": true, "options": ["维持原分类", "修正分类", "待调查结论"], "help": "因果结论可能修正初步分类。" }
+      ],
+      "guidance": "因果评价由医学评价员完成并签名，按WHO AEFI因果关系分类结合免疫学与流行病学证据判定。难点是区分一般反应与异常反应、偶合症与真实不良反应；必须区分接种后发生与由疫苗引起。依据：疫苗管理法第52条；WHO AEFI评价指南。",
+      "signatureMeaning": "assessed",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "report",
+      "name": "上报疾控/药监",
+      "nameEn": "Reporting to CDC / Regulators",
+      "role": ["pv_regulatory"],
+      "type": "task",
+      "onComplete": "report",
+      "requiresFields": ["reportTarget", "caseCardNo", "reportDate", "reportMode", "escalationToAuthority"],
+      "form": [
+        { "key": "reportTarget", "label": "上报对象", "labelEn": "Reporting Target", "type": "select", "required": true, "options": ["疾控中心", "卫生健康部门", "药品监督管理部门", "省级药监（质量分析报告）"], "help": "按监测方案与事件性质确定上报对象。" },
+        { "key": "caseCardNo", "label": "个案报告卡编号", "labelEn": "Case Report Card No.", "type": "text", "required": true, "help": "48小时个案报告卡的编号或受理号。" },
+        { "key": "reportDate", "label": "上报日期", "labelEn": "Report Date", "type": "date", "required": true, "help": "用于核对48小时/2小时时限合规。" },
+        { "key": "reportMode", "label": "上报方式与时限", "labelEn": "Reporting Mode", "type": "select", "required": true, "options": ["2小时电话加急报告", "48小时个案卡填报", "书面补充"], "help": "2小时事件须有电话报告记录佐证。" },
+        { "key": "receiptNumber", "label": "回执/受理编号", "labelEn": "Receipt Number", "type": "text", "required": false, "help": "上报回执留存备查。" },
+        { "key": "escalationToAuthority", "label": "重大事件升级上报", "labelEn": "Escalation to Authorities", "type": "select", "required": true, "options": ["已完成", "不需要", "待完成"], "help": "死亡、严重残疾、群体性事件须按规定升级上报并组织调查。" }
+      ],
+      "guidance": "按监测方案时限上报：一般个案48小时内向疾控机构填报个案报告卡；死亡、严重残疾、群体性、对社会有重大影响事件2小时内报告，并按规定报卫健/药监部门。质量分析报告按疫苗管理法第54条提交省级药监。上报后留存回执与编号，2小时事件须有电话记录佐证。依据：监测方案（2010）；疫苗管理法第54、55条。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "response",
+      "name": "公众沟通与后续处置",
+      "nameEn": "Public Communication and Follow-up",
+      "role": ["pv_head", "qa_manager"],
+      "type": "task",
+      "onComplete": "response",
+      "requiresFields": ["communicationStrategy", "riskControl", "compensationCoordination", "committeeEscalation", "responseRecord"],
+      "form": [
+        { "key": "communicationStrategy", "label": "公众沟通策略", "labelEn": "Communication Strategy", "type": "select", "required": true, "options": ["无需特殊沟通", "官方声明/口径统一", "接种点通知与科普", "媒体回应预案"], "help": "一般反应与异常反应的区分决定沟通方式与口径。" },
+        { "key": "riskControl", "label": "风险控制措施", "labelEn": "Risk Control Measures", "type": "select", "required": true, "options": ["无需", "暂停相关批号使用", "召回", "更新接种指引/培训"], "help": "必要时暂停使用、召回，及时采取风险控制措施（疫苗管理法第54条）。" },
+        { "key": "compensationCoordination", "label": "补偿协同", "labelEn": "Compensation Liaison", "type": "select", "required": true, "options": ["不适用", "启动补偿流程", "材料准备中"], "help": "异常反应补偿制度（疫苗管理法第56条），非免疫规划疫苗由MAH承担费用。" },
+        { "key": "committeeEscalation", "label": "内部升级（安全委员会）", "labelEn": "Internal Escalation", "type": "select", "required": true, "options": ["无需", "已上报药品安全委员会", "待召开"], "help": "重大事件由药品安全委员会决策（GVP第20条）。" },
+        { "key": "communicationOwner", "label": "沟通责任人及部门", "labelEn": "Communication Owner", "type": "text", "required": false, "help": "明确对外发声的唯一责任部门。" },
+        { "key": "responseRecord", "label": "沟通与处置记录", "labelEn": "Communication Record", "type": "textarea", "required": true, "help": "完整记录沟通内容、时间与处置进展。" }
+      ],
+      "guidance": "一般反应与异常反应的区分决定公众沟通方式：一般反应以安抚与科普为主，异常反应或群体性事件须谨慎回应、统一口径并与疾控口径一致，防止次生舆情。同时落实风险控制：必要时暂停相关批号使用、召回；涉及补偿的按疫苗管理法第56条协同流程。常见错误：未统一口径即对外表态、跳过风险控制评估。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "closure",
+      "name": "结案",
+      "nameEn": "Closure",
+      "role": ["pv_head"],
+      "type": "signature",
+      "onComplete": "closed",
+      "requiresFields": ["investigationClosed", "submissionVerified", "finalConclusion", "archiveRef", "lessonsLearned"],
+      "form": [
+        { "key": "investigationClosed", "label": "调查是否闭环", "labelEn": "Investigation Closed", "type": "select", "required": true, "options": ["完成", "未完成（禁止结案）"], "help": "临床与流行病学调查必须形成结论。" },
+        { "key": "submissionVerified", "label": "上报回执与记录核验", "labelEn": "Submission Verified", "type": "select", "required": true, "options": ["齐备", "缺失（禁止结案）"], "help": "2小时电话记录、48小时个案卡回执齐备。" },
+        { "key": "finalConclusion", "label": "最终结论与分类", "labelEn": "Final Conclusion", "type": "textarea", "required": true, "help": "最终归属分类、因果结论与风险控制结论。" },
+        { "key": "archiveRef", "label": "归档编号", "labelEn": "Archive Reference", "type": "text", "required": true, "help": "个案、调查报告、质量分析报告统一归档。" },
+        { "key": "lessonsLearned", "label": "经验教训与改进项", "labelEn": "Lessons Learned", "type": "textarea", "required": true, "help": "群体性与质量事故类事件须落实改进并跟踪。" },
+        { "key": "compensationStatus", "label": "补偿处置状态", "labelEn": "Compensation Status", "type": "select", "required": true, "options": ["不适用", "进行中", "已完成"], "help": "涉及补偿的跟踪至流程结束。" }
+      ],
+      "guidance": "结案由PV负责人签名，录入/处理人员不得自签（independentOfAuthor）。确认调查闭环、上报回执齐备、风险控制与公众沟通完成、归档齐全。群体性与质量事故类事件应总结经验教训并落实改进，涉及补偿的跟踪至流程结束。常见错误：调查未完即结案、缺签名授权。依据：疫苗管理法第54条；GVP第11-14条。",
+      "signatureMeaning": "closed",
+      "optional": false,
+      "independentOfAuthor": true
+    }
+  ]
+}

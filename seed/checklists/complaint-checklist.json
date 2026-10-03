@@ -1,0 +1,60 @@
+{
+  "code": "COMP-CN",
+  "title": "药品投诉与安全性筛查核查表",
+  "titleEn": "Product Complaint and Safety Triage Checklist",
+  "scope": "self_inspection",
+  "category": "pharmacovigilance",
+  "gxpAreas": ["COMPLAINT"],
+  "regulation": "EU GVP Module VI（投诉中的不良反应）；《药品管理法》（召回要求）；《药品召回管理办法》；GVP 第44-46条（严重性与四要素）",
+  "authority": "NMPA / EMA",
+  "version": "EU GVP Module VI；《药品管理法》与《药品召回管理办法》相关章节（条款号以现行法规为准）",
+  "description": "核查药品质量投诉处理是否把安全性问题放在首位：投诉接收渠道、不良反应筛查、与 ICSR 流程的衔接、质量调查与召回联动，以及投诉记录的完整保留。",
+  "descriptionEn": "Checks that product-complaint handling puts safety first: intake channels, adverse-reaction screening, handover to the ICSR flow, quality investigation and recall linkage, and complete complaint records.",
+  "items": [
+    {
+      "clauseRef": "EU GVP Module VI",
+      "requirement": "建立了覆盖电话、邮件、网络与销售渠道的投诉接收途径，投诉登记完整（来源、日期、产品、批号、问题描述、投诉人）",
+      "requirementEn": "Complaint intake covers phone, mail, web and sales channels, with complete registration (source, date, product, batch, description, complainant)",
+      "guidance": "核对投诉台账的必填项与渠道覆盖；常见缺陷是销售渠道投诉漏登或登记不完整。",
+      "guidanceEn": "Check the complaint register's required fields and channel coverage; sales-force complaints are often missed or incompletely logged.",
+      "riskLevel": "major",
+      "evidenceHint": "投诉台账、接收渠道清单、登记记录"
+    },
+    {
+      "clauseRef": "GVP Module VI / 81号令",
+      "requirement": "每条投诉均进行安全性筛查：是否涉及不良反应或患者伤害，筛查结论与判定人有记录",
+      "requirementEn": "Every complaint is screened for safety: whether an adverse reaction or patient harm is involved, with the conclusion and assessor recorded",
+      "guidance": "抽取投诉逐条核对筛查记录；常见缺陷是只查质量原因、忽略不良反应线索。",
+      "guidanceEn": "Sample complaints and check each has a safety-screening conclusion; ignoring adverse-reaction leads is a classic failure.",
+      "riskLevel": "critical",
+      "evidenceHint": "投诉筛查记录、判定人、涉及不良反应的标志"
+    },
+    {
+      "clauseRef": "GVP 第44-46条 / 81号令",
+      "requirement": "筛查判定涉及不良反应的投诉在报告时限内转入 ICSR 流程，转交有记录且不延误报告",
+      "requirementEn": "Complaints screened as adverse reactions enter the ICSR flow within reporting timelines, with recorded handovers that do not delay reporting",
+      "guidance": "追踪「投诉→ICSR」的关联记录与时限；常见缺陷是投诉滞留质量部门、个例报告被延误。",
+      "guidanceEn": "Trace complaint-to-ICSR links and timing; complaints stuck in QA with delayed case reports are a serious finding.",
+      "riskLevel": "critical",
+      "evidenceHint": "转交记录、目标 ICSR 编号、上报时限起算证据"
+    },
+    {
+      "clauseRef": "《药品召回管理办法》",
+      "requirement": "投诉调查发现的质量风险按规定启动评估与处置，达到召回条件时按程序发起分级召回并通知相关方",
+      "requirementEn": "Quality risks found during complaint investigation are assessed and handled; recalls are initiated by procedure and stakeholders notified when thresholds are met",
+      "guidance": "对照投诉调查结论与召回触发条件；常见缺陷是重大缺陷未及时升级、召回分级不当。",
+      "guidanceEn": "Compare investigation conclusions against recall triggers; failures to escalate and mis-graded recalls are findings.",
+      "riskLevel": "major",
+      "evidenceHint": "调查结论、召回触发评估、召回计划与通知记录"
+    },
+    {
+      "clauseRef": "ALCOA+ / 《药品管理法》",
+      "requirement": "投诉记录完整保留（含后续调查、处置与关闭），修改留痕，可支持检查与追溯",
+      "requirementEn": "Complaint records - including investigation, disposition and closure - are fully retained with traceable changes, supporting inspection and traceability",
+      "guidance": "抽查已关闭投诉能否召回全链路记录；常见缺陷是结案后无处置记录或证据缺失。",
+      "guidanceEn": "Sample closed complaints and verify the full chain is retrievable; closures without disposition records or evidence are a finding.",
+      "riskLevel": "major",
+      "evidenceHint": "投诉全生命周期记录、处置决定、关闭签署"
+    }
+  ]
+}

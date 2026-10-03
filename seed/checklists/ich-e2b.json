@@ -1,0 +1,141 @@
+{
+  "code": "ICH-E2B",
+  "title": "个例安全性报告电子传输核查（ICH E2B(R3)）",
+  "titleEn": "ICSR Electronic Transmission Check (ICH E2B(R3))",
+  "scope": "self_inspection",
+  "category": "pharmacovigilance",
+  "gxpAreas": ["ICSR"],
+  "regulation": "《个例安全性报告传输的数据元素规范》（ICH E2B(R3)）及国家药品不良反应监测系统对接要求",
+  "authority": "ICH（国际人用药品注册技术要求协调会）；国内实施主体：国家药品不良反应监测中心",
+  "version": "ICH E2B(R3)现行版",
+  "description": "核查MAH向国家药品不良反应监测系统电子传输个例安全性报告（ICSR）的格式、必填字段、编码、空值处理、去重、回执、随访更新与保密性等要求。",
+  "descriptionEn": "Verifies the electronic transmission of ICSRs to the national ADR monitoring system under ICH E2B(R3), covering format, required fields, coding, null handling, duplicate management, acknowledgements, follow-up updates and data confidentiality.",
+  "items": [
+    {
+      "clauseRef": "传输格式",
+      "requirement": "ICSR以ICH E2B(R3)国际标准XML格式生成并传输，消息结构符合ICH ICSR消息规范，编码为UTF-8。",
+      "requirementEn": "ICSRs are generated and transmitted in the ICH E2B(R3) standard XML format, conforming to the ICH ICSR message structure, encoded in UTF-8.",
+      "guidance": "检查导出或上报的XML样例是否符合E2B(R3)结构定义，用验证工具解析。常见缺陷：仍沿用E2B(R2)旧结构、消息嵌套错误、编码转换乱码。",
+      "guidanceEn": "Inspect exported/submitted XML samples against the E2B(R3) structure definition and parse them with validation tools. Common defects: legacy E2B(R2) structures, wrong nesting, encoding corruption.",
+      "riskLevel": "critical",
+      "evidenceHint": "E2B(R3) XML导出样例、结构验证工具输出、错误列表"
+    },
+    {
+      "clauseRef": "必填字段（四要素）",
+      "requirement": "每条有效报告包含可识别患者、可识别报告者、怀疑药品、不良反应事件四要素对应的E2B字段（C.1/C.2/D.1/G.k等区块）并完整填写。",
+      "requirementEn": "Each valid report contains the E2B fields corresponding to the four elements (identifiable patient, identifiable reporter, suspect product, adverse event) under sections C.1/C.2/D.1/G.k, fully populated.",
+      "guidance": "抽查已传输报告的四要素字段值，检查空值（nullFlavor）使用是否符合规范。常见缺陷：用空值掩盖缺失、把应由随访补齐的信息标记为已完成字段。",
+      "guidanceEn": "Sample the four-element field values of transmitted reports and check nullFlavor usage. Common defects: null values masking missing data, follow-up-pending information marked as complete.",
+      "riskLevel": "critical",
+      "evidenceHint": "已传输报告四要素字段核查表、空值使用说明、随访任务对应字段"
+    },
+    {
+      "clauseRef": "G区块药品信息",
+      "requirement": "G.k.区块完整记录药品角色（怀疑/并用）、剂量、给药途径、适应症、起止日期等，药品名称与编码一致。",
+      "requirementEn": "The G.k. section fully records drug role (suspect/concomitant), doses, route of administration, indication, start/stop dates, with drug names consistent with coding.",
+      "guidance": "抽查G区块字段完整性，核对剂量单位与给药途径取值。常见缺陷：缺给药途径、剂量单位错误、并用药漏记、起止日期缺失。",
+      "guidanceEn": "Sample the completeness of G-section fields, and verify dose units and route values. Common defects: missing route, wrong dose units, concomitant drugs omitted, missing dates.",
+      "riskLevel": "major",
+      "evidenceHint": "G区块字段完整率统计、剂量/单位核对记录"
+    },
+    {
+      "clauseRef": "事件与结局字段",
+      "requirement": "H.区块（事件与结局）完整，事件时间线与描述吻合，结局字段取值合法（如恢复、死亡、未恢复）。",
+      "requirementEn": "The H. section (events and outcomes) is complete, event timelines match the narrative, and outcome fields use valid values (e.g., recovered, fatal, not recovered).",
+      "guidance": "抽查H.区块事件与编码对应、时间线逻辑与结局取值。常见缺陷：时间线矛盾、结局与病例描述不符、结局取值非法。",
+      "guidanceEn": "Sample H-section events against coding, timeline logic and outcome values. Common defects: contradictory timelines, outcomes inconsistent with the narrative, invalid outcome values.",
+      "riskLevel": "major",
+      "evidenceHint": "H区块核查样本、结局取值合法性检查结果"
+    },
+    {
+      "clauseRef": "日期与单位格式",
+      "requirement": "日期统一以YYYYMMDD格式、时间以HHMMSS格式表达，年龄、剂量、体重等单位一致且换算正确。",
+      "requirementEn": "Dates use YYYYMMDD and times HHMMSS formats; units for age, dose and weight are consistent and conversions are correct.",
+      "guidance": "抽查日期字段格式与单位换算（如月龄/周岁、mg/kg体重）。常见缺陷：格式混用、换算错误导致剂量失真。",
+      "guidanceEn": "Sample date formats and unit conversions (e.g., months vs years of age, mg/kg). Common defects: mixed formats, conversion errors distorting doses.",
+      "riskLevel": "major",
+      "evidenceHint": "日期格式抽检记录、单位换算抽查表"
+    },
+    {
+      "clauseRef": "编码一致性",
+      "requirement": "事件用MedDRA编码、药品用WHO药品字典（WHO-DD）编码，编码术语与病例文本描述一致。",
+      "requirementEn": "Events are coded with MedDRA and drugs with the WHO Drug Dictionary (WHO-DD); coded terms are consistent with the case narrative.",
+      "guidance": "抽查编码与原始描述的一致性，检查首选/低级语术语选择是否恰当。常见缺陷：编码过宽或过窄、编码与描述不一致、编码版本混乱。",
+      "guidanceEn": "Sample coding against the original description and check the appropriateness of the preferred and lowest-level terms. Common defects: coding too broad or narrow, inconsistent with the narrative, mixed coding versions.",
+      "riskLevel": "major",
+      "evidenceHint": "编码抽查对照表、编码字典版本记录"
+    },
+    {
+      "clauseRef": "严重性与预期性字段",
+      "requirement": "严重性六条标准、预期性判定结果在E2B字段中如实呈现，与内部评价结论一致。",
+      "requirementEn": "The seriousness criteria and the expectedness determination are faithfully represented in the E2B fields and consistent with the internal assessment.",
+      "guidance": "比对数据库评价字段与导出的E2B字段。常见缺陷：系统内外口径不一致导致监管端误读（如严重性标记与内部判定相反）。",
+      "guidanceEn": "Compare evaluation fields in the database with the exported E2B fields. Common defects: internal and transmitted views inconsistent, confusing regulators (e.g., seriousness flag opposing the internal assessment).",
+      "riskLevel": "major",
+      "evidenceHint": "数据库评价字段与E2B导出字段对照表"
+    },
+    {
+      "clauseRef": "重复报告管理",
+      "requirement": "MAH建立重复报告识别与合并流程（如姓名/出生日期/事件/日期相似度匹配），对重复报告进行标记并引用主报告编号。",
+      "requirementEn": "The MAH operates a duplicate detection and merging process (e.g., matching on name/date of birth/event/dates), marking duplicates and referencing the primary report number.",
+      "guidance": "检查去重匹配规则、重复报告台账与关联引用情况。常见缺陷：重复报告未识别造成数据库污染、合并无记录、主报告编号不维护。",
+      "guidanceEn": "Check the matching rules, duplicate register and linkage to primary reports. Common defects: duplicates undetected polluting the database, merges undocumented, primary numbers not maintained.",
+      "riskLevel": "major",
+      "evidenceHint": "去重规则文档、重复报告台账、去重算法抽样验证结果"
+    },
+    {
+      "clauseRef": "传输确认与回执",
+      "requirement": "每次传输收到网关回执（接受/警告/错误），对错误与警告回执在报告时限内处理并记录。",
+      "requirementEn": "Each transmission receives a gateway acknowledgement (accepted/warning/error); warning and error acknowledgements are processed within the reporting timeline and recorded.",
+      "guidance": "检查传输日志与回执处理记录，确认错误项被修复并重传。常见缺陷：回执不处理、错误静默堆积、处理超时限。",
+      "guidanceEn": "Inspect transmission logs and acknowledgement handling records, confirming that errors are corrected and retransmitted. Common defects: acknowledgements ignored, errors silently accumulating, handling beyond deadlines.",
+      "riskLevel": "critical",
+      "evidenceHint": "传输日志、回执处理记录、错误修复重传记录"
+    },
+    {
+      "clauseRef": "拒绝与重传",
+      "requirement": "对被拒消息识别失败原因并修正后重传，重传时间与次数记录完整，重传不改变原报告编号。",
+      "requirementEn": "Rejected messages are corrected and retransmitted after identifying the failure cause, with retransmission time and attempts recorded, and the original report number is retained.",
+      "guidance": "抽查被拒消息的处理记录与重传时间戳。常见缺陷：被拒后不了了之、重传无痕、重传更换报告编号。",
+      "guidanceEn": "Sample handling records and retransmission timestamps of rejected messages. Common defects: rejections abandoned, retransmissions untraceable, report numbers changed on retransmission.",
+      "riskLevel": "major",
+      "evidenceHint": "被拒消息清单、失败原因分析、重传记录"
+    },
+    {
+      "clauseRef": "随访报告更新",
+      "requirement": "随访信息以随访报告形式在原报告基础上更新，正确关联原报告编号并保持版本链完整。",
+      "requirementEn": "Follow-up information is submitted as follow-up reports updating the original case, correctly linked to the original report number with a complete version chain.",
+      "guidance": "抽查随访报告与原报告的关联关系与字段增量。常见缺陷：随访另起新报告、原报告编号丢失、版本链断裂。",
+      "guidanceEn": "Sample the linkage between follow-up and original reports and the field increments. Common defects: follow-ups created as new reports, original numbers lost, broken version chains.",
+      "riskLevel": "major",
+      "evidenceHint": "随访报告清单、与原报告关联关系、版本链记录"
+    },
+    {
+      "clauseRef": "保密性与去标识化",
+      "requirement": "传输与存储中保护患者与报告者个人信息，遵循最小化原则，传输通道加密，访问按权限控制。",
+      "requirementEn": "Personal data of patients and reporters are protected during transmission and storage under the minimalisation principle, with encrypted transmission channels and access control.",
+      "guidance": "检查系统脱敏策略、访问权限矩阵与传输加密配置。常见缺陷：明文传输、越权访问、测试数据混入生产、导出未脱敏。",
+      "guidanceEn": "Check the system de-identification policy, access matrix and transmission encryption. Common defects: plain-text transfer, unauthorised access, test data in production, exports not anonymised.",
+      "riskLevel": "critical",
+      "evidenceHint": "脱敏策略文档、权限矩阵、传输加密配置、导出样例核查记录"
+    },
+    {
+      "clauseRef": "传输测试与系统验证",
+      "requirement": "上报系统经验证或确认，具备字段映射文档，并完成与国家药品不良反应监测系统的对接测试。",
+      "requirementEn": "The reporting system is validated or confirmed, has a field-mapping document, and has passed connection testing with the national ADR monitoring system.",
+      "guidance": "检查系统验证记录、字段映射表与对接测试（测试报文）记录。常见缺陷：验证缺失、字段映射过期、对接测试无记录。",
+      "guidanceEn": "Check system validation records, the field-mapping table and connection test results (test messages). Common defects: no validation, outdated mapping, connection tests undocumented.",
+      "riskLevel": "major",
+      "evidenceHint": "系统验证报告、字段映射文档、对接测试报文及结果"
+    },
+    {
+      "clauseRef": "消息头与发送者信息",
+      "requirement": "ICH ICSR消息头包含发送者标识、消息类型、消息版本号等要素，符合监管对接要求。",
+      "requirementEn": "The ICH ICSR message header contains sender identification, message type and message version, consistent with regulatory interface requirements.",
+      "guidance": "抽查导出报文的头字段取值。常见缺陷：发送者标识错误、消息类型与版本号错误导致回执异常。",
+      "guidanceEn": "Sample the header field values of exported messages. Common defects: wrong sender identifier, wrong message type or version causing abnormal acknowledgements.",
+      "riskLevel": "minor",
+      "evidenceHint": "报文头样例、回执对照记录"
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "code": "AEFI-CN",
+  "title": "疑似预防接种异常反应监测核查",
+  "titleEn": "Suspected AEFI Monitoring Check",
+  "scope": "self_inspection",
+  "category": "regulatory",
+  "gxpAreas": ["AEFI"],
+  "regulation": "《中华人民共和国疫苗管理法》第六章（第52-56条）及《全国疑似预防接种异常反应监测方案》",
+  "authority": "全国人民代表大会常务委员会（疫苗管理法）；国家卫生健康委与国家药监局（监测方案，原卫生部办公厅与国家药监局办公室联合印发，文号待核实）",
+  "version": "疫苗管理法2019年版；监测方案2010年版（修订版流传中，施行版本需与疾控/药监确认）",
+  "description": "核查疫苗MAH在疑似AEFI监测中的职责：六类分类、异常反应定义、48小时个案报告卡、2小时升级报告、调查配合、质量分析报告、补偿与风险控制，以及与药物警戒体系的衔接。",
+  "descriptionEn": "Verifies vaccine MAH duties in suspected AEFI monitoring: the six-category classification, legal definition of abnormal reaction, 48-hour case report card, 2-hour escalation, investigation support, quality analysis report, compensation and risk control, and alignment with the PV system.",
+  "items": [
+    {
+      "clauseRef": "监测方案：AEFI分类",
+      "requirement": "监测人员掌握六类疑似AEFI分类：一般反应、异常反应、心因性反应、偶合症、疫苗质量事故、接种事故，台账分类口径与监测方案一致。",
+      "requirementEn": "Monitoring staff master the six suspect AEFI categories (common reaction, abnormal reaction, psychogenic reaction, coincidental event, vaccine quality accident, vaccination error), and the register classification matches the surveillance scheme.",
+      "guidance": "抽查监测人员的分类掌握程度（案例测试），核对台账分类与定义。常见缺陷：偶合症与异常反应混淆、分类口径不一。",
+      "guidanceEn": "Sample staff mastery of classification via case tests, and check register classification against the definitions. Common defects: coincidental events confused with abnormal reactions, inconsistent classification.",
+      "riskLevel": "major",
+      "evidenceHint": "六类分类定义文件、台账分类、分类案例测试记录"
+    },
+    {
+      "clauseRef": "疫苗管理法第52条",
+      "requirement": "异常反应认定符合法定要件（合格疫苗、规范接种、无过错、与接种相关），并正确识别一般反应、疫苗质量问题、接种单位违规、偶合发病、未告知接种禁忌、心因性反应六种不属于异常反应的情形。",
+      "requirementEn": "Abnormal reaction determinations meet the statutory elements (qualified vaccine, standard administration, no fault, causal link to vaccination), correctly excluding the six non-abnormal-reaction situations (common reaction, vaccine quality issue, vaccinator non-compliance, coincidental illness, undisclosed contraindications, psychogenic reaction).",
+      "guidance": "抽查个案分类记录，检查是否把一般反应、偶合症或接种事故误判为异常反应。常见缺陷：任意扩大异常反应认定范围、未核对接种与疾病的时间关联。",
+      "guidanceEn": "Sample case classifications and check for misclassification of common reactions, coincidental events or vaccination errors as abnormal reactions. Common defects: abnormal reaction scope expanded arbitrarily, temporal link not verified.",
+      "riskLevel": "major",
+      "evidenceHint": "异常反应认定记录、六种除外情形核对记录"
+    },
+    {
+      "clauseRef": "监测方案：监测依据",
+      "requirement": "MAH按《全国疑似预防接种异常反应监测方案》开展监测，内部制度与时限设定与该方案一致（监测方案现行版本及文号需与当地疾控/药监确认）。",
+      "requirementEn": "The MAH conducts monitoring per the National AEFI Surveillance Scheme, with internal procedures and timelines consistent with the scheme (current version and document number to be confirmed with local CDC/regulators).",
+      "guidance": "核对内部SOP与监测方案文本的一致性。常见缺陷：内部制度引用过期版本、时限设置与方案不符。",
+      "guidanceEn": "Check internal SOPs against the scheme text. Common defects: internal documents citing outdated versions, timelines not matching the scheme.",
+      "riskLevel": "major",
+      "evidenceHint": "内部监测SOP、监测方案文本对照记录"
+    },
+    {
+      "clauseRef": "监测方案：48小时个案报告卡",
+      "requirement": "责任报告单位和报告人在发现疑似AEFI后48小时内填写《疑似预防接种异常反应个案报告卡》并向疾控机构报告。",
+      "requirementEn": "Responsible reporting units and reporters complete the AEFI case report card and report to the CDC within 48 hours of discovering a suspected AEFI.",
+      "guidance": "抽查个案卡填写记录与报告时间戳，核对字段完整性与时限。常见缺陷：超48小时、个案卡字段缺失、报告对象错误。",
+      "guidanceEn": "Sample case report card records and reporting timestamps, checking completeness and timeliness. Common defects: beyond 48 hours, missing card fields, wrong reporting recipients.",
+      "riskLevel": "critical",
+      "evidenceHint": "个案报告卡、报告时间戳记录"
+    },
+    {
+      "clauseRef": "监测方案：2小时升级报告",
+      "requirement": "发现疑似与接种有关的死亡、严重残疾、群体性AEFI或对社会有重大影响的AEFI时，在2小时内报告。",
+      "requirementEn": "Suspected vaccination-related deaths, serious disability, cluster AEFIs or AEFIs with major social impact are reported within 2 hours.",
+      "guidance": "抽查升级案例的首次报告时间与渠道。常见缺陷：严重情形未升级、超出2小时、未同时通知相关部门。",
+      "guidanceEn": "Sample the first-report timing and channels of escalated cases. Common defects: serious cases not escalated, beyond 2 hours, relevant authorities not all notified.",
+      "riskLevel": "critical",
+      "evidenceHint": "升级案例报告记录与时间戳"
+    },
+    {
+      "clauseRef": "疫苗管理法第54条",
+      "requirement": "疫苗MAH设立专门机构、配备专职人员，主动收集、跟踪分析疑似AEFI，及时采取风险控制措施并向疾控机构报告，将质量分析报告提交省级药监部门。",
+      "requirementEn": "The vaccine MAH establishes a dedicated unit with dedicated staff, proactively collects and tracks suspect AEFIs, takes timely risk control measures, reports to the CDC, and submits a quality analysis report to the provincial drug regulator.",
+      "guidance": "核查专门机构与专职人员配置、收集渠道覆盖与质量分析报告提交记录。常见缺陷：无专门机构、质量分析报告缺失或未按期提交。",
+      "guidanceEn": "Check the dedicated unit and staff, coverage of collection channels and quality analysis report submissions. Common defects: no dedicated unit, quality analysis reports missing or not submitted.",
+      "riskLevel": "critical",
+      "evidenceHint": "专门机构设立文件、专职人员名单、收集渠道台账、质量分析报告及提交回执"
+    },
+    {
+      "clauseRef": "疫苗管理法第55条",
+      "requirement": "对死亡、严重残疾、群体性AEFI由设区的市级以上卫健/药监部门按职责组织调查处理，MAH及时提供批号、生产与流通记录、留样等资料配合调查。",
+      "requirementEn": "Deaths, serious disability and cluster AEFIs are investigated by municipal-level or above health/drug authorities by their mandates, and the MAH promptly provides batch, manufacturing, distribution records and retained samples in support.",
+      "guidance": "检查调查配合档案（资料提供记录与时间）。常见缺陷：资料提供不及时、配合记录缺失、留样无法追溯。",
+      "guidanceEn": "Check the investigation support file (records and timing of information provided). Common defects: late provision of information, missing cooperation records, samples not traceable.",
+      "riskLevel": "major",
+      "evidenceHint": "调查配合资料清单、资料提供时间记录、留样台账"
+    },
+    {
+      "clauseRef": "监测方案：调查诊断分类",
+      "requirement": "个案经调查诊断后按六类分类形成结论，MAH跟踪诊断结论并同步更新内部台账。",
+      "requirementEn": "Cases are classified after investigation/diagnosis, and the MAH tracks the diagnostic conclusions and updates its internal register accordingly.",
+      "guidance": "抽查结论更新及时性与台账与疾控结论的一致性。常见缺陷：结论未跟踪、台账与疾控结论不符。",
+      "guidanceEn": "Sample the timeliness of conclusion updates and consistency between the register and CDC conclusions. Common defects: conclusions not tracked, register inconsistent with CDC conclusions.",
+      "riskLevel": "major",
+      "evidenceHint": "调查诊断结论、内部台账更新记录"
+    },
+    {
+      "clauseRef": "监测方案：批号关联调查",
+      "requirement": "对疑似与质量相关的AEFI开展批号关联调查（留样检验、稳定性、生产与流通记录），形成质量分析并评估质量相关性。",
+      "requirementEn": "For AEFIs potentially linked to product quality, a lot-linked investigation is performed (retained-sample testing, stability, manufacturing and distribution records) producing a quality analysis.",
+      "guidance": "核查质量调查启动标准与记录。常见缺陷：只做个案不做批号调查、无质量分析记录、批量疑似无统一分析。",
+      "guidanceEn": "Check the triggers and records of quality investigations. Common defects: case-only handling without lot investigation, no quality analysis, no pooled analysis for batch clusters.",
+      "riskLevel": "major",
+      "evidenceHint": "批号调查记录、留样检验报告、质量分析记录"
+    },
+    {
+      "clauseRef": "疫苗管理法第56条",
+      "requirement": "国家实行预防接种异常反应补偿制度，非免疫规划疫苗的补偿费用由相关疫苗MAH承担，MAH配合补偿鉴定与支付流程。",
+      "requirementEn": "The state implements an AEFI compensation system; compensation costs for non-IPV (non-immunisation-programme) vaccines are borne by the relevant vaccine MAH, which cooperates with the assessment and payment process.",
+      "guidance": "核查补偿流程对接机制与费用承担记录。常见缺陷：无对接机制、补偿拖延、责任认定后不配合。",
+      "guidanceEn": "Check the compensation liaison mechanism and cost-bearing records. Common defects: no liaison mechanism, delayed compensation, non-cooperation after liability determination.",
+      "riskLevel": "minor",
+      "evidenceHint": "补偿流程文件、鉴定及支付记录"
+    },
+    {
+      "clauseRef": "疫苗管理法第54条：风险控制",
+      "requirement": "确认风险后MAH及时采取暂停使用、召回、说明书更新等风险控制措施并通知相关方。",
+      "requirementEn": "After risk confirmation, the MAH takes timely risk control measures such as suspension of use, recall or labelling updates and notifies relevant parties.",
+      "guidance": "核查风险控制台账与措施执行证据。常见缺陷：确认风险后无行动、措施未执行、未通知相关方。",
+      "guidanceEn": "Check the risk control register and execution evidence. Common defects: no action after risk confirmation, measures not executed, relevant parties not notified.",
+      "riskLevel": "critical",
+      "evidenceHint": "风险控制台账、暂停/召回记录、说明书更新记录"
+    },
+    {
+      "clauseRef": "GVP第133条衔接",
+      "requirement": "MAH的药物警戒体系与AEFI监测衔接：AEFI信息同时按上市后ADR要求在药物警戒系统中管理与评估（GVP第133条：卫健与药监对AEFI另有规定的从其规定）。",
+      "requirementEn": "The PV system and AEFI monitoring are aligned: AEFI information is also managed and assessed in the PV system per post-marketing ADR requirements (GVP Article 133: where the health and drug authorities have separate provisions for AEFI, those prevail).",
+      "guidance": "核查AEFI个案是否同步进入PV数据库并按ADR口径处理严重性、预期性与报告时限。常见缺陷：两套系统割裂、AEFI个案未纳入PV报告时限管理。",
+      "guidanceEn": "Check whether AEFI cases enter the PV database and are handled for seriousness, expectedness and reporting timelines per ADR rules. Common defects: two isolated systems, AEFI cases outside PV timeline management.",
+      "riskLevel": "major",
+      "evidenceHint": "AEFI与PV数据库关联记录、AEFI个案PV处理时限记录"
+    },
+    {
+      "clauseRef": "监测方案：随访转归",
+      "requirement": "对死亡、严重残疾等AEFI开展转归随访并记录转归信息。",
+      "requirementEn": "Outcome follow-up is performed for deaths, serious disability and other AEFIs, with outcome information recorded.",
+      "guidance": "抽查随访记录与时间线。常见缺陷：无随访、转归信息缺失、随访结果未更新台账。",
+      "guidanceEn": "Sample follow-up records and timelines. Common defects: no follow-up, outcome information missing, follow-up results not reflected in the register.",
+      "riskLevel": "minor",
+      "evidenceHint": "随访记录、转归台账"
+    },
+    {
+      "clauseRef": "记录保存",
+      "requirement": "AEFI个案、调查、质量分析与风险控制记录按规定保存并可追溯（参照《药物警戒质量管理规范》第113条保存至注册证书注销后10年）。",
+      "requirementEn": "AEFI case, investigation, quality analysis and risk control records are retained as required and traceable (reference GVP Article 113: retained until 10 years after cancellation of the registration certificate).",
+      "guidance": "检查档案完整性与保存期制度。常见缺陷：记录分散、缺保存制度、电子记录无审计追踪。",
+      "guidanceEn": "Check archive completeness and retention policies. Common defects: scattered records, no retention policy, electronic records without audit trails.",
+      "riskLevel": "major",
+      "evidenceHint": "档案目录、保存期制度、审计追踪配置"
+    }
+  ]
+}

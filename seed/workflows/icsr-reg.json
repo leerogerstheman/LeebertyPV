@@ -1,0 +1,851 @@
+{
+  "code": "ICSR-REG",
+  "recordPrefix": "AEN",
+  "name": "非严重个例安全性报告（常规报告）",
+  "nameEn": "Routine ICSR (Non-Serious) Reporting",
+  "category": "safety_case",
+  "gxpAreas": [
+    "ICSR",
+    "GVP"
+  ],
+  "regulationRefs": [
+    "《药品不良反应报告和监测管理办法》（卫生部令第81号）第21条：非严重ADR 30日内报告",
+    "《药物警戒质量管理规范》（NMPA 2021年第65号公告）第49条：非严重ADR 30日内报告；时限自首次获知且四要素齐备之日起算",
+    "《药物警戒质量管理规范》第46条：ICSR四要素（可识别患者、可识别报告者、可疑药品、不良事件）",
+    "《药物警戒质量管理规范》第42条：随访不得延误首次报告，先提交首次报告再提交跟踪报告",
+    "《药物警戒质量管理规范》第44条：严重性六条标准（随访后若达严重标准应转入快速报告）",
+    "《药物警戒质量管理规范》第43条：预期性判定（随访后若为非预期应转入快速报告）"
+  ],
+  "description": "非严重且非新（预期内）个例安全性报告（ICSR）常规报告流程：接收登记、分类与时限判定、数据录入与MedDRA编码、因果关系评价、医学审核、30日内递交监管机构、随访与结案。若随访信息表明事件实际为严重或非预期，须立即转入快速报告流程（ICSR-EXP）并重新起算时限。",
+  "descriptionEn": "Routine workflow for non-serious, expected Individual Case Safety Reports (ICSRs): intake and registration, triage and deadline determination, data entry with MedDRA coding, causality assessment, medical review, submission to regulators within 30 days, follow-up and closure. If follow-up information indicates the event is actually serious or unexpected, the case must be immediately escalated to the expedited workflow (ICSR-EXP) with deadlines recalculated.",
+  "slaDays": 30,
+  "requiresRootCause": false,
+  "requiresEffectivenessCheck": false,
+  "requiresQaApproval": true,
+  "criticalityLevels": [
+    "minor",
+    "major",
+    "critical"
+  ],
+  "states": [
+    "draft",
+    "intake",
+    "triage",
+    "data_entry",
+    "causality",
+    "medical_review",
+    "submission",
+    "follow_up",
+    "closed",
+    "cancelled"
+  ],
+  "initialState": "draft",
+  "terminalStates": [
+    "closed",
+    "cancelled"
+  ],
+  "fields": [
+    {
+      "key": "title",
+      "label": "病例标题",
+      "labelEn": "Case Title",
+      "type": "text",
+      "required": true,
+      "help": "简明描述患者与不良事件，如：某女 32 岁使用某药后出现轻度假性反应。"
+    },
+    {
+      "key": "summary",
+      "label": "病例摘要",
+      "labelEn": "Case Summary",
+      "type": "textarea",
+      "required": true,
+      "help": "概述事件经过、用药情况与结局，供全流程快速研判。"
+    },
+    {
+      "key": "product",
+      "label": "怀疑药品",
+      "labelEn": "Suspect Product",
+      "type": "text",
+      "required": true,
+      "help": "填可疑药品名称。怀疑药品是四要素之一，缺失则不能起算时限。"
+    },
+    {
+      "key": "occurredAt",
+      "label": "事件发生日期",
+      "labelEn": "Event Onset Date",
+      "type": "date",
+      "required": true,
+      "help": "不良事件发生（或加重）日期，用于因果时间关系判断。"
+    },
+    {
+      "key": "criticality",
+      "label": "严重程度",
+      "labelEn": "Criticality",
+      "type": "select",
+      "required": true,
+      "options": [
+        "minor",
+        "major",
+        "critical"
+      ],
+      "help": "常规报告的合规风险相对较低，但仍须正确分级。"
+    },
+    {
+      "key": "reportSource",
+      "label": "报告来源",
+      "labelEn": "Report Source",
+      "type": "select",
+      "required": true,
+      "options": [
+        "自发报告",
+        "临床试验",
+        "文献",
+        "监管机构",
+        "患者援助项目",
+        "投诉",
+        "数字化渠道"
+      ],
+      "help": "来源决定收集与随访渠道；文献来源需同时保留检索记录（GVP第36、50条）。"
+    }
+  ],
+  "steps": [
+    {
+      "code": "intake",
+      "name": "接收与登记",
+      "nameEn": "Intake and Registration",
+      "role": [
+        "pv_officer",
+        "pv_data_entry"
+      ],
+      "type": "task",
+      "onComplete": "intake",
+      "requiresFields": [
+        "reporterName",
+        "patientInfo",
+        "awarenessDate",
+        "receivedDate",
+        "minimalCriteriaComplete"
+      ],
+      "form": [
+        {
+          "key": "reporterName",
+          "label": "报告者姓名",
+          "labelEn": "Reporter Name",
+          "type": "text",
+          "required": true,
+          "help": "可识别报告者，四要素之一。"
+        },
+        {
+          "key": "reporterContact",
+          "label": "报告者联系方式",
+          "labelEn": "Reporter Contact",
+          "type": "text",
+          "required": true,
+          "help": "电话/邮箱等，用于随访联系。"
+        },
+        {
+          "key": "patientInfo",
+          "label": "患者基本信息",
+          "labelEn": "Patient Information",
+          "type": "textarea",
+          "required": true,
+          "help": "年龄、性别、身份标识等可识别患者信息，四要素之一。"
+        },
+        {
+          "key": "awarenessDate",
+          "label": "首次获知日期（Day 0）",
+          "labelEn": "Date of First Awareness (Day 0)",
+          "type": "date",
+          "required": true,
+          "help": "任何渠道首次获知信息的日期，是30日时限起算依据，不得填系统录入日。"
+        },
+        {
+          "key": "receivedDate",
+          "label": "接收登记日期",
+          "labelEn": "Date Received",
+          "type": "date",
+          "required": true,
+          "help": "本系统登记日期，用于内部时效统计。"
+        },
+        {
+          "key": "reportChannel",
+          "label": "接收渠道",
+          "labelEn": "Report Channel",
+          "type": "select",
+          "required": true,
+          "options": [
+            "电话",
+            "邮件",
+            "传真",
+            "系统",
+            "文献",
+            "患者投诉",
+            "监管机构",
+            "数字化渠道",
+            "患者援助项目"
+          ],
+          "help": "销售、市场、热线、投诉等渠道须全部纳入收集管理（GVP第32-38条）。"
+        },
+        {
+          "key": "minimalCriteriaComplete",
+          "label": "四要素是否齐备",
+          "labelEn": "Minimal Criteria Complete",
+          "type": "select",
+          "required": true,
+          "options": [
+            "齐备",
+            "缺失-需随访"
+          ],
+          "help": "四项齐备才可起算时限；缺失立即生成随访任务，禁止删除报告。"
+        }
+      ],
+      "guidance": "接收登记与快速报告一致：Day 0 等于首次获知且四要素齐备之日，非严重病例同样必须获知后立即登记，30日时限从 Day 0 起算。最高频缺陷是用录入日代替获知日、信息不全就不登记甚至删除报告。依据：GVP第46、49条；81号令第21条。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "triage",
+      "name": "分类与时限判定",
+      "nameEn": "Triage and Deadline Determination",
+      "role": [
+        "pv_officer"
+      ],
+      "type": "task",
+      "onComplete": "triage",
+      "requiresFields": [
+        "seriousness",
+        "expectedness",
+        "escalationNeeded"
+      ],
+      "form": [
+        {
+          "key": "seriousness",
+          "label": "严重性判定",
+          "labelEn": "Seriousness",
+          "type": "select",
+          "required": true,
+          "options": [
+            "非严重",
+            "严重（转ICSR-EXP）",
+            "待随访确认"
+          ],
+          "help": "命中六条标准之一即严重（GVP第44条），须转快速报告。"
+        },
+        {
+          "key": "expectedness",
+          "label": "预期性判定",
+          "labelEn": "Expectedness",
+          "type": "select",
+          "required": true,
+          "options": [
+            "预期（说明书内）",
+            "非预期（转ICSR-EXP）",
+            "待评估"
+          ],
+          "help": "对照最新说明书，非预期须转快速报告（GVP第43条）。"
+        },
+        {
+          "key": "reportDeadline",
+          "label": "报告截止日（30日，自动计算）",
+          "labelEn": "Reporting Deadline (30 days)",
+          "type": "computed",
+          "required": false,
+          "help": "系统按 GVP 第四十九条自动计算：自首次获知且四要素齐备之日（Day 0）起算，严重 15 日、非严重 30 日；境外暂停销售/使用/撤市 24 小时。此处不可手工修改。",
+          "helpEn": "Computed by the system per GVP Article 49: counted from Day 0 (first awareness with all four elements complete), 15 days serious / 30 days non-serious, 24 hours for an overseas suspension or withdrawal. Not manually editable."
+        },
+        {
+          "key": "escalationNeeded",
+          "label": "是否需转快速报告",
+          "labelEn": "Escalation to Expedited",
+          "type": "select",
+          "required": true,
+          "options": [
+            "否",
+            "是-转ICSR-EXP"
+          ],
+          "help": "若判定为严重/非预期，必须立即转入ICSR-EXP并重新起算。"
+        },
+        {
+          "key": "needsFollowUp",
+          "label": "是否需要随访",
+          "labelEn": "Follow-up Needed",
+          "type": "select",
+          "required": true,
+          "options": [
+            "是",
+            "否"
+          ],
+          "help": "缺失信息须随访确认，随访信息可能改变严重/预期性判定。"
+        },
+        {
+          "key": "triageComment",
+          "label": "分类说明",
+          "labelEn": "Triage Comment",
+          "type": "textarea",
+          "required": false,
+          "help": "记录判定依据与特殊情况。"
+        }
+      ],
+      "guidance": "非严重且预期内的ADR按30日内报告（81号令第21条、GVP第49条）。判定必须同时核对严重性六条标准与说明书预期性：若随访或新信息表明实际为严重或非预期，应立即转入快速报告流程（ICSR-EXP）并重新起算时限，不得按常规路径拖延。常见错误：把貌似不严重的判定当终判、忽视说明书外特征。依据：GVP第43、44、49条。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "data_entry",
+      "name": "数据录入与MedDRA编码",
+      "nameEn": "Data Entry and MedDRA Coding",
+      "role": [
+        "pv_data_entry"
+      ],
+      "type": "task",
+      "onComplete": "data_entry",
+      "requiresFields": [
+        "meddraTerm",
+        "reactionStartDate",
+        "outcome",
+        "dosageRegimen",
+        "narrative",
+        "duplicateCheck"
+      ],
+      "form": [
+        {
+          "key": "meddraTerm",
+          "label": "MedDRA编码（PT术语）",
+          "labelEn": "MedDRA Term (PT)",
+          "type": "text",
+          "required": true,
+          "help": "选择最贴切的PT术语，保留原始表述。"
+        },
+        {
+          "key": "reactionStartDate",
+          "label": "反应开始日期",
+          "labelEn": "Reaction Start Date",
+          "type": "date",
+          "required": true,
+          "help": "用于时间关联判断。"
+        },
+        {
+          "key": "outcome",
+          "label": "结局",
+          "labelEn": "Outcome",
+          "type": "select",
+          "required": true,
+          "options": [
+            "恢复",
+            "恢复中",
+            "未恢复",
+            "后遗症",
+            "死亡",
+            "未知"
+          ],
+          "help": "结局变更为死亡须立即升级转ICSR-EXP。"
+        },
+        {
+          "key": "dosageRegimen",
+          "label": "用药剂量与用法",
+          "labelEn": "Dosage and Regimen",
+          "type": "textarea",
+          "required": true,
+          "help": "剂量、频次、给药途径、起止时间及合并用药背景。"
+        },
+        {
+          "key": "indication",
+          "label": "适应症",
+          "labelEn": "Indication",
+          "type": "text",
+          "required": false,
+          "help": "用药目的。"
+        },
+        {
+          "key": "concomitantDrugs",
+          "label": "合并用药与既往史",
+          "labelEn": "Concomitant Drugs and History",
+          "type": "textarea",
+          "required": false,
+          "help": "影响因果评价，越完整越好。"
+        },
+        {
+          "key": "narrative",
+          "label": "病例叙述",
+          "labelEn": "Case Narrative",
+          "type": "textarea",
+          "required": true,
+          "help": "事件发展时间线、处置与转归的完整叙述。"
+        },
+        {
+          "key": "duplicateCheck",
+          "label": "重复报告检查",
+          "labelEn": "Duplicate Check",
+          "type": "select",
+          "required": true,
+          "options": [
+            "未重复",
+            "疑似重复（需合并）",
+            "已确认重复"
+          ],
+          "help": "按患者/事件/日期相似度核对（GVP第30条数据质量要求）。"
+        }
+      ],
+      "guidance": "与快速报告相同：结构化录入加MedDRA编码，按原始记录如实转录。即使是非严重病例，E2B必填字段与叙事完整性同样受检查关注；后续若升级转EXP，本步数据直接复用。常见错误：编码失真、缺失字段强行提交。依据：GVP第40、46、48条。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "causality",
+      "name": "因果关系评价",
+      "nameEn": "Causality Assessment",
+      "role": [
+        "pv_medical"
+      ],
+      "type": "signature",
+      "onComplete": "causality",
+      "requiresFields": [
+        "causalityLevel",
+        "timeRelationship",
+        "alternativeCause",
+        "causalityRationale"
+      ],
+      "form": [
+        {
+          "key": "causalityLevel",
+          "label": "关联性评价结论",
+          "labelEn": "Causality Level",
+          "type": "select",
+          "required": true,
+          "options": [
+            "肯定（certain）",
+            "很可能（probable）",
+            "可能（possible）",
+            "可能无关（unlikely）",
+            "待评价（conditional）",
+            "无法评价（unassessable）"
+          ],
+          "help": "WHO-UMC六级，结论必须与理由一致。"
+        },
+        {
+          "key": "timeRelationship",
+          "label": "时间关系",
+          "labelEn": "Time Relationship",
+          "type": "select",
+          "required": true,
+          "options": [
+            "合理",
+            "不合理",
+            "无法判断"
+          ],
+          "help": "用药与事件发生的时间关联性。"
+        },
+        {
+          "key": "dechallenge",
+          "label": "停药后反应",
+          "labelEn": "Dechallenge",
+          "type": "select",
+          "required": false,
+          "options": [
+            "改善",
+            "无变化",
+            "未停药",
+            "未知"
+          ],
+          "help": "支持或削弱因果关联。"
+        },
+        {
+          "key": "rechallenge",
+          "label": "再激发",
+          "labelEn": "Rechallenge",
+          "type": "select",
+          "required": false,
+          "options": [
+            "阳性",
+            "阴性",
+            "未再激发",
+            "未知"
+          ],
+          "help": "阳性再激发提示肯定相关。"
+        },
+        {
+          "key": "alternativeCause",
+          "label": "其他病因/合并解释",
+          "labelEn": "Alternative Explanation",
+          "type": "textarea",
+          "required": true,
+          "help": "合并用药、疾病进展、其他病因等需逐一排除说明。"
+        },
+        {
+          "key": "reporterInitialOpinion",
+          "label": "初始报告人评价",
+          "labelEn": "Initial Reporter Opinion",
+          "type": "select",
+          "required": true,
+          "options": [
+            "未评价（默认存在关联）",
+            "已评价-同意",
+            "已评价-需复核"
+          ],
+          "help": "报告者未评价时默认存在关联；已评价的无确凿医学证据不得降级（GVP第45条）。"
+        },
+        {
+          "key": "causalityRationale",
+          "label": "评价依据与理由",
+          "labelEn": "Assessment Rationale",
+          "type": "textarea",
+          "required": true,
+          "help": "完整记录推理过程，供检查与医学审核追溯。"
+        }
+      ],
+      "guidance": "所有ICSR无论严重与否均须完成因果关系评价并存档。按WHO-UMC六级判定，录入员不得自评（independentOfAuthor）；报告者未评价时默认存在关联，初始报告人已评价的无确凿医学证据不得降级。常见错误：非严重病例跳步评价、定级无依据。依据：GVP第45条。",
+      "signatureMeaning": "assessed",
+      "optional": false,
+      "independentOfAuthor": true
+    },
+    {
+      "code": "medical_review",
+      "name": "医学审核",
+      "nameEn": "Medical Review",
+      "role": [
+        "pv_medical",
+        "pv_head"
+      ],
+      "type": "signature",
+      "onComplete": "medical_review",
+      "requiresFields": [
+        "reviewConclusion",
+        "reviewComments",
+        "completenessCheck",
+        "severityFinal",
+        "medicalLogic"
+      ],
+      "form": [
+        {
+          "key": "reviewConclusion",
+          "label": "审核结论",
+          "labelEn": "Review Conclusion",
+          "type": "select",
+          "required": true,
+          "options": [
+            "同意初评",
+            "修正评价",
+            "退回补充"
+          ],
+          "help": "修正或退回时须说明理由。"
+        },
+        {
+          "key": "reviewComments",
+          "label": "审核意见",
+          "labelEn": "Review Comments",
+          "type": "textarea",
+          "required": true,
+          "help": "逐项说明审核发现。"
+        },
+        {
+          "key": "completenessCheck",
+          "label": "病例完整性",
+          "labelEn": "Completeness Check",
+          "type": "select",
+          "required": true,
+          "options": [
+            "完整",
+            "缺失需随访",
+            "缺失可后续补"
+          ],
+          "help": "不影响提交的缺失可先报后补。"
+        },
+        {
+          "key": "severityFinal",
+          "label": "严重性复核",
+          "labelEn": "Severity Confirmation",
+          "type": "select",
+          "required": true,
+          "options": [
+            "确认非严重",
+            "改判严重（转ICSR-EXP）",
+            "不适用"
+          ],
+          "help": "改判为严重须立即转快速报告并重新起算时限。"
+        },
+        {
+          "key": "medicalLogic",
+          "label": "医学逻辑闭环说明",
+          "labelEn": "Medical Logic Statement",
+          "type": "textarea",
+          "required": true,
+          "help": "诊断逻辑、因果链条的闭环确认。"
+        },
+        {
+          "key": "reviewerNote",
+          "label": "审核备注",
+          "labelEn": "Reviewer Note",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明。"
+        }
+      ],
+      "guidance": "医学审核确保提交数据在医学上自洽：诊断逻辑、四要素、严重性/预期性复核。若复核发现超出说明书预期或达到严重标准，立即转入快速报告路径并重新起算时限。审核人须具备医学背景并签名留痕。依据：GVP第40、42条。",
+      "signatureMeaning": "reviewed",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "submission",
+      "name": "递交监管机构",
+      "nameEn": "Regulatory Submission",
+      "role": [
+        "pv_regulatory",
+        "pv_officer"
+      ],
+      "type": "task",
+      "onComplete": "submission",
+      "requiresFields": [
+        "submissionType",
+        "reportingTarget",
+        "submissionDate",
+        "nationalSystemReceipt",
+        "e2bValidation",
+        "deadlineCompliance"
+      ],
+      "form": [
+        {
+          "key": "submissionType",
+          "label": "递交类型",
+          "labelEn": "Submission Type",
+          "type": "select",
+          "required": true,
+          "options": [
+            "首次报告",
+            "跟踪报告"
+          ],
+          "help": "跟踪报告按获新信息之日起算时限（GVP第49条）。"
+        },
+        {
+          "key": "reportingTarget",
+          "label": "报送对象",
+          "labelEn": "Reporting Target",
+          "type": "select",
+          "required": true,
+          "options": [
+            "国家药品不良反应监测系统",
+            "省级监测机构"
+          ],
+          "help": "常规报告通过国家药品不良反应监测系统提交。"
+        },
+        {
+          "key": "submissionDate",
+          "label": "递交日期",
+          "labelEn": "Submission Date",
+          "type": "date",
+          "required": true,
+          "help": "留痕以备时限核查。"
+        },
+        {
+          "key": "nationalSystemReceipt",
+          "label": "系统回执/传输编号",
+          "labelEn": "System Receipt / Transmission ID",
+          "type": "text",
+          "required": true,
+          "help": "E2B传输回执必须留存。"
+        },
+        {
+          "key": "e2bValidation",
+          "label": "E2B(R3)校验",
+          "labelEn": "E2B(R3) Validation",
+          "type": "select",
+          "required": true,
+          "options": [
+            "通过",
+            "警告（已说明）",
+            "失败"
+          ],
+          "help": "必填字段缺失不得提交（GVP第48条）。"
+        },
+        {
+          "key": "deadlineCompliance",
+          "label": "时限合规确认",
+          "labelEn": "Deadline Compliance",
+          "type": "select",
+          "required": true,
+          "options": [
+            "合规（30日内）",
+            "超时限（偏差说明）"
+          ],
+          "help": "超时限须记录偏差与纠正措施。"
+        }
+      ],
+      "guidance": "非严重且预期内的个例按30日内递交（81号令第21条），通过国家系统以E2B(R3)传输并留存回执。提交前必须复核：若期间随访信息升级为严重或非预期，不得按常规路径提交，应转ICSR-EXP快速报告。常见错误：超30日、回执缺失、升级病例仍走常规通道。依据：GVP第49条。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "follow_up",
+      "name": "随访管理",
+      "nameEn": "Follow-up Management",
+      "role": [
+        "pv_officer"
+      ],
+      "type": "task",
+      "onComplete": "follow_up",
+      "requiresFields": [
+        "followUpReason",
+        "contactDate",
+        "followUpResult",
+        "newInfoEffect",
+        "escalationToExp"
+      ],
+      "form": [
+        {
+          "key": "followUpReason",
+          "label": "随访原因",
+          "labelEn": "Follow-up Reason",
+          "type": "select",
+          "required": true,
+          "options": [
+            "四要素信息缺失",
+            "严重性/结局信息不足",
+            "常规补充信息",
+            "新发信息"
+          ],
+          "help": "缺失信息必须随访（GVP第42条）。"
+        },
+        {
+          "key": "contactDate",
+          "label": "随访联系日期",
+          "labelEn": "Contact Date",
+          "type": "date",
+          "required": true,
+          "help": "留痕证明随访及时。"
+        },
+        {
+          "key": "followUpResult",
+          "label": "随访结果",
+          "labelEn": "Follow-up Result",
+          "type": "textarea",
+          "required": true,
+          "help": "记录获得的新信息，缺信息时说明原因。"
+        },
+        {
+          "key": "newInfoEffect",
+          "label": "新信息是否改变严重/预期性判定",
+          "labelEn": "New Info Changes Assessment",
+          "type": "select",
+          "required": true,
+          "options": [
+            "是-重新判定",
+            "否"
+          ],
+          "help": "若实际为严重或非预期，必须重新评估时限。"
+        },
+        {
+          "key": "escalationToExp",
+          "label": "是否升级转ICSR-EXP",
+          "labelEn": "Escalate to ICSR-EXP",
+          "type": "select",
+          "required": true,
+          "options": [
+            "否",
+            "是-升级转ICSR-EXP"
+          ],
+          "help": "升级后由ICSR-EXP流程重新起算并快速报告。"
+        },
+        {
+          "key": "followUpNotes",
+          "label": "随访记录备注",
+          "labelEn": "Follow-up Notes",
+          "type": "textarea",
+          "required": false,
+          "help": "电话/信函记录等。"
+        }
+      ],
+      "guidance": "随访不延误首次报告（GVP第42条）。重点：若随访获得的新信息表明事件实际为严重或非预期，必须立即转入ICSR-EXP快速报告流程，并基于新判定重新起算时限；跟踪报告本身按获新信息之日起算。常见错误：升级信息滞留常规队列。依据：GVP第42、49条。",
+      "optional": true,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "closure",
+      "name": "结案与信号评估",
+      "nameEn": "Closure and Signal Assessment",
+      "role": [
+        "pv_head",
+        "qa_manager"
+      ],
+      "type": "signature",
+      "onComplete": "closed",
+      "requiresFields": [
+        "signalAssessment",
+        "dataQualityCheck",
+        "submissionComplete",
+        "archiveRef",
+        "closureComments"
+      ],
+      "form": [
+        {
+          "key": "signalAssessment",
+          "label": "信号评估结论",
+          "labelEn": "Signal Assessment",
+          "type": "select",
+          "required": true,
+          "options": [
+            "无需信号评估",
+            "转信号检测队列",
+            "已确认信号",
+            "聚集性-发起调查"
+          ],
+          "help": "聚集性事件须立即调查处置（GVP第61条、81号令第27条）。"
+        },
+        {
+          "key": "dataQualityCheck",
+          "label": "数据质量与审计检查",
+          "labelEn": "Data Quality Check",
+          "type": "select",
+          "required": true,
+          "options": [
+            "通过",
+            "不通过（需整改后结案）"
+          ],
+          "help": "E2B字段、修改追踪、回执完整性。"
+        },
+        {
+          "key": "submissionComplete",
+          "label": "递交回执与随访闭环",
+          "labelEn": "Submission and Follow-up Closed",
+          "type": "select",
+          "required": true,
+          "options": [
+            "齐备",
+            "缺失（禁止结案）"
+          ],
+          "help": "随访未闭环不得结案。"
+        },
+        {
+          "key": "archiveRef",
+          "label": "归档编号",
+          "labelEn": "Archive Reference",
+          "type": "text",
+          "required": true,
+          "help": "记录保存至药品注册证书注销后10年（GVP第114条）。"
+        },
+        {
+          "key": "closureComments",
+          "label": "结案意见",
+          "labelEn": "Closure Comments",
+          "type": "textarea",
+          "required": true,
+          "help": "结案理由与遗留事项。"
+        }
+      ],
+      "guidance": "结案前确认：非严重病例30日递交回执齐备、随访闭环、数据质量通过，并完成信号评估。结案签名由PV负责人或QA负责人完成，录入/处理人员不得自签；若随访曾发现升级转EXP，须确认快速报告路径已闭环并关联记录。依据：GVP第53-54、11-14条。",
+      "signatureMeaning": "closed",
+      "optional": false,
+      "independentOfAuthor": true
+    }
+  ],
+  "deadlinePolicy": {
+    "jurisdiction": "CN",
+    "basis": "awareness_date_with_minimal_criteria",
+    "seriousDays": 15,
+    "nonSeriousDays": 30,
+    "deathImmediate": true,
+    "deathInvestigationDays": 15,
+    "overseasActionHours": 24,
+    "notes": "《药物警戒质量管理规范》第四十九条：严重不良反应不迟于获知信息后 15 日，非严重不迟于 30 日；报告时限的起始日期为持有人首次获知该个例且符合最低报告要求的日期。第五十一条：境外暂停销售、使用或撤市，24 小时内报告。",
+    "notesEn": "GVP 2021 Article 49: serious reactions no later than 15 days, non-serious no later than 30 days, counted from the date of first awareness meeting the minimum criteria. Article 51: overseas suspension, use-withdrawal or market withdrawal within 24 hours."
+  }
+}

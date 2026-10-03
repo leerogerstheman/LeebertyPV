@@ -1,0 +1,460 @@
+{
+  "code": "PV-CHANGE",
+  "recordPrefix": "CHG",
+  "name": "药物警戒体系变更控制",
+  "nameEn": "PV System Change Control",
+  "category": "quality",
+  "gxpAreas": ["GVP"],
+  "regulationRefs": [
+    "GVP Module I（变更管理）",
+    "EU GVP Module II（药物警戒体系主文件更新）",
+    "《药物警戒质量管理规范》第11-14条（质量体系：内审、偏差、CAPA、变更）"
+  ],
+  "description": "对影响药物警戒体系的关键变更（人员、流程、系统、委托方）实施从变更描述、影响评估、实施计划、实施、验证到审批关闭的全过程受控管理，变更提出人不得自我批准。",
+  "descriptionEn": "Provides controlled management of critical PV system changes (personnel, processes, systems, delegated parties) from scoping, impact assessment, planning, implementation, verification to approval and closure. The change proposer may not self-approve.",
+  "slaDays": 60,
+  "requiresRootCause": false,
+  "requiresEffectivenessCheck": false,
+  "requiresQaApproval": true,
+  "criticalityLevels": ["minor", "major", "critical"],
+  "states": ["draft", "scope", "assess", "plan", "implement", "verify", "approve", "closed", "cancelled"],
+  "initialState": "draft",
+  "terminalStates": ["closed", "cancelled"],
+  "fields": [
+    {
+      "key": "title",
+      "label": "变更标题",
+      "labelEn": "Change Title",
+      "type": "text",
+      "required": true,
+      "help": "简明描述变更内容，如PV数据库升级。"
+    },
+    {
+      "key": "summary",
+      "label": "变更概述",
+      "labelEn": "Summary",
+      "type": "textarea",
+      "required": true,
+      "help": "描述变更的背景、目的与大致内容。"
+    },
+    {
+      "key": "changeType",
+      "label": "变更类型",
+      "labelEn": "Change Type",
+      "type": "select",
+      "required": true,
+      "options": ["人员变更", "流程变更", "系统变更", "委托方变更"],
+      "help": "选择变更所属类型。"
+    },
+    {
+      "key": "effectiveDate",
+      "label": "拟生效日期",
+      "labelEn": "Effective Date",
+      "type": "date",
+      "required": true,
+      "help": "变更计划生效的日期。"
+    },
+    {
+      "key": "psmfUpdateRequired",
+      "label": "是否需要更新PSMF",
+      "labelEn": "PSMF Update Required",
+      "type": "select",
+      "required": true,
+      "options": ["是", "否"],
+      "help": "判断变更是否触及药物警戒体系主文件内容。"
+    }
+  ],
+  "steps": [
+    {
+      "code": "scope",
+      "name": "变更描述与影响面",
+      "nameEn": "Change Scoping",
+      "role": ["pv_officer", "qa_specialist"],
+      "type": "task",
+      "onComplete": "scope",
+      "requiresFields": ["changeType"],
+      "form": [
+        {
+          "key": "sco_description",
+          "label": "变更具体描述",
+          "labelEn": "Change Description",
+          "type": "textarea",
+          "required": true,
+          "help": "具体到可执行：岗位与替代安排、模块与范围、协议与数据迁移等。"
+        },
+        {
+          "key": "sco_scope",
+          "label": "影响面",
+          "labelEn": "Impact Scope",
+          "type": "textarea",
+          "required": true,
+          "help": "人员/流程/系统/委托方的影响面。"
+        },
+        {
+          "key": "sco_affected",
+          "label": "受影响流程/模块",
+          "labelEn": "Affected Processes",
+          "type": "textarea",
+          "required": true,
+          "help": "列出受影响的PV流程与系统模块。"
+        },
+        {
+          "key": "sco_proposed",
+          "label": "拟实施日期",
+          "labelEn": "Proposed Date",
+          "type": "date",
+          "required": true,
+          "help": "拟开始实施的日期。"
+        },
+        {
+          "key": "sco_requiresVerification",
+          "label": "是否需要验证/测试",
+          "labelEn": "Verification Needed",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "识别是否涉及系统/数据迁移等需验证的活动。"
+        }
+      ],
+      "guidance": "变更描述须具体到可执行：人员变更写明岗位与替代安排，系统变更写明模块与范围，委托方变更写明协议与数据迁移安排。常见缺陷：变更描述笼统、影响面勾选不全、未识别间接影响（如权限、接口）。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "assess",
+      "name": "影响评估",
+      "nameEn": "Impact Assessment",
+      "role": ["pv_head", "qa_manager"],
+      "type": "task",
+      "onComplete": "assess",
+      "form": [
+        {
+          "key": "ass_reporting",
+          "label": "是否影响报告能力与时限",
+          "labelEn": "Affects Reporting",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "评估变更后报告能力是否受影响。"
+        },
+        {
+          "key": "ass_dataIntegrity",
+          "label": "是否影响数据完整性",
+          "labelEn": "Affects Data Integrity",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "评估对数据可信度与可追溯性的影响。"
+        },
+        {
+          "key": "ass_regulatory",
+          "label": "监管影响",
+          "labelEn": "Regulatory Impact",
+          "type": "textarea",
+          "required": true,
+          "help": "评估对监管沟通与合规的影响。"
+        },
+        {
+          "key": "ass_risk",
+          "label": "变更风险等级",
+          "labelEn": "Risk Level",
+          "type": "select",
+          "required": true,
+          "options": ["高", "中", "低"],
+          "help": "综合评估变更风险。"
+        },
+        {
+          "key": "ass_conclusion",
+          "label": "评估结论",
+          "labelEn": "Assessment Conclusion",
+          "type": "textarea",
+          "required": true,
+          "help": "明确变更是否可行及需配合的验证/培训/文档工作。"
+        }
+      ],
+      "guidance": "影响评估须覆盖数据完整性、报告能力与时限、监管沟通三方面，并判断是否需要验证、培训与文档更新。高风险变更如核心系统替换、委托方变更应报药物警戒负责人及质量负责人评审。常见缺陷：只评估正面影响、忽视过渡期双轨运行风险。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "plan",
+      "name": "实施计划与验证",
+      "nameEn": "Implementation & Validation Planning",
+      "role": ["qa_specialist"],
+      "type": "task",
+      "onComplete": "plan",
+      "requiresFields": ["effectiveDate"],
+      "form": [
+        {
+          "key": "pln_steps",
+          "label": "实施计划与步骤",
+          "labelEn": "Implementation Steps",
+          "type": "textarea",
+          "required": true,
+          "help": "含步骤、责任、时间线与回退方案。"
+        },
+        {
+          "key": "pln_validation",
+          "label": "是否需要系统验证",
+          "labelEn": "Validation Needed",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "涉及系统的变更须验证。"
+        },
+        {
+          "key": "pln_training",
+          "label": "是否需要培训",
+          "labelEn": "Training Needed",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "涉及人员与流程的变更须培训。"
+        },
+        {
+          "key": "pln_owner",
+          "label": "实施责任人",
+          "labelEn": "Implementation Owner",
+          "type": "text",
+          "required": true,
+          "help": "明确实施牵头人。"
+        },
+        {
+          "key": "pln_date",
+          "label": "计划完成日期",
+          "labelEn": "Planned Completion",
+          "type": "date",
+          "required": true,
+          "help": "计划完成日期。"
+        }
+      ],
+      "guidance": "实施计划须含步骤、责任人、时间线与回退方案；涉及系统的须规划验证活动，涉及流程与人员的须规划培训与宣贯。计划应明确变更生效日期并与档案、时限系统衔接。常见缺陷：无回退方案、验证与实施混为一谈、培训计划缺失。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "implement",
+      "name": "实施",
+      "nameEn": "Implementation",
+      "role": ["pv_officer", "qa_specialist", "pv_writer", "literature_reviewer", "pv_regulatory"],
+      "type": "task",
+      "onComplete": "implement",
+      "form": [
+        {
+          "key": "imp_items",
+          "label": "已实施内容",
+          "labelEn": "Implemented Items",
+          "type": "textarea",
+          "required": true,
+          "help": "逐项列出实施内容。"
+        },
+        {
+          "key": "imp_evidence",
+          "label": "实施证据",
+          "labelEn": "Evidence",
+          "type": "textarea",
+          "required": true,
+          "help": "发布记录、到岗记录、系统上线记录等。"
+        },
+        {
+          "key": "imp_date",
+          "label": "实施日期",
+          "labelEn": "Implementation Date",
+          "type": "date",
+          "required": true,
+          "help": "实际实施日期。"
+        },
+        {
+          "key": "imp_issues",
+          "label": "实施问题",
+          "labelEn": "Issues",
+          "type": "textarea",
+          "required": false,
+          "help": "实施中遇到的问题与处理。"
+        },
+        {
+          "key": "imp_planAdherence",
+          "label": "是否按计划实施",
+          "labelEn": "Plan Adherence",
+          "type": "select",
+          "required": true,
+          "options": ["按计划", "部分偏离", "未按计划"],
+          "help": "偏离计划须记录原因并经评估。"
+        }
+      ],
+      "guidance": "实施按批准的计划执行并保留证据，如发布记录、人员到岗记录、系统上线记录；任何偏离计划之处须记录并重新评估。常见缺陷：实施提前于审批完成、证据缺失、实施范围擅自扩大。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "verify",
+      "name": "验证/更新PSMF与SOP",
+      "nameEn": "Verification & PSMF/SOP Update",
+      "role": ["qa_manager"],
+      "type": "task",
+      "onComplete": "verify",
+      "requiresFields": ["psmfUpdateRequired"],
+      "form": [
+        {
+          "key": "ver_result",
+          "label": "验证结果",
+          "labelEn": "Verification Result",
+          "type": "select",
+          "required": true,
+          "options": ["通过", "不通过", "有条件通过"],
+          "help": "验证结论。"
+        },
+        {
+          "key": "ver_psmf",
+          "label": "PSMF是否已更新",
+          "labelEn": "PSMF Updated",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "按评估结论更新主文件。"
+        },
+        {
+          "key": "ver_sop",
+          "label": "相关SOP是否已更新",
+          "labelEn": "SOP Updated",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "受影响规程同步更新发布。"
+        },
+        {
+          "key": "ver_evidence",
+          "label": "验证证据",
+          "labelEn": "Verification Evidence",
+          "type": "textarea",
+          "required": true,
+          "help": "测试报告、数据比对结果、更新后的文档。"
+        },
+        {
+          "key": "ver_training",
+          "label": "培训是否完成",
+          "labelEn": "Training Completed",
+          "type": "select",
+          "required": true,
+          "options": ["已覆盖", "未覆盖", "不适用"],
+          "help": "涉及人员与流程的变更须确认培训覆盖。"
+        }
+      ],
+      "guidance": "验证须确认变更后体系仍具备报告能力与数据完整性：系统变更做功能与数据验证，人员变更确认交接与授权，委托方变更确认协议与服务验证。PSMF与相关SOP须同步更新至变更后状态。常见缺陷：验证记录缺失、PSMF更新滞后、SOP与实际做法不符。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "approve",
+      "name": "审批/签名",
+      "nameEn": "Approval",
+      "role": ["pv_head"],
+      "type": "signature",
+      "onComplete": "approve",
+      "form": [
+        {
+          "key": "app_conclusion",
+          "label": "审批结论",
+          "labelEn": "Approval Decision",
+          "type": "select",
+          "required": true,
+          "options": ["批准", "驳回"],
+          "help": "决定变更是否生效。"
+        },
+        {
+          "key": "app_comment",
+          "label": "审批意见",
+          "labelEn": "Approval Comments",
+          "type": "textarea",
+          "required": true,
+          "help": "说明批准依据或驳回理由。"
+        },
+        {
+          "key": "app_date",
+          "label": "审批日期",
+          "labelEn": "Approval Date",
+          "type": "date",
+          "required": true,
+          "help": "记录审批时间。"
+        },
+        {
+          "key": "app_validationChecked",
+          "label": "验证结果是否可接受",
+          "labelEn": "Validation Acceptable",
+          "type": "select",
+          "required": true,
+          "options": ["可接受", "不可接受"],
+          "help": "验证结论须经审批人认可。"
+        },
+        {
+          "key": "app_rollbackReady",
+          "label": "回退方案是否就绪",
+          "labelEn": "Rollback Ready",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "高风险变更须具备回退准备。"
+        }
+      ],
+      "guidance": "变更须由药物警戒负责人终审批准后方可视为生效，变更提出人不得自我批准。审批关注验证结论、PSMF/SOP更新与回退准备。常见缺陷：审批在实施后补签、提出人自批、未评估验证结论。",
+      "signatureMeaning": "独立审批：确认变更评估、实施与验证已完成且PSMF/SOP已更新，批准变更生效；变更提出人不得自我批准。",
+      "optional": false,
+      "independentOfAuthor": true
+    },
+    {
+      "code": "close",
+      "name": "关闭",
+      "nameEn": "Closure",
+      "role": ["pv_head"],
+      "type": "task",
+      "onComplete": "closed",
+      "form": [
+        {
+          "key": "clo_comment",
+          "label": "关闭说明",
+          "labelEn": "Closure Comments",
+          "type": "textarea",
+          "required": true,
+          "help": "确认变更生效、文档更新与培训覆盖。"
+        },
+        {
+          "key": "clo_effective",
+          "label": "确认变更按计划生效",
+          "labelEn": "Change Effective",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "核对生效日期与实际运行。"
+        },
+        {
+          "key": "clo_date",
+          "label": "关闭日期",
+          "labelEn": "Closure Date",
+          "type": "date",
+          "required": true,
+          "help": "实际关闭日期。"
+        },
+        {
+          "key": "clo_docArchived",
+          "label": "文档是否归档",
+          "labelEn": "Documents Archived",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "变更记录与审批文档须归档。"
+        },
+        {
+          "key": "clo_monitorPlan",
+          "label": "变更后早期运行跟踪安排",
+          "labelEn": "Post-change Monitoring",
+          "type": "textarea",
+          "required": false,
+          "help": "说明变更生效后的观察与跟踪安排。"
+        }
+      ],
+      "guidance": "关闭前确认：变更已生效且验证通过、相关文档与PSMF更新完成、培训覆盖到位。关闭后将变更纳入体系档案，作为后续内审与受托方审计的依据。常见缺陷：文档未归档、未跟踪变更后的早期运行情况。",
+      "optional": false,
+      "independentOfAuthor": false
+    }
+  ]
+}

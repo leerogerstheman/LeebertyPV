@@ -1,0 +1,69 @@
+{
+  "code": "RMP-CN",
+  "title": "风险管理计划核查表（药物警戒计划与风险最小化）",
+  "titleEn": "Risk Management Plan Checklist (PV plan and risk minimisation)",
+  "scope": "self_inspection",
+  "category": "pharmacovigilance",
+  "gxpAreas": ["RMP"],
+  "regulation": "《药物警戒质量管理规范》第96-99条（药物警戒计划）；ICH E2E（药物警戒计划）；EU GVP Module V；CDE《临床风险管理计划撰写指导原则（试行）》（2021年第68号通告）",
+  "authority": "NMPA / ICH / EMA / CDE",
+  "version": "基于已核实条款：GVP 第96-99条；ICH E2E；EU GVP Module V（2021年12月1日施行的《药物警戒质量管理规范》）",
+  "description": "用于核查风险管理计划（RMP）是否真实落地：重要风险与缺失信息清单是否基于证据、药物警戒计划是否与风险特征匹配、风险最小化措施（RMM）是否真的实施并验证其有效性、计划是否随新信号及时更新。",
+  "descriptionEn": "Checks that the risk management plan is actually implemented: evidence-based important risks and missing information, a PV plan matched to the risk profile, risk minimisation measures that are really implemented and verified effective, and updates on new signals.",
+  "items": [
+    {
+      "clauseRef": "GVP 第96条 / ICH E2E",
+      "requirement": "已为需要制定药物警戒计划的产品建立风险管理计划（RMP），RMP 的适用范围、制定时机与持有人责任有书面定义",
+      "requirementEn": "A risk management plan has been established where required, with a documented scope, timing and MAH accountability",
+      "guidance": "索取产品清单，核对新药、重大新适应证或已批准产品的新安全信号后是否按要求制定/更新 RMP；核对 RMP 是否纳入注册文件或按监管要求提交。",
+      "guidanceEn": "Pull the product list and check that new products, new indications or products with new signals have an RMP, and that it was filed as required.",
+      "riskLevel": "critical",
+      "evidenceHint": "RMP 文件与版本记录、监管提交回执、制定/更新触发条件清单"
+    },
+    {
+      "clauseRef": "GVP 第97条 / CDE 指导原则",
+      "requirement": "RMP 包含基于证据的重要已识别风险、重要潜在风险与缺失信息清单，每项风险写明依据与数据来源",
+      "requirementEn": "The RMP contains evidence-based lists of important identified risks, important potential risks and missing information, each with its basis and data source",
+      "guidance": "逐项核对风险清单是否引用了个例报告、信号评估或已有研究证据；常见缺陷是清单照抄模板、与产品实际数据脱节。",
+      "guidanceEn": "Check each risk entry cites actual evidence (case reports, signal assessments, studies); template-copied risk lists are a common finding.",
+      "riskLevel": "major",
+      "evidenceHint": "RMP 风险特征描述章节、信号评估报告引用、数据来源清单"
+    },
+    {
+      "clauseRef": "GVP 第98条",
+      "requirement": "药物警戒计划（常规与附加药物警戒活动）与产品风险特征匹配，附加活动（主动监测、登记研究等）有方案、时限与责任人",
+      "requirementEn": "The pharmacovigilance plan (routine and additional activities) matches the product risk profile; additional activities have protocols, timelines and owners",
+      "guidance": "核对每个重要风险的相应药物警戒活动是否具体、可执行；常见缺陷是附加活动只写名称而无研究方案与完成时限。",
+      "guidanceEn": "Check every important risk has a concrete PV activity with a protocol and a timeline, not just a name.",
+      "riskLevel": "major",
+      "evidenceHint": "RMP 药物警戒计划章节、附加活动方案、完成时限与进展记录"
+    },
+    {
+      "clauseRef": "GVP 第99条",
+      "requirement": "风险最小化计划同时覆盖常规措施（说明书、标签）与附加措施，并逐项写明拟解决的风险、目标人群、评估指标与评估时限",
+      "requirementEn": "The risk minimisation plan covers routine and additional measures, each stating the targeted risk, population, evaluation metric and evaluation timeframe",
+      "guidance": "核对每项附加 RMM（如致医务人员函、患者教育、用药登记簿、限制处方）是否写明：降低什么风险、怎么评估有效、何时评估。",
+      "guidanceEn": "Verify every additional RMM (DHPC, patient education, registry, restricted prescription) states which risk it lowers, how effectiveness is measured, and when.",
+      "riskLevel": "major",
+      "evidenceHint": "RMP 风险最小化章节、评估指标定义、评估计划"
+    },
+    {
+      "clauseRef": "GVP 第99条 / ICH Q10",
+      "requirement": "附加风险最小化措施已实际实施（文件、培训、渠道就位），且按计划开展有效性评估并留存记录",
+      "requirementEn": "Additional risk minimisation measures are actually implemented (documents, training, channels in place) and effectiveness is evaluated on schedule with records",
+      "guidance": "抽查实施证据：致医务人员函是否实际发出、患者教育材料是否发放；常见缺陷是 RMP 写得好而实施无痕迹、有效性评估从未开展。",
+      "guidanceEn": "Sample implementation evidence - was the DHPC actually sent, were patient materials distributed? Plans without implementation traces are a common finding.",
+      "riskLevel": "critical",
+      "evidenceHint": "发出记录、培训记录、渠道清单、有效性评估报告"
+    },
+    {
+      "clauseRef": "GVP 第99条 / 信号管理联动",
+      "requirement": "RMP 随新确认信号、说明书修订或风险特征变化及时更新，更新经审批并有版本记录",
+      "requirementEn": "The RMP is updated on confirmed signals, labelling changes or risk-profile changes, with approvals and version control",
+      "guidance": "取信号评估记录与说明书修订记录，对照 RMP 的版本日期与修订说明；常见缺陷是信号确认后 RMP 长期未动。",
+      "guidanceEn": "Compare signal assessment dates and labelling changes against RMP versions and revision notes; long-stale RMPs after signal confirmation are a finding.",
+      "riskLevel": "major",
+      "evidenceHint": "RMP 修订历史、信号评估结论、说明书修订记录、审批签署"
+    }
+  ]
+}

@@ -1,0 +1,525 @@
+{
+  "code": "COMP-HANDLE",
+  "recordPrefix": "COMP",
+  "name": "药品投诉与召回联动",
+  "nameEn": "Product Complaint & Recall Handling",
+  "category": "complaint",
+  "gxpAreas": ["COMPLAINT"],
+  "regulationRefs": [
+    "《中华人民共和国药品管理法》（药品召回与风险控制要求）",
+    "《药品召回管理办法》",
+    "EU GVP Module VI（投诉中不良反应的收集与处理）",
+    "《药物警戒质量管理规范》（国家药监局2021年第65号公告）"
+  ],
+  "description": "覆盖药品投诉从接收、登记到安全性判定、质量调查、处置及可能召回的全过程；投诉中可能隐藏未报告的不良反应，须联动ICSR流程与CAPA体系闭环管理。",
+  "descriptionEn": "Covers the end-to-end handling of product complaints from intake and registration, safety triage, quality investigation, disposition to potential recall. Complaints may hide unreported adverse reactions and must be linked to the ICSR process and the CAPA system.",
+  "slaDays": 30,
+  "requiresRootCause": false,
+  "requiresEffectivenessCheck": false,
+  "requiresQaApproval": true,
+  "criticalityLevels": ["minor", "major", "critical"],
+  "states": ["draft", "receive", "safety_triage", "qualify", "action", "recall", "capa_link", "closed", "cancelled"],
+  "initialState": "draft",
+  "terminalStates": ["closed", "cancelled"],
+  "fields": [
+    {
+      "key": "title",
+      "label": "投诉标题",
+      "labelEn": "Complaint Title",
+      "type": "text",
+      "required": true,
+      "help": "简明概括投诉事项，如批次、症状或质量问题。"
+    },
+    {
+      "key": "summary",
+      "label": "投诉摘要",
+      "labelEn": "Summary",
+      "type": "textarea",
+      "required": true,
+      "help": "记录投诉人描述的核心事实、发生时间与影响。"
+    },
+    {
+      "key": "product",
+      "label": "涉及药品",
+      "labelEn": "Product",
+      "type": "text",
+      "required": true,
+      "help": "填写药品通用名/商品名及规格。"
+    },
+    {
+      "key": "batchNumber",
+      "label": "批号",
+      "labelEn": "Batch Number",
+      "type": "text",
+      "required": false,
+      "help": "如投诉与特定批次相关则填写，用于召回范围界定。"
+    },
+    {
+      "key": "complaintChannel",
+      "label": "投诉渠道",
+      "labelEn": "Complaint Channel",
+      "type": "select",
+      "required": true,
+      "options": ["电话", "电子邮件", "信函", "现场来访", "监管部门转办", "经营企业/经销商转达", "社交平台/网络"],
+      "help": "记录投诉信息首次到达企业的渠道。"
+    },
+    {
+      "key": "wasSafetyRelated",
+      "label": "是否涉及安全性问题",
+      "labelEn": "Safety Related?",
+      "type": "select",
+      "required": true,
+      "options": ["是", "否"],
+      "help": "初判是否疑似不良反应或存在患者伤害，决定后续分流。"
+    }
+  ],
+  "steps": [
+    {
+      "code": "receive",
+      "name": "投诉接收与登记",
+      "nameEn": "Complaint Intake & Registration",
+      "role": ["pv_data_entry", "pv_officer"],
+      "type": "task",
+      "onComplete": "receive",
+      "requiresFields": ["title", "product", "complaintChannel"],
+      "form": [
+        {
+          "key": "recv_complaintDate",
+          "label": "投诉日期",
+          "labelEn": "Complaint Date",
+          "type": "date",
+          "required": true,
+          "help": "投诉人首次提出或信息首次到达企业的日期。"
+        },
+        {
+          "key": "recv_contactTime",
+          "label": "首次接触时间",
+          "labelEn": "First Contact Time",
+          "type": "date",
+          "required": true,
+          "help": "作为获知时间的主记录，供后续时限计算参考。"
+        },
+        {
+          "key": "recv_complainantCategory",
+          "label": "投诉人类型",
+          "labelEn": "Complainant Type",
+          "type": "select",
+          "required": true,
+          "options": ["患者/消费者", "医务人员/医疗机构", "经营企业/经销商", "监管部门", "其他"],
+          "help": "识别投诉人身份，便于随访与报告义务判断。"
+        },
+        {
+          "key": "recv_complainantName",
+          "label": "投诉人/单位",
+          "labelEn": "Complainant",
+          "type": "text",
+          "required": true,
+          "help": "记录姓名或单位名称及联系方式。"
+        },
+        {
+          "key": "recv_channelDetail",
+          "label": "渠道补充说明",
+          "labelEn": "Channel Details",
+          "type": "text",
+          "required": false,
+          "help": "如监管转办文号、网络平台名称等。"
+        },
+        {
+          "key": "recv_contentDetail",
+          "label": "投诉具体内容",
+          "labelEn": "Complaint Details",
+          "type": "textarea",
+          "required": true,
+          "help": "逐项记录投诉人陈述的事实、诉求与已附证据。"
+        },
+        {
+          "key": "recv_attachments",
+          "label": "附件/证据清单",
+          "labelEn": "Attachments",
+          "type": "textarea",
+          "required": false,
+          "help": "列出随投诉提供的照片、发票、病历等证据。"
+        }
+      ],
+      "guidance": "登记时应完整记录投诉人陈述与联系信息，并保存原始电话录音或邮件/信函原件。任何渠道（含销售、市场与热线）收到的投诉都必须及时进入本流程登记，防止漏登。常见缺陷：只登记了质量问题而忽略其中可能同时存在的安全性描述，导致后续误判。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "safety_triage",
+      "name": "安全性判定",
+      "nameEn": "Safety Triage",
+      "role": ["pv_officer", "pv_medical"],
+      "type": "task",
+      "onComplete": "safety_triage",
+      "requiresFields": ["wasSafetyRelated"],
+      "form": [
+        {
+          "key": "tri_adverseReaction",
+          "label": "是否疑似药品不良反应",
+          "labelEn": "Suspected ADR?",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "投诉里可能藏着未报告的不良反应，需逐字核对陈述。"
+        },
+        {
+          "key": "tri_patientHarm",
+          "label": "患者伤害情况",
+          "labelEn": "Patient Harm",
+          "type": "select",
+          "required": true,
+          "options": ["无伤害", "轻微伤害（未就医）", "就医/住院", "死亡或危及生命"],
+          "help": "描述是否存在伤害及严重程度。"
+        },
+        {
+          "key": "tri_seriousness",
+          "label": "严重性初判",
+          "labelEn": "Seriousness",
+          "type": "select",
+          "required": true,
+          "options": ["非严重", "严重"],
+          "help": "按六条严重性标准初步判定。"
+        },
+        {
+          "key": "tri_icsrLink",
+          "label": "关联ICSR编号",
+          "labelEn": "Linked ICSR ID",
+          "type": "text",
+          "required": false,
+          "help": "若判定疑似不良反应，先转ICSR流程并回填病例编号。"
+        },
+        {
+          "key": "tri_medicalReview",
+          "label": "是否需医学审核",
+          "labelEn": "Medical Review Needed",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "涉及伤害、死亡或复杂情形的投诉需医学审核。"
+        },
+        {
+          "key": "tri_conclusion",
+          "label": "安全性判定结论",
+          "labelEn": "Triage Conclusion",
+          "type": "textarea",
+          "required": true,
+          "help": "结论必须写明是否为安全性问题及分流去向。"
+        }
+      ],
+      "guidance": "安全性判定是本案的关键分流点：凡投诉涉及用药后出现不适、伤害、死亡等描述的，必须判定为疑似不良反应，先按个例报告流程转ICSR处理，不得停留在投诉台账中。常见缺陷：把不良反应当作纯质量问题处理导致漏报，或对严重情形未触发报告时限。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "qualify",
+      "name": "质量调查与责任判定",
+      "nameEn": "Quality Investigation",
+      "role": ["qa_specialist", "qa_manager"],
+      "type": "task",
+      "onComplete": "qualify",
+      "form": [
+        {
+          "key": "qua_defect",
+          "label": "质量问题描述",
+          "labelEn": "Defect Description",
+          "type": "textarea",
+          "required": true,
+          "help": "如外观、装量、色泽、异物、运输损坏等具体缺陷。"
+        },
+        {
+          "key": "qua_scope",
+          "label": "调查范围",
+          "labelEn": "Investigation Scope",
+          "type": "textarea",
+          "required": true,
+          "help": "覆盖人、机、料、法、环、测各要素。"
+        },
+        {
+          "key": "qua_evidence",
+          "label": "调查证据",
+          "labelEn": "Evidence",
+          "type": "textarea",
+          "required": true,
+          "help": "留样检查、批生产/检验记录、稳定性数据等。"
+        },
+        {
+          "key": "qua_rootCause",
+          "label": "疑似根本原因",
+          "labelEn": "Suspected Root Cause",
+          "type": "textarea",
+          "required": false,
+          "help": "如无法确定需在结论中说明。"
+        },
+        {
+          "key": "qua_result",
+          "label": "责任判定结果",
+          "labelEn": "Verification Result",
+          "type": "select",
+          "required": true,
+          "options": ["投诉属实", "部分属实", "不属实"],
+          "help": "判定投诉是否成立、与产品质量的相关性。"
+        },
+        {
+          "key": "qua_impact",
+          "label": "质量影响程度",
+          "labelEn": "Quality Impact",
+          "type": "select",
+          "required": true,
+          "options": ["轻微", "一般", "重大"],
+          "help": "影响程度驱动处置与召回判断。"
+        }
+      ],
+      "guidance": "质量调查应调取留样、批生产与检验记录、运输与库存记录，判定投诉是否属实、是否构成质量缺陷，并区分产品缺陷与使用储存不当。常见缺陷：仅凭外观照片下结论、未做留样检查、把非缺陷投诉强行定责导致错误启动召回。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "action",
+      "name": "处置实施",
+      "nameEn": "Disposition",
+      "role": ["qa_manager"],
+      "type": "task",
+      "onComplete": "action",
+      "form": [
+        {
+          "key": "act_type",
+          "label": "处置类型",
+          "labelEn": "Action Type",
+          "type": "select",
+          "required": true,
+          "options": ["换货", "退款", "召回", "停用/封存", "纠偏整改", "向监管部门报告"],
+          "help": "按调查结论选择处置方式。"
+        },
+        {
+          "key": "act_plan",
+          "label": "处置方案",
+          "labelEn": "Action Plan",
+          "type": "textarea",
+          "required": true,
+          "help": "写明换货/退款安排或纠偏措施细节。"
+        },
+        {
+          "key": "act_customer",
+          "label": "与投诉方沟通结果",
+          "labelEn": "Communication Result",
+          "type": "textarea",
+          "required": true,
+          "help": "记录处理结果告知与投诉方反馈。"
+        },
+        {
+          "key": "act_owner",
+          "label": "处置责任人",
+          "labelEn": "Action Owner",
+          "type": "text",
+          "required": true,
+          "help": "明确责任岗位与人员。"
+        },
+        {
+          "key": "act_dueDate",
+          "label": "处置期限",
+          "labelEn": "Due Date",
+          "type": "date",
+          "required": true,
+          "help": "承诺完成处置的日期。"
+        },
+        {
+          "key": "act_needRecall",
+          "label": "是否需启动召回",
+          "labelEn": "Recall Needed?",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "质量缺陷扩散至在售批次时需考虑召回。"
+        }
+      ],
+      "guidance": "处置方案须与质量影响程度匹配：轻微问题换货或退款即可，涉及流通中缺陷批次或安全隐患的必须评估召回与监管报告。处置过程保留客户沟通记录与实物处理凭证。常见缺陷：只安抚投诉人未做根因处置，或处置后未联动CAPA导致同类投诉复发。",
+      "optional": false,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "recall",
+      "name": "召回分级与通知",
+      "nameEn": "Recall Classification & Notification",
+      "role": ["qa_manager", "pv_head"],
+      "type": "signature",
+      "onComplete": "recall",
+      "requiresFields": ["batchNumber"],
+      "form": [
+        {
+          "key": "rec_class",
+          "label": "召回等级",
+          "labelEn": "Recall Class",
+          "type": "select",
+          "required": true,
+          "options": ["一级召回（可能严重危害健康）", "二级召回（暂时或可能危害）", "三级召回（一般不会危害）"],
+          "help": "按缺陷危害程度分级。"
+        },
+        {
+          "key": "rec_scope",
+          "label": "召回范围",
+          "labelEn": "Recall Scope",
+          "type": "textarea",
+          "required": true,
+          "help": "列出批次、流向与数量估算。"
+        },
+        {
+          "key": "rec_notifyAuthority",
+          "label": "是否已通知药监部门",
+          "labelEn": "Authority Notified",
+          "type": "select",
+          "required": true,
+          "options": ["已通知", "未通知"],
+          "help": "一级召回须立即通知，其余按要求时限通知。"
+        },
+        {
+          "key": "rec_notifyDetail",
+          "label": "通知情况",
+          "labelEn": "Notification Details",
+          "type": "textarea",
+          "required": false,
+          "help": "记录通知对象、方式与文号。"
+        },
+        {
+          "key": "rec_plan",
+          "label": "召回实施计划",
+          "labelEn": "Recall Plan",
+          "type": "textarea",
+          "required": true,
+          "help": "含通知经销商/医疗机构、回收与处置安排。"
+        },
+        {
+          "key": "rec_completeDate",
+          "label": "召回完成日期",
+          "labelEn": "Recall Completion Date",
+          "type": "date",
+          "required": false,
+          "help": "预计或实际完成日期。"
+        }
+      ],
+      "guidance": "启动召回须按《药品召回管理办法》确定召回等级，由质量负责人与药物警戒负责人共同签署批准；一级召回应立即通知药监部门。召回批次中若含有不良反应描述的病例，仍须按ICSR时限报告。常见缺陷：召回等级判定偏低、未及时通知药监、召回批次与台账不一致。",
+      "signatureMeaning": "签名确认召回分级、范围与对监管部门的通知安排符合《药品召回管理办法》要求，批准对外启动召回。",
+      "optional": true,
+      "independentOfAuthor": true
+    },
+    {
+      "code": "capa_link",
+      "name": "转CAPA",
+      "nameEn": "Link to CAPA",
+      "role": ["qa_specialist"],
+      "type": "task",
+      "onComplete": "capa_link",
+      "form": [
+        {
+          "key": "cap_linkRequired",
+          "label": "是否转入CAPA流程",
+          "labelEn": "CAPA Required",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "确认质量缺陷或流程缺陷是否需要纠正预防。"
+        },
+        {
+          "key": "cap_capaCode",
+          "label": "关联CAPA编号",
+          "labelEn": "CAPA ID",
+          "type": "text",
+          "required": false,
+          "help": "回填已创建的CAPA记录编号。"
+        },
+        {
+          "key": "cap_brief",
+          "label": "CAPA要点简述",
+          "labelEn": "CAPA Summary",
+          "type": "textarea",
+          "required": false,
+          "help": "简述需纠正与预防的内容。"
+        },
+        {
+          "key": "cap_linkDate",
+          "label": "转出日期",
+          "labelEn": "Link Date",
+          "type": "date",
+          "required": true,
+          "help": "记录联动时间便于跟踪。"
+        },
+        {
+          "key": "cap_owner",
+          "label": "转出责任人",
+          "labelEn": "Linking Owner",
+          "type": "text",
+          "required": true,
+          "help": "明确负责转出与跟踪的人员。"
+        },
+        {
+          "key": "cap_verify",
+          "label": "是否需跟踪CAPA有效性",
+          "labelEn": "Effectiveness Tracking Needed",
+          "type": "select",
+          "required": true,
+          "options": ["是", "否"],
+          "help": "判断是否需要在CAPA关闭前跟踪其有效性。"
+        }
+      ],
+      "guidance": "调查发现的系统性缺陷（如投诉处理流程漏洞、储存运输环节问题、同类投诉高发）应转入CAPA流程闭环管理，防止同类投诉再次发生。常见缺陷：投诉结案即止、不评估是否需要CAPA，导致缺陷重复出现。",
+      "optional": true,
+      "independentOfAuthor": false
+    },
+    {
+      "code": "closed",
+      "name": "结案",
+      "nameEn": "Closure",
+      "role": ["qa_manager", "pv_head"],
+      "type": "signature",
+      "onComplete": "closed",
+      "form": [
+        {
+          "key": "clo_comment",
+          "label": "结案意见",
+          "labelEn": "Closure Comments",
+          "type": "textarea",
+          "required": true,
+          "help": "确认投诉处置、召回与CAPA状态均已闭环。"
+        },
+        {
+          "key": "clo_lessons",
+          "label": "经验教训",
+          "labelEn": "Lessons Learned",
+          "type": "textarea",
+          "required": false,
+          "help": "记录改进建议供体系参考。"
+        },
+        {
+          "key": "clo_date",
+          "label": "结案日期",
+          "labelEn": "Closure Date",
+          "type": "date",
+          "required": true,
+          "help": "实际结案日期。"
+        },
+        {
+          "key": "clo_icsrStatus",
+          "label": "关联ICSR是否已提交",
+          "labelEn": "Linked ICSR Submitted",
+          "type": "select",
+          "required": true,
+          "options": ["已提交", "处理中", "不适用"],
+          "help": "涉及不良反应的投诉须核对ICSR提交状态。"
+        },
+        {
+          "key": "clo_recallStatus",
+          "label": "召回是否完成",
+          "labelEn": "Recall Completed",
+          "type": "select",
+          "required": true,
+          "options": ["已完成", "进行中", "不适用"],
+          "help": "已启动召回的案件须确认召回闭环状态。"
+        }
+      ],
+      "guidance": "结案前应复核：投诉答复是否完成、涉及不良反应的病例是否已按时限提交ICSR、召回是否按规定报告、CAPA是否已联动。质量负责人或药物警戒负责人签署后方可关闭。常见缺陷：ICSR未提交即结案、缺少签批留痕。",
+      "signatureMeaning": "签名确认投诉/召回事项已闭环处置（含ICSR与CAPA联动状态），同意结案归档。",
+      "optional": false,
+      "independentOfAuthor": false
+    }
+  ]
+}

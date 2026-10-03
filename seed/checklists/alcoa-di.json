@@ -1,0 +1,123 @@
+{
+  "code": "ALCOA-DI",
+  "title": "数据完整性核查（ALCOA+）",
+  "titleEn": "Data Integrity Check (ALCOA+)",
+  "scope": "self_inspection",
+  "category": "data_integrity",
+  "gxpAreas": ["GVP", "ICSR"],
+  "regulation": "《药品记录与数据管理要求（试行）》及FDA/WHO数据完整性指引（ALCOA+）",
+  "authority": "国家药品监督管理局（《药品记录与数据管理要求（试行）》）；FDA/WHO（ALCOA+原则）",
+  "version": "ALCOA+框架（可归属、清晰、同步、原始、准确、完整、一致、持久、可用）",
+  "description": "核查药物警戒数据（ICSR个案、信号、PSUR、培训与质量记录）及所用系统在可归属、清晰、同步、原始、准确、完整、一致、持久、可用与审计追踪方面的合规性。",
+  "descriptionEn": "Verifies the integrity of pharmacovigilance data (ICSR cases, signals, PSURs, training and quality records) and supporting systems against the ALCOA+ attributes and audit trail requirements.",
+  "items": [
+    {
+      "clauseRef": "Attributable（可归属）",
+      "requirement": "每条数据与记录可归属到具体操作者：系统使用唯一账号，纸质与电子记录均能追溯到操作人。",
+      "requirementEn": "Each datum and record is attributable to a specific operator: systems use unique accounts, and both paper and electronic records can be traced to the person who performed the action.",
+      "guidance": "检查账号唯一性与共用账号使用情况，抽查记录的操作人标识是否完整。常见缺陷：公用账号、记录无法回溯到人。",
+      "guidanceEn": "Check account uniqueness and shared-account usage, and sample whether records carry complete operator identification. Common defects: shared accounts, records not traceable to individuals.",
+      "riskLevel": "critical",
+      "evidenceHint": "账号清单、权限矩阵、操作人标识样本"
+    },
+    {
+      "clauseRef": "Legible（清晰可读）",
+      "requirement": "记录清晰可读：手写可辨、电子记录正常显示、扫描件清晰，数据不得模糊或不可辨识。",
+      "requirementEn": "Records are legible: handwriting decipherable, electronic records display correctly, scans are clear, and data are not blurred or unreadable.",
+      "guidance": "抽查纸质、扫描与电子记录的可读性。常见缺陷：字迹潦草、扫描模糊、历史数据乱码。",
+      "guidanceEn": "Sample the legibility of paper, scanned and electronic records. Common defects: illegible handwriting, blurry scans, corrupted legacy data.",
+      "riskLevel": "major",
+      "evidenceHint": "记录样本、扫描质量抽检记录"
+    },
+    {
+      "clauseRef": "Contemporaneous（同步记录）",
+      "requirement": "记录与活动同步生成：受理与录入带时间戳，时间戳与事件发生时间一致，且不可手工任意改写。",
+      "requirementEn": "Records are created simultaneously with the activity: intake and entry carry timestamps consistent with the event time, and timestamps cannot be arbitrarily changed manually.",
+      "guidance": "抽查受理时间戳与系统时钟一致性（时区、校时）。常见缺陷：事后补录、时间戳可被修改。",
+      "guidanceEn": "Sample the consistency of intake timestamps with system clocks (timezone, time sync). Common defects: backdated entries, modifiable timestamps.",
+      "riskLevel": "critical",
+      "evidenceHint": "受理时间戳日志、系统时钟校时记录、补录检测记录"
+    },
+    {
+      "clauseRef": "Original（原始记录）",
+      "requirement": "保留原始记录（首次生成的介质与内容），转抄件、复印件与原件一致并注明出处。",
+      "requirementEn": "Original records (first generated medium and content) are retained; transcripts and copies match the originals and state their source.",
+      "guidance": "抽查原始记录存储与副本一致性。常见缺陷：只存转抄件、原件销毁、副本无出处标识。",
+      "guidanceEn": "Sample original record storage and copy consistency. Common defects: only transcripts kept, originals destroyed, copies without source identification.",
+      "riskLevel": "major",
+      "evidenceHint": "原始记录归档清单、副本出处标识、一致性抽查记录"
+    },
+    {
+      "clauseRef": "Accurate（准确）",
+      "requirement": "记录内容与源数据一致（与报告人陈述、原始表格一致），错误修正留痕且不覆盖原值。",
+      "requirementEn": "Recorded content matches the source data (reporter statements, source forms); corrections are documented and never overwrite the original value.",
+      "guidance": "抽查病例数据与源文件比对（如电话记录对录入值），检查修正机制。常见缺陷：转述失真、改数无痕覆盖原值。",
+      "guidanceEn": "Compare case data against source documents (e.g., call records vs entered values) and check the correction mechanism. Common defects: transcription distortion, corrections overwriting originals without trace.",
+      "riskLevel": "critical",
+      "evidenceHint": "源文件与录入值比对记录、修正留痕样本"
+    },
+    {
+      "clauseRef": "Complete（完整）",
+      "requirement": "必填字段完整不截断，随访补全信息保留，被判无效或拒绝的记录有理由说明。",
+      "requirementEn": "Required fields are complete without truncation, follow-up-completed information is retained, and records judged invalid or rejected carry reason statements.",
+      "guidance": "抽查字段完整性校验结果与无效记录说明。常见缺陷：字段截断、无效记录无理由、补全信息未合并。",
+      "guidanceEn": "Sample completeness check results and invalid-record statements. Common defects: truncated fields, invalid records without reasons, completed information not merged.",
+      "riskLevel": "major",
+      "evidenceHint": "完整性校验报告、无效记录说明、随访补全记录"
+    },
+    {
+      "clauseRef": "Consistent（一致）",
+      "requirement": "同一数据在各系统与库（PV库、信号库、提交文件）之间一致，时间线一致。",
+      "requirementEn": "The same data are consistent across systems and repositories (PV database, signal database, submission files) with consistent timelines.",
+      "guidance": "交叉比对库内数据与导出文件。常见缺陷：库间不一致、导出文件与库内不符。",
+      "guidanceEn": "Cross-compare repository data against exported files. Common defects: inconsistency across repositories, exports not matching the database.",
+      "riskLevel": "critical",
+      "evidenceHint": "跨库比对报告、导出文件核对记录"
+    },
+    {
+      "clauseRef": "Enduring（持久）",
+      "requirement": "记录介质可靠，保存期内可读、可恢复，具备备份与恢复机制并定期验证。",
+      "requirementEn": "Record media are reliable and readable throughout retention, with backup and recovery mechanisms verified periodically.",
+      "guidance": "检查备份策略、恢复演练记录与介质状况。常见缺陷：无备份、备份不可恢复、恢复演练缺失。",
+      "guidanceEn": "Check the backup policy, recovery drill records and media condition. Common defects: no backup, unrecoverable backups, no recovery drills.",
+      "riskLevel": "major",
+      "evidenceHint": "备份策略文档、备份日志、恢复演练记录"
+    },
+    {
+      "clauseRef": "Available（可用）",
+      "requirement": "记录在权限范围内随时可查取，检索功能正常，数据在保存期内可被监管随时调取。",
+      "requirementEn": "Records are readily retrievable within granted permissions, search functions work, and data can be produced to regulators at any time during retention.",
+      "guidance": "实测查询与导出功能及权限。常见缺陷：检索不可用、权限过窄无法履行报告义务、导出超时。",
+      "guidanceEn": "Test search and export functions and permissions in practice. Common defects: retrieval unavailable, permissions too narrow to meet reporting obligations, export timeouts.",
+      "riskLevel": "major",
+      "evidenceHint": "检索/导出实测记录、权限矩阵"
+    },
+    {
+      "clauseRef": "审计追踪（稽查轨迹）",
+      "requirement": "ADR与疫苗数据库系统开启审计追踪，记录记录的创建、修改、删除等操作，含操作人、时间与原值，且审计追踪本身不可篡改。",
+      "requirementEn": "ADR and vaccine database systems enable audit trails recording create/modify/delete actions with operator, time and original value, and the audit trail itself is tamper-proof.",
+      "guidance": "抽查审计日志完整性并测试管理员能否无痕修改。常见缺陷：审计追踪未开启、可被高级权限清除、只记录成败不记录内容。",
+      "guidanceEn": "Sample audit log completeness and test whether administrators can modify without trace. Common defects: audit trail disabled, purgeable by high-privilege accounts, logs recording only success/failure rather than content.",
+      "riskLevel": "critical",
+      "evidenceHint": "审计日志样本、权限与审计保护配置、绕过测试记录"
+    },
+    {
+      "clauseRef": "修改与签批留痕",
+      "requirement": "数据修改有原因记录与操作人留痕，审批动作有电子签名或签批记录。",
+      "requirementEn": "Data modifications carry reason records and operator traces, and approval actions have electronic signatures or signed records.",
+      "guidance": "抽查修改记录与审批签名。常见缺陷：修改无原因、签批事后补签、签名无含义说明。",
+      "guidanceEn": "Sample modification records and approval signatures. Common defects: modifications without reasons, backdated approvals, signatures without meaning statements.",
+      "riskLevel": "major",
+      "evidenceHint": "修改日志、原因字段样本、审批签名记录"
+    },
+    {
+      "clauseRef": "保存期限",
+      "requirement": "药物警戒记录保存期限符合要求（参照GVP第113条：保存至药品注册证书注销后10年），到期处置有制度。",
+      "requirementEn": "PV record retention meets the requirement (reference GVP Article 113: until 10 years after cancellation of the registration certificate), with a policy for disposal at expiry.",
+      "guidance": "核对保存期限制度与执行情况。常见缺陷：保存期不足、到期记录无处置制度、销毁无审批。",
+      "guidanceEn": "Check the retention policy and its enforcement. Common defects: retention shorter than required, no disposal policy, destruction without approval.",
+      "riskLevel": "major",
+      "evidenceHint": "保存期限制度、档案盘点记录、销毁审批记录"
+    }
+  ]
+}

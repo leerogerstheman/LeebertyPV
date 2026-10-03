@@ -1,0 +1,123 @@
+{
+  "code": "PART11",
+  "title": "21 CFR Part 11 计算机化系统核查",
+  "titleEn": "21 CFR Part 11 Computerised System Check",
+  "scope": "self_inspection",
+  "category": "data_integrity",
+  "gxpAreas": ["GVP"],
+  "regulation": "美国联邦法规21 CFR Part 11（电子记录；电子签名）",
+  "authority": "美国食品药品监督管理局（U.S. FDA）",
+  "version": "21 CFR Part 11现行版",
+  "description": "核查公司药物警戒及相关计算机化系统在系统验证、记录保存、审计追踪、电子签名、访问控制、培训、文档控制、备份恢复与输入人身份记录方面对21 CFR Part 11的符合性。",
+  "descriptionEn": "Verifies that PV and related computerised systems comply with 21 CFR Part 11 in system validation, record retention, audit trails, electronic signatures, access control, training, documentation control, backup/recovery and identification of data-entry persons.",
+  "items": [
+    {
+      "clauseRef": "11.10(a) 系统验证",
+      "requirement": "系统在受控环境下经验证或确认，验证按既定程序进行并保存证据（需求、测试、偏差处理）。",
+      "requirementEn": "Systems are validated or confirmed in a controlled environment, following defined procedures and retaining evidence (requirements, tests, deviation handling).",
+      "guidance": "核查系统验证计划、测试用例、测试证据与验证报告，确认验证范围与系统现行功能匹配。常见缺陷：验证缺失、验证与上线后变更脱节。",
+      "guidanceEn": "Review validation plans, test cases, evidence and reports, confirming that validation scope matches current functionality. Common defects: no validation, validation out of step with post-release changes.",
+      "riskLevel": "critical",
+      "evidenceHint": "验证计划与报告、测试用例与结果、偏差处理记录"
+    },
+    {
+      "clauseRef": "11.10(b)(c) 记录保存与保护",
+      "requirement": "电子记录被准确、完整地复制并受保护，能在保存期内稳定检索与取用。",
+      "requirementEn": "Electronic records are accurately and completely copied and protected, and can be reliably retrieved during the retention period.",
+      "guidance": "测试记录检索、导出与打印功能。常见缺陷：记录无法导出、检索条件受限、复制件与原件不一致。",
+      "guidanceEn": "Test retrieval, export and printing of records. Common defects: records not exportable, restricted search, copies inconsistent with originals.",
+      "riskLevel": "major",
+      "evidenceHint": "检索/导出实测记录、副本核对记录"
+    },
+    {
+      "clauseRef": "11.10(e) 审计追踪",
+      "requirement": "系统自动记录电子记录的创建、修改、删除，包含旧值、新值、操作人、时间与原因，审计追踪本身受保护不可篡改。",
+      "requirementEn": "Systems automatically record the creation, modification and deletion of electronic records including old values, new values, operator, time and reason; the audit trail itself is protected against tampering.",
+      "guidance": "实际执行一次修改操作并核对审计日志条目，测试普通用户与管理员能否绕过日志。常见缺陷：审计未开启、日志可被高级权限清除。",
+      "guidanceEn": "Perform a real modification and verify the audit entries; test whether normal users and administrators can bypass the log. Common defects: audit trail disabled, logs purgeable by high-privilege accounts.",
+      "riskLevel": "critical",
+      "evidenceHint": "审计日志样本、权限与日志保护配置、绕过测试记录"
+    },
+    {
+      "clauseRef": "11.200(a)(1) 电子签名两要素",
+      "requirement": "电子签名由至少两个独立要素组合构成（如唯一标识加密码或生物特征），且要素结合使用。",
+      "requirementEn": "Electronic signatures consist of at least two distinct components (e.g., a unique ID plus a password or biometric), used in combination.",
+      "guidance": "检查签名执行时的认证方式与要素组合。常见缺陷：单一要素签名、密码共享、要素可单独绕过。",
+      "guidanceEn": "Check the authentication method and component combination used for signing. Common defects: single-component signatures, shared passwords, components bypassable individually.",
+      "riskLevel": "major",
+      "evidenceHint": "签名认证配置、要素组合测试记录"
+    },
+    {
+      "clauseRef": "11.200(a)(3) 签名与记录关联",
+      "requirement": "签名与其签署的电子记录不可分割关联，签名后对记录的修改将导致签名失效或显著留痕。",
+      "requirementEn": "Signatures are inseparably linked to their electronic records; modifying a signed record invalidates the signature or leaves a significant trace.",
+      "guidance": "实测签名后修改记录，检查系统行为（签名失效或留痕）。常见缺陷：签名与记录脱离、签名后任意修改无痕。",
+      "guidanceEn": "Modify a signed record in practice and observe the system behaviour (signature invalidation or trace). Common defects: signatures detached from records, post-signature changes without trace.",
+      "riskLevel": "critical",
+      "evidenceHint": "签名-记录关联机制测试记录、签名失效日志"
+    },
+    {
+      "clauseRef": "11.10(d) 访问控制",
+      "requirement": "系统访问受控：唯一账号、基于角色的权限分配（最小授权）、离职或调岗账号及时停用。",
+      "requirementEn": "System access is controlled: unique accounts, role-based authorisation with least privilege, and prompt deactivation of accounts for departed or reassigned staff.",
+      "guidance": "抽查账号清单、权限矩阵与离职账号停用情况。常见缺陷：离职账号未停、权限过大、共用账号。",
+      "guidanceEn": "Sample the account list, permission matrix and deactivation of departing staff. Common defects: departed accounts active, excessive privileges, shared accounts.",
+      "riskLevel": "critical",
+      "evidenceHint": "账号清单、权限矩阵、离职账号停用记录"
+    },
+    {
+      "clauseRef": "11.10(i) 培训",
+      "requirement": "操作人员接受系统操作与信息安全相关培训，培训记录与上岗授权对应。",
+      "requirementEn": "Operators receive training on system operation and information security, with training records matching authorisation.",
+      "guidance": "抽查培训记录与上岗授权对应关系。常见缺陷：无培训记录、未授权人员操作、培训内容与实际不符。",
+      "guidanceEn": "Sample the correspondence between training records and authorisations. Common defects: no training records, unauthorised operators, training content not matching practice.",
+      "riskLevel": "major",
+      "evidenceHint": "培训计划与记录、上岗授权清单"
+    },
+    {
+      "clauseRef": "11.300 系统文档控制",
+      "requirement": "系统文档（设计、开发、安装、用户手册、配置说明）受控管理，版本、分发与访问有记录。",
+      "requirementEn": "System documentation (design, development, installation, user manuals, configuration) is controlled, with versioning, distribution and access recorded.",
+      "guidance": "核查文档清单、版本控制与分发记录。常见缺陷：文档缺失、版本混乱、与实际系统不一致。",
+      "guidanceEn": "Check the documentation inventory, version control and distribution records. Common defects: missing documents, chaotic versions, documentation inconsistent with the live system.",
+      "riskLevel": "major",
+      "evidenceHint": "文档清单、版本控制记录、分发记录"
+    },
+    {
+      "clauseRef": "11.10(c) 备份与恢复",
+      "requirement": "建立数据备份与恢复程序，定期备份并可验证恢复。",
+      "requirementEn": "Data backup and recovery procedures exist, with regular backups and verifiable restoration.",
+      "guidance": "检查备份策略、备份日志与恢复演练记录。常见缺陷：备份失败无告警、从未演练恢复、恢复不完整。",
+      "guidanceEn": "Check the backup policy, backup logs and recovery drill records. Common defects: silent backup failures, recovery never rehearsed, incomplete restoration.",
+      "riskLevel": "major",
+      "evidenceHint": "备份策略文档、备份日志、恢复演练记录"
+    },
+    {
+      "clauseRef": "11.10(g) 权限与执行权检查",
+      "requirement": "系统在执行电子签名等关键操作前检查操作者权限，防止越权签署。",
+      "requirementEn": "Systems check operator authority before performing key operations such as electronic signing, preventing unauthorised signing.",
+      "guidance": "实测无权限用户执行签署是否被拦截。常见缺陷：权限检查缺失、签名权限与业务权限混同。",
+      "guidanceEn": "Test whether users without authority are blocked from signing. Common defects: no authority check, signing permissions conflated with business permissions.",
+      "riskLevel": "major",
+      "evidenceHint": "越权操作测试记录、权限检查配置"
+    },
+    {
+      "clauseRef": "11.10(k) 输入人身份记录",
+      "requirement": "直接或间接输入数据的人员身份被记录并可追溯（自动记录或通过可追溯的签名）。",
+      "requirementEn": "The identities of persons entering data, directly or indirectly, are recorded and traceable (automatically or via traceable signatures).",
+      "guidance": "抽查数据输入的归属记录。常见缺陷：间接输入（转录入）无来源标注、输入人身份缺失。",
+      "guidanceEn": "Sample the attribution of data entries. Common defects: indirect entries (transcription) without source annotation, missing entrant identity.",
+      "riskLevel": "major",
+      "evidenceHint": "输入记录归属样本、转录入来源标注"
+    },
+    {
+      "clauseRef": "11.50/11.70 签名显示与关联",
+      "requirement": "电子签名的打印或显示包含签署人姓名、签署日期与时间及签署含义，签名与记录关联满足11.70要求。",
+      "requirementEn": "Electronic signatures displayed or printed contain the signer's name, the date and time of signing and the meaning of the signature, with signature-record linkage meeting 11.70.",
+      "guidance": "抽查签名的打印样张与含义显示。常见缺陷：签名显示缺含义、日期缺失、打印样张与电子记录不一致。",
+      "guidanceEn": "Sample printed signature outputs and meaning displays. Common defects: meaning omitted, date missing, printouts inconsistent with the electronic record.",
+      "riskLevel": "minor",
+      "evidenceHint": "签名打印样张、签名含义字段配置"
+    }
+  ]
+}

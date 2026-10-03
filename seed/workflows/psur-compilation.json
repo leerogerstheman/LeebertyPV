@@ -1,0 +1,572 @@
+{
+  "code": "PSUR-COMP",
+  "recordPrefix": "PSUR",
+  "name": "定期安全性更新报告编制",
+  "nameEn": "PSUR Compilation",
+  "category": "定期报告",
+  "gxpAreas": ["PSUR"],
+  "regulationRefs": [
+    "《药品不良反应报告和监测管理办法》（卫生部令第81号）第37、38条",
+    "《药物警戒质量管理规范》（国家药监局2021年第65号公告）第80-86条",
+    "ICH E2C(R2) PBRER（17个编号章节）",
+    "《药品定期安全性更新报告撰写规范》（国食药监安〔2012〕264号）"
+  ],
+  "description": "按法定周期编制定期安全性更新报告（PSUR）：设定数据锁定点DLP并冻结数据，汇编期内个例、累积暴露量与信号清单，撰写获益-风险评估章节，经内部技术审核与质量放行审批后，在DLP后60日内向监测机构提交并归档。",
+  "descriptionEn": "Compile Periodic Safety Update Reports (PSUR) on the statutory cycle: set the Data Lock Point (DLP) and freeze data, assemble in-period cases, cumulative exposure and signal lists, author benefit-risk assessment chapters, then after internal technical review and QA release approval, submit to the monitoring agency within 60 days after the DLP and archive.",
+  "slaDays": 60,
+  "requiresRootCause": false,
+  "requiresEffectivenessCheck": true,
+  "requiresQaApproval": true,
+  "criticalityLevels": ["minor", "major", "critical"],
+  "states": ["draft", "datalock", "assembly", "writing", "internal_review", "approval", "submission", "closed", "cancelled"],
+  "initialState": "draft",
+  "terminalStates": ["closed", "cancelled"],
+  "fields": [
+    {
+      "key": "title",
+      "label": "报告标题",
+      "labelEn": "Report Title",
+      "type": "text",
+      "required": true,
+      "help": "建议格式：药品名+报告期+定期安全性更新报告。"
+    },
+    {
+      "key": "summary",
+      "label": "报告概述",
+      "labelEn": "Summary",
+      "type": "textarea",
+      "required": false,
+      "help": "简述报告范围与总体安全性结论。"
+    },
+    {
+      "key": "product",
+      "label": "药品名称",
+      "labelEn": "Product Name",
+      "type": "text",
+      "required": true,
+      "help": "填写报告覆盖的药品（通用名+商品名）。"
+    },
+    {
+      "key": "dlp",
+      "label": "数据锁定点（DLP）",
+      "labelEn": "Data Lock Point",
+      "type": "date",
+      "required": true,
+      "help": "DLP决定报告数据范围；按81号令第37条，上报日期应在DLP后60日内。"
+    },
+    {
+      "key": "periodStart",
+      "label": "报告期开始",
+      "labelEn": "Reporting Period Start",
+      "type": "date",
+      "required": true,
+      "help": "报告覆盖期起点，须与上期报告无缝衔接。"
+    },
+    {
+      "key": "periodEnd",
+      "label": "报告期结束",
+      "labelEn": "Reporting Period End",
+      "type": "date",
+      "required": true,
+      "help": "报告覆盖期终点，一般为DLP当日。"
+    },
+    {
+      "key": "rhythm",
+      "label": "报告周期",
+      "labelEn": "Reporting Rhythm",
+      "type": "select",
+      "required": true,
+      "options": ["first_year（每满1年）", "annual（年度）", "quinquennial（每5年）"],
+      "help": "监测期品种每满1年直至首次再注册，之后每5年；其他品种每5年（81号令第37条）。"
+    }
+  ],
+  "steps": [
+    {
+      "code": "datalock",
+      "name": "设定数据锁定点并冻结数据",
+      "nameEn": "Data Lock Point & Freeze",
+      "role": ["pv_writer", "pv_officer"],
+      "type": "task",
+      "onComplete": "datalock",
+      "requiresFields": ["cycleBasis", "overlapCheck", "freezeTimestamp", "dataFreezeScope"],
+      "form": [
+        {
+          "key": "cycleBasis",
+          "label": "周期计算基准",
+          "labelEn": "Cycle Basis",
+          "type": "select",
+          "required": true,
+          "options": ["首次批准证明文件日", "国际诞生日（IBD）", "上次DLP顺延"],
+          "help": "以首次取得批准证明文件之日为起点，也可用全球首个上市批准日（IBD）。"
+        },
+        {
+          "key": "overlapCheck",
+          "label": "与上期重叠核对",
+          "labelEn": "Overlap Check",
+          "type": "select",
+          "required": true,
+          "options": ["无重叠", "有重叠需说明"],
+          "help": "报告期必须完整连续（GVP第81条），重叠期要说明处理方式。"
+        },
+        {
+          "key": "freezeTimestamp",
+          "label": "数据冻结时间",
+          "labelEn": "Data Freeze Timestamp",
+          "type": "date",
+          "required": true,
+          "help": "记录冻结时刻，冻结后数据不得再改动。"
+        },
+        {
+          "key": "dataFreezeScope",
+          "label": "冻结范围说明",
+          "labelEn": "Freeze Scope",
+          "type": "textarea",
+          "required": true,
+          "help": "说明冻结的数据库、模块与截止时刻。"
+        },
+        {
+          "key": "lateArrivalsNote",
+          "label": "DLP后新到个例处理",
+          "labelEn": "Late Arrivals Handling",
+          "type": "textarea",
+          "required": false,
+          "help": "新到个例列入下一期并在文中说明（ICH E2C(R2)迟发信息）。"
+        },
+        {
+          "key": "datalockRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：DLP决定报告数据范围，是最关键起点，DLP后60日是法定上报时限。怎么做：先确认周期基准（首次批准日或IBD），核对与上期重叠期，冻结数据并记录时间戳。常见错：用首次销售日而非批准日起算、不核对重叠、冻结后仍改数据。法规依据：81号令第37条；GVP第80-81条数据覆盖期须完整连续。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "dlp": "freezeTimestamp",
+        "cycle_basis": "cycleBasis"
+      }
+    },
+    {
+      "code": "assembly",
+      "name": "数据汇编",
+      "nameEn": "Data Assembly",
+      "role": ["pv_writer", "pv_data_entry"],
+      "type": "task",
+      "onComplete": "assembly",
+      "requiresFields": ["caseLineListing", "exposureData", "signalList"],
+      "form": [
+        {
+          "key": "caseLineListing",
+          "label": "期内个例列表/汇总",
+          "labelEn": "Case Line Listing & Summary",
+          "type": "textarea",
+          "required": true,
+          "help": "严重/非严重例数、病例列表（Line Listing）与汇总表（Summary Tabulations）。"
+        },
+        {
+          "key": "exposureData",
+          "label": "累积暴露量估算",
+          "labelEn": "Cumulative Exposure",
+          "type": "textarea",
+          "required": true,
+          "help": "按销售/处方量估算暴露人数，注明方法与单位（患者年等），对应PBRER章节5。"
+        },
+        {
+          "key": "signalList",
+          "label": "期内信号清单",
+          "labelEn": "Signal List",
+          "type": "textarea",
+          "required": true,
+          "help": "列出发出的信号、评估结论与处置进展，对应PBRER章节15。"
+        },
+        {
+          "key": "dataQualityNote",
+          "label": "数据质量核查",
+          "labelEn": "Data Quality Check",
+          "type": "textarea",
+          "required": false,
+          "help": "核查重复报告、缺失项、编码一致性。"
+        },
+        {
+          "key": "assemblyRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：数据汇编须覆盖报告期内全部安全性数据并与上期衔接，数据不全等于报告不全。怎么做：按E2C(R2)章节5-6汇总暴露量与病例数据，编制信号清单，核查重复与编码。常见错：暴露量口径不一致、信号清单遗漏、数据与数据库对不上。法规依据：GVP第80-84条；ICH E2C(R2)。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "exposure_data": "exposureData",
+        "signal_list": "signalList"
+      }
+    },
+    {
+      "code": "writing",
+      "name": "撰写获益-风险评估章节",
+      "nameEn": "Authoring Benefit-Risk Assessment",
+      "role": ["pv_writer", "pv_medical"],
+      "type": "task",
+      "onComplete": "writing",
+      "requiresFields": ["sectionPlan", "benefitRisk", "rsiSource"],
+      "form": [
+        {
+          "key": "sectionPlan",
+          "label": "章节结构规划",
+          "labelEn": "Section Plan",
+          "type": "textarea",
+          "required": true,
+          "help": "按ICH E2C(R2) PBRER 17个编号章节或中国撰写规范11部分组织内容。"
+        },
+        {
+          "key": "benefitRisk",
+          "label": "获益-风险评估",
+          "labelEn": "Benefit-Risk Assessment",
+          "type": "textarea",
+          "required": true,
+          "help": "基于全部用途、以批准适应症为基础，按重要性排序安全问题并给出结论（章节15）。"
+        },
+        {
+          "key": "rsiSource",
+          "label": "参考安全性信息版本",
+          "labelEn": "RSI Source",
+          "type": "text",
+          "required": true,
+          "help": "注明使用的说明书/CCDS版本及期内变更情况（章节4）。"
+        },
+        {
+          "key": "newInfo",
+          "label": "DLP后新信息",
+          "labelEn": "Late-breaking Information",
+          "type": "textarea",
+          "required": false,
+          "help": "DLP后获得的重要安全性信息须在文中说明（章节14迟发信息）。"
+        },
+        {
+          "key": "draftLink",
+          "label": "稿件链接",
+          "labelEn": "Draft Link",
+          "type": "text",
+          "required": false,
+          "help": "报告稿件存放位置或版本链接。"
+        },
+        {
+          "key": "writingRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：获益-风险评估是PSUR核心，监管关注结论与依据而非篇幅。怎么做：按17节/11部分组织，评估基于批准适应症与全部用途，给出获益-风险平衡的总体判断。常见错：只罗列数据不做判断、范围超批准适应症、遗漏迟发信息。法规依据：ICH E2C(R2)；GVP第84-86条；2012年撰写规范。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "benefit_risk": "benefitRisk"
+      }
+    },
+    {
+      "code": "internal_review",
+      "name": "内部技术审核",
+      "nameEn": "Internal Technical Review",
+      "role": ["pv_officer", "qa_specialist"],
+      "type": "task",
+      "onComplete": "internal_review",
+      "requiresFields": ["dataConsistency", "peerReview", "revisionStatus"],
+      "form": [
+        {
+          "key": "dataConsistency",
+          "label": "数据一致性核对",
+          "labelEn": "Data Consistency Check",
+          "type": "select",
+          "required": true,
+          "options": ["一致", "有差异已修正", "待核对"],
+          "help": "汇总表、病例列表与来源数据库交叉核对。"
+        },
+        {
+          "key": "peerReview",
+          "label": "技术审核意见",
+          "labelEn": "Peer Review Comments",
+          "type": "textarea",
+          "required": true,
+          "help": "由非撰写人的第二人（医学/质控）审核，体现交叉审阅。"
+        },
+        {
+          "key": "revisionStatus",
+          "label": "修订完成情况",
+          "labelEn": "Revision Status",
+          "type": "select",
+          "required": true,
+          "options": ["已修订完成", "修订中", "部分完成"],
+          "help": "审核意见必须闭环到修订。"
+        },
+        {
+          "key": "reviewDate",
+          "label": "审核完成日期",
+          "labelEn": "Review Completion Date",
+          "type": "date",
+          "required": false,
+          "help": "作为提交前质量控制的时间证据。"
+        },
+        {
+          "key": "reviewRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：交叉审核可发现数据错误与逻辑缺陷，是提交前的最后一道质量关。怎么做：独立第二人核对数据一致性、审核评估逻辑，审核意见须成文并闭环到修订。常见错：撰写人自审代替交叉审核、审核意见不落实就提交。参考：质量审核要求见GVP第7-14条质量管理体系。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "revision_status": "revisionStatus"
+      }
+    },
+    {
+      "code": "approval",
+      "name": "质量放行审批",
+      "nameEn": "QA Release & Approval",
+      "role": ["pv_head", "qa_manager"],
+      "type": "signature",
+      "onComplete": "approval",
+      "requiresFields": ["qaCheck", "approvalOpinion", "approvedVersion", "approvalDate"],
+      "signatureMeaning": "approved",
+      "form": [
+        {
+          "key": "qaCheck",
+          "label": "质量检查结论",
+          "labelEn": "QA Check Result",
+          "type": "select",
+          "required": true,
+          "options": ["通过", "有条件通过", "不通过"],
+          "help": "检查合规要点与数据一致性后给出结论。"
+        },
+        {
+          "key": "approvalOpinion",
+          "label": "审批意见",
+          "labelEn": "Approval Opinion",
+          "type": "textarea",
+          "required": true,
+          "help": "QPPV对报告结论的审核意见。"
+        },
+        {
+          "key": "approvedVersion",
+          "label": "批准版本号",
+          "labelEn": "Approved Version",
+          "type": "text",
+          "required": true,
+          "help": "版本管理（如V1.0），修订须留修订日志。"
+        },
+        {
+          "key": "approvalDate",
+          "label": "审批日期",
+          "labelEn": "Approval Date",
+          "type": "date",
+          "required": true,
+          "help": "审批留痕时间戳。"
+        },
+        {
+          "key": "approvalRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：GVP第82条要求PSUR经药物警戒负责人批准同意后方可提交，QA放行保证提交前质量受控。怎么做：QA检查合规要点，QPPV审核获益-风险评估结论后签名放行并锁定版本。常见错：未经QPPV批准即提交、批准后仍改动内容却不更新版本。法规依据：GVP第82条；81号令第38条提交路径。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "approved_version": "approvedVersion",
+        "approval_date": "approvalDate"
+      }
+    },
+    {
+      "code": "submission",
+      "name": "提交监测机构",
+      "nameEn": "Submission to Monitoring Agency",
+      "role": ["pv_regulatory"],
+      "type": "task",
+      "onComplete": "submission",
+      "requiresFields": ["submissionDate", "submissionChannel", "receiptNo", "deadlineDate"],
+      "form": [
+        {
+          "key": "submissionDate",
+          "label": "提交日期",
+          "labelEn": "Submission Date",
+          "type": "date",
+          "required": true,
+          "help": "必须在DLP后60日内完成，以系统回执时间为准。"
+        },
+        {
+          "key": "submissionChannel",
+          "label": "提交渠道",
+          "labelEn": "Submission Channel",
+          "type": "select",
+          "required": true,
+          "options": ["国家药品不良反应监测系统", "省级监测机构"],
+          "help": "国产报省级中心、进口报国家中心（81号令第38条）。"
+        },
+        {
+          "key": "receiptNo",
+          "label": "回执编号",
+          "labelEn": "Receipt No.",
+          "type": "text",
+          "required": true,
+          "help": "记录系统回执编号与日期，作为按时提交的证明。"
+        },
+        {
+          "key": "deadlineDate",
+          "label": "法定截止日",
+          "labelEn": "Statutory Deadline",
+          "type": "date",
+          "required": true,
+          "help": "自动计算DLP+60日，提交前须确认未超期。"
+        },
+        {
+          "key": "submissionRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：超期提交是检查最常见缺陷，无回执等于未证明按时提交。怎么做：在DLP后60日内提交并录入系统回执编号作为凭证；收到监管审核意见须按时答复或转入下期。常见错：以内部递交日冒充系统提交日、遗漏回执、逾期后才补录。法规依据：81号令第37条（60日）与第38条（提交路径）；GVP第81、83条。",
+      "optional": false,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "submission_date": "submissionDate",
+        "receipt_no": "receiptNo"
+      }
+    },
+    {
+      "code": "closed",
+      "name": "结案归档",
+      "nameEn": "Closure & Archiving",
+      "role": ["pv_head"],
+      "type": "signature",
+      "onComplete": "closed",
+      "requiresFields": ["responseStatus", "archivePath", "closureDate"],
+      "signatureMeaning": "approved",
+      "form": [
+        {
+          "key": "responseStatus",
+          "label": "监管意见处理状态",
+          "labelEn": "Agency Feedback Status",
+          "type": "select",
+          "required": true,
+          "options": ["无意见", "已答复", "待答复"],
+          "help": "监管审核意见须处理闭环（GVP第83条）。"
+        },
+        {
+          "key": "archivePath",
+          "label": "归档位置",
+          "labelEn": "Archive Location",
+          "type": "text",
+          "required": true,
+          "help": "定稿、回执与相关记录归档，保存至注册证书注销后10年。"
+        },
+        {
+          "key": "nextCycle",
+          "label": "下一周期安排",
+          "labelEn": "Next Cycle Plan",
+          "type": "text",
+          "required": false,
+          "help": "下期DLP与提交日，监测期品种按满1年/5年节奏排程。"
+        },
+        {
+          "key": "closureDate",
+          "label": "结案日期",
+          "labelEn": "Closure Date",
+          "type": "date",
+          "required": true,
+          "help": "结案签名日期。"
+        },
+        {
+          "key": "closeRemarks",
+          "label": "备注",
+          "labelEn": "Remarks",
+          "type": "textarea",
+          "required": false,
+          "help": "其他说明事项。"
+        }
+      ],
+      "guidance": "为什么：结案需确认提交与回执闭环并安排下期排程，保证报告期连续不中断。怎么做：核对回执与监管意见处理情况，登记下期DLP，由非报告组作者的QPPV独立签名结案。常见错：监管意见未处理即结案、两个报告期之间断档。法规依据：GVP第81条（报告期连续）、第83条（审核意见处理）。",
+      "optional": false,
+      "independentOfAuthor": true,
+      "persistFields": {
+        "closure_date": "closureDate",
+        "archive_path": "archivePath"
+      }
+    },
+    {
+      "code": "cancel_record",
+      "name": "取消记录",
+      "nameEn": "Cancel Record",
+      "role": ["pv_head"],
+      "type": "task",
+      "onComplete": "cancelled",
+      "requiresFields": ["cancelReason", "cancelCheck", "cancelDate"],
+      "form": [
+        {
+          "key": "cancelReason",
+          "label": "取消原因",
+          "labelEn": "Cancellation Reason",
+          "type": "textarea",
+          "required": true,
+          "help": "如排程错误、重复建单，须说明理由并留档。"
+        },
+        {
+          "key": "cancelCheck",
+          "label": "取消前核对",
+          "labelEn": "Pre-cancellation Check",
+          "type": "select",
+          "required": true,
+          "options": ["关联记录已处理", "关联记录无需处理", "待核实"],
+          "help": "取消前确认报告期排程与已提交记录不受影响。"
+        },
+        {
+          "key": "cancelNote",
+          "label": "补充说明",
+          "labelEn": "Supplementary Notes",
+          "type": "textarea",
+          "required": false,
+          "help": "其他补充说明。"
+        },
+        {
+          "key": "cancelApprover",
+          "label": "确认人",
+          "labelEn": "Confirmed By",
+          "type": "text",
+          "required": true,
+          "help": "QPPV或授权确认人签名留痕。"
+        },
+        {
+          "key": "cancelDate",
+          "label": "取消日期",
+          "labelEn": "Cancellation Date",
+          "type": "date",
+          "required": true,
+          "help": "取消动作留痕。"
+        }
+      ],
+      "guidance": "为什么：取消记录保留审计追踪，防止周期排程被无痕修改。怎么做：由QPPV确认取消原因并留档。常见错：直接删除排程记录导致周期断档无法解释。",
+      "optional": true,
+      "independentOfAuthor": false,
+      "persistFields": {
+        "cancel_reason": "cancelReason"
+      }
+    }
+  ]
+}
