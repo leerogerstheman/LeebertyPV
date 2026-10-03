@@ -72,6 +72,14 @@
 双击  LeebertyPV.exe     （或 双击 start.bat）
 ```
 
+> **从本仓库克隆时请先构建一次 exe**（构建产物不入库，保持仓库可复现）：
+> ```bat
+> node scripts\build-desktop.js
+> ```
+> 该命令用 Windows 自带的 `csc.exe` 现场编译原生桌面窗口，几秒完成，无需联网、
+> 无需 npm install。也可以直接双击 `start.bat`——它走服务 + 浏览器兜底路径，
+> 但推荐先构建 exe 以使用原生窗口。
+
 **首次启动会自动完成全部初始化**，不需要先跑任何脚本：
 
 1. 创建数据库（`data/pv.db`）、生成审计链密钥（`data/audit-chain.key`）
