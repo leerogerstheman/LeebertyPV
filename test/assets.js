@@ -41,6 +41,48 @@ async function waitForHealth(timeoutMs = 30000) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+/**
+ * Bound a promise, so no single step can stall the suite forever.
+ *
+ * This exists because a page-side `Runtime.evaluate` with `awaitPromise: true`
+ * whose promise never settles does not reject: the CDP reply simply never
+ * arrives, and a plain `await` then waits for the lifetime of the process. The
+ * suite must always terminate and report, even when the browser misbehaves - a
+ * hung test run is indistinguishable from a crashed one to whoever is reading CI.
+ */
+function withTimeout(promise, ms, label) {
+  let timer;
+  return Promise.race([
+    promise.finally(() => clearTimeout(timer)),
+    new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`timeout after ${ms}ms: ${label}`)), ms);
+    }),
+  ]);
+}
+
+/** Total wall-clock budget for one probe's browser session, including teardown. */
+const PROBE_BUDGET_MS = 150000;
+
+/**
+ * Reap a browser process and everything it spawned.
+ *
+ * Headless Edge is a tree, not a single process. `child.kill()` on Windows sends
+ * a termination signal to the launcher only; the renderer and GPU children are
+ * normally cleaned up, but if the parent is already wedged they can outlive the
+ * run. `taskkill /T` walks the tree, which is the reliable form on this platform.
+ * Failure is ignored on purpose - teardown must never mask the real result.
+ */
+function reap(browser) {
+  if (!browser || browser.exitCode !== null || browser.signalCode !== null) return;
+  try {
+    if (process.platform === 'win32') {
+      spawn('taskkill', ['/pid', String(browser.pid), '/T', '/F'], { stdio: 'ignore' });
+    } else {
+      browser.kill('SIGKILL');
+    }
+  } catch { /* already gone */ }
+}
+
 function findEdge() {
   const candidates = [
     'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
@@ -81,10 +123,10 @@ async function withBrowser(fn) {
     if (!version) return null;
 
     const ws = new WebSocket(version.webSocketDebuggerUrl);
-    await new Promise((resolve, reject) => {
+    await withTimeout(new Promise((resolve, reject) => {
       ws.addEventListener('open', resolve);
       ws.addEventListener('error', () => reject(new Error('websocket error')));
-    });
+    }), 15000, 'websocket open');
 
     let id = 0;
     const pending = new Map();
@@ -117,7 +159,9 @@ async function withBrowser(fn) {
     await call('Runtime.enable');
 
     const evaluate = async (expression) => {
-      const r = await call('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true });
+      const r = await withTimeout(
+        call('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true }),
+        30000, 'Runtime.evaluate');
       if (r.exceptionDetails) {
         throw new Error(r.exceptionDetails.exception
           ? r.exceptionDetails.exception.description
@@ -127,11 +171,11 @@ async function withBrowser(fn) {
     };
     const goto = async (url) => { await call('Page.navigate', { url }); };
 
-    const result = await fn({ evaluate, goto });
+    const result = await withTimeout(fn({ evaluate, goto }), PROBE_BUDGET_MS, 'probe body');
     if (result && typeof result === 'object') result.errors = errors;
     return result;
   } finally {
-    try { browser.kill(); } catch { /* gone */ }
+    reap(browser);
     try { fs.rmSync(profile, { recursive: true, force: true }); } catch { /* best effort */ }
   }
 }
@@ -644,10 +688,10 @@ async function renderProbe(hash) {
     if (!version) return null;
 
     const ws = new WebSocket(version.webSocketDebuggerUrl);
-    await new Promise((resolve, reject) => {
+    await withTimeout(new Promise((resolve, reject) => {
       ws.addEventListener('open', resolve);
       ws.addEventListener('error', () => reject(new Error('websocket error')));
-    });
+    }), 15000, 'websocket open');
 
     let id = 0;
     const pending = new Map();
@@ -675,7 +719,9 @@ async function renderProbe(hash) {
     await call('Runtime.enable');
 
     const evaluate = async (expression) => {
-      const r = await call('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true });
+      const r = await withTimeout(
+        call('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true }),
+        30000, 'Runtime.evaluate');
       if (r.exceptionDetails) {
         throw new Error(r.exceptionDetails.exception
           ? r.exceptionDetails.exception.description
@@ -712,7 +758,7 @@ async function renderProbe(hash) {
     await evaluate(`window.location.hash = ${JSON.stringify(hash)}; null`);
     await sleep(2600);
 
-    return await evaluate(`JSON.stringify({
+    return await withTimeout(evaluate(`JSON.stringify({
       cards: document.querySelectorAll('.participant-card').length,
       clickable: document.querySelectorAll('.participant-card.pc-clickable').length,
       sample: [...document.querySelectorAll('.participant-card')].slice(0, 3).map(c => ({
@@ -731,9 +777,9 @@ async function renderProbe(hash) {
         return a ? a.textContent.trim() : null;
       })(),
       activeNavCount: document.querySelectorAll('.nav-item.active').length,
-    })`).then(JSON.parse);
+    })`).then(JSON.parse), PROBE_BUDGET_MS, 'render probe');
   } finally {
-    try { browser.kill(); } catch { /* already gone */ }
+    reap(browser);
     try { fs.rmSync(profile, { recursive: true, force: true }); } catch { /* best effort */ }
   }
 }
