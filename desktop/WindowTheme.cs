@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Win32;
@@ -98,6 +99,212 @@ static class WindowTheme
         }
         catch (DllNotFoundException) { return -1; }
         catch (EntryPointNotFoundException) { return -1; }
+    }
+
+    /// <summary>
+    /// True when --custom-titlebar was passed.
+    ///
+    /// Opt-in on purpose. The custom title bar depends on a chain of Win32 and
+    /// WebView2 behaviour that no automated check in this repository can fully
+    /// confirm - whether the system caption buttons are still drawn, whether the
+    /// window still resizes from its edges, whether a maximised window still
+    /// respects the taskbar. A person has to look at it once. Until then the
+    /// standard caption, correctly dark-themed, remains the default.
+    /// </summary>
+    public static bool CustomTitleBar = false;
+
+    // The three messages a window with no non-client area has to answer itself.
+    const int WM_NCCALCSIZE = 0x0083;
+    const int WM_NCHITTEST = 0x0084;
+    const int WM_GETMINMAXINFO = 0x0024;
+
+    // HT* codes from winuser.h.
+    const int HTLEFT = 10, HTRIGHT = 11, HTTOP = 12, HTTOPLEFT = 13,
+              HTTOPRIGHT = 14, HTBOTTOM = 15, HTBOTTOMLEFT = 16, HTBOTTOMRIGHT = 17;
+
+    /// <summary>
+    /// How close to an edge counts as "on the resize border", in pixels. 8 is the
+    /// Windows default sizing border at 100% scaling.
+    /// </summary>
+    const int ResizeBorder = 8;
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct RECT { public int Left, Top, Right, Bottom; }
+
+    /* NCCALCSIZE_PARAMS declares rgrc[3]; spelled out as three fields because a
+       fixed-size array of structs cannot be marshalled by value in C# 5. */
+    [StructLayout(LayoutKind.Sequential)]
+    struct NCCALCSIZE_PARAMS { public RECT rgrc0, rgrc1, rgrc2; public IntPtr lppos; }
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct POINT { public int X, Y; }
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct MINMAXINFO
+    {
+        public POINT ptReserved, ptMaxSize, ptMaxPosition,
+                     ptMinTrackSize, ptMaxTrackSize;
+    }
+
+    [DllImport("dwmapi.dll", PreserveSig = true)]
+    static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref MARGINS margins);
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct MARGINS { public int Left, Right, Top, Bottom; }
+
+    /// <summary>
+    /// A WinForms window whose client area covers the caption strip, so the page
+    /// can be its own title bar.
+    ///
+    /// The system buttons survive because WS_CAPTION is never touched: DWM keeps
+    /// drawing them over the top-right corner. That is the whole reason this uses
+    /// WM_NCCALCSIZE instead of deleting WS_CAPTION, which was measured to shrink
+    /// the caption but leave the client area 14px short and take the buttons with
+    /// it.
+    /// </summary>
+    public class ChromeForm : Form
+    {
+        protected override void WndProc(ref Message m)
+        {
+            if (CustomTitleBar)
+            {
+                // WM_GETMINMAXINFO must be filled in by the default handler first,
+                // so it is the one message that runs base first and is adjusted after.
+                if (m.Msg == WM_GETMINMAXINFO)
+                {
+                    base.WndProc(ref m);
+                    AdjustMinMaxInfo(this, ref m);
+                    return;
+                }
+                if (HandleNcCalcSize(ref m)) return;
+                if (HandleNcHitTest(this, ref m)) return;
+            }
+            base.WndProc(ref m);
+        }
+    }
+
+    /// <summary>
+    /// Claim the caption strip for the client area. Returns true when handled.
+    ///
+    /// Exposed separately from ChromeForm so a window that already derives from
+    /// Form and has its own WndProc - PE-Workbench's MainForm - can call the same
+    /// code instead of inheriting a second base class.
+    /// </summary>
+    public static bool HandleNcCalcSize(ref Message m)
+    {
+        if (m.Msg != WM_NCCALCSIZE || m.WParam == IntPtr.Zero) return false;
+
+        // Leaving rgrc0 exactly as Windows proposed it and returning 0 means
+        // "the non-client area is empty": the client area becomes the whole
+        // window, caption included. Verification measured this as captionInset 0,
+        // against 39 for a stock window.
+        m.Result = IntPtr.Zero;
+        return true;
+    }
+
+    /// <summary>
+    /// Give the window back its resize edges. Returns true when handled.
+    ///
+    /// A window whose non-client area is empty has nothing for Windows to
+    /// hit-test as a border, so without this the window cannot be resized by
+    /// dragging its edge. The drag regions themselves are not handled here: those
+    /// come from the engine, through app-region.
+    /// </summary>
+    public static bool HandleNcHitTest(Form form, ref Message m)
+    {
+        if (m.Msg != WM_NCHITTEST || form == null) return false;
+
+        // Offer no resize grips on a maximised window; edges are off-screen.
+        if (form.WindowState == FormWindowState.Maximized) return false;
+
+        int lp = m.LParam.ToInt32();
+        int screenX = (short)(lp & 0xFFFF);
+        int screenY = (short)((lp >> 16) & 0xFFFF);
+
+        Point p = form.PointToClient(new Point(screenX, screenY));
+        int w = form.ClientSize.Width;
+        int h = form.ClientSize.Height;
+
+        bool left = p.X < ResizeBorder;
+        bool right = p.X >= w - ResizeBorder;
+        bool top = p.Y < ResizeBorder;
+        bool bottom = p.Y >= h - ResizeBorder;
+
+        int hit = 0;
+        if (top && left) hit = HTTOPLEFT;
+        else if (top && right) hit = HTTOPRIGHT;
+        else if (bottom && left) hit = HTBOTTOMLEFT;
+        else if (bottom && right) hit = HTBOTTOMRIGHT;
+        else if (left) hit = HTLEFT;
+        else if (right) hit = HTRIGHT;
+        else if (top) hit = HTTOP;
+        else if (bottom) hit = HTBOTTOM;
+
+        if (hit == 0) return false;
+        m.Result = (IntPtr)hit;
+        return true;
+    }
+
+    /// <summary>
+    /// Keep a maximised window inside the monitor work area. Call AFTER the
+    /// default handler has filled the structure.
+    ///
+    /// Windows maximises a window to the work area plus the frame thickness,
+    /// because it expects the frame to be drawn inside that rectangle. With no
+    /// non-client area the content would hang over the screen edges and under the
+    /// taskbar. Pulling the frame thickness back out is what stops that.
+    /// </summary>
+    public static void AdjustMinMaxInfo(Form form, ref Message m)
+    {
+        if (form == null) return;
+        try
+        {
+            MINMAXINFO mmi = (MINMAXINFO)Marshal.PtrToStructure(m.LParam, typeof(MINMAXINFO));
+            int bw = SystemInformation.FrameBorderSize.Width;
+            if (bw <= 0) bw = ResizeBorder;
+
+            mmi.ptMaxPosition.X += bw;
+            mmi.ptMaxPosition.Y += bw;
+            mmi.ptMaxSize.X -= bw * 2;
+            mmi.ptMaxSize.Y -= bw * 2;
+
+            Marshal.StructureToPtr(mmi, m.LParam, false);
+        }
+        catch { /* the structure has changed shape; leave the default */ }
+    }
+
+    /// <summary>
+    /// Hand the caption strip to the page: extend the frame so DWM keeps drawing
+    /// the shadow, the rounded corners and the border, then let the stylesheet
+    /// take over the strip itself.
+    /// </summary>
+    public static bool ExtendFrameIntoClientArea(Form form)
+    {
+        if (form == null) return false;
+        IntPtr hwnd = form.Handle;
+        if (hwnd == IntPtr.Zero) return false;
+
+        MARGINS margins = new MARGINS();
+        margins.Left = -1;
+        margins.Right = -1;
+        margins.Top = -1;
+        margins.Bottom = -1;
+
+        try { return DwmExtendFrameIntoClientArea(hwnd, ref margins) == 0; }
+        catch (DllNotFoundException) { return false; }
+        catch (EntryPointNotFoundException) { return false; }
+    }
+
+    /// <summary>
+    /// The script the launcher registers before the first navigation. It marks the
+    /// document so design-system.css can tell a hosted window from a browser tab:
+    /// everything the custom title bar needs is behind
+    /// `:root[data-shell="webview2"]`, so a browser - and every browser-based test
+    /// suite - sees exactly the layout it saw before.
+    /// </summary>
+    public static string ShellMarkerScript()
+    {
+        return "document.documentElement.setAttribute('data-shell','webview2');";
     }
 
     /// <summary>

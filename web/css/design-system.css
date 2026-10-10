@@ -623,6 +623,78 @@ code, kbd, samp, pre { font-family: var(--ds-font-mono); }
 .view-sub { color: var(--ds-ink-3); max-width: 78ch; }
 
 /* ==========================================================================
+   7b. HOSTED SHELL - custom title bar  (opt-in: launcher --custom-titlebar)
+   --------------------------------------------------------------------------
+   When the native window gives its caption strip back to the page, the page has
+   to become the title bar: the caption was the only thing that could drag the
+   window.
+
+   Everything here is behind `:root[data-shell="webview2"]`, which the launcher
+   sets with AddScriptToExecuteOnDocumentCreatedAsync before the first paint. A
+   browser tab never carries the attribute, so the browser layout - and every
+   browser-based test suite - is bit-for-bit what it was. That was measured, not
+   assumed: document height is identical with and without the attribute.
+
+   Nothing here reimplements window dragging. The launcher turns on
+   CoreWebView2Settings.IsNonClientRegionSupportEnabled, which makes the engine
+   report these rectangles to the host as non-client area, and Windows then gives
+   them full title-bar behaviour - drag, right-click system menu, double-click to
+   maximise and restore.
+
+   32 and 138 are Windows 11 values in CSS pixels. They are not scaled for DPI on
+   purpose: WebView2 lays out in CSS pixels and the device pixel ratio already
+   tracks the monitor, so 32 CSS px lands on the caption at 100% and at 150%
+   alike.
+   ========================================================================== */
+
+:root[data-shell="webview2"] {
+  --ds-caption-h: 32px;
+  --ds-caption-w: 138px;
+}
+
+/* The application's own top strip becomes the title bar. The sidebar brand block
+   and the topbar together span the full width of the window's first row, so
+   there is no dead strip that cannot be grabbed. */
+:root[data-shell="webview2"] .topbar,
+:root[data-shell="webview2"] .sidebar .brand {
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+
+/* Anything interactive inside a drag region has to opt back out, or it stops
+   responding to the mouse. A container marked no-drag covers its children. */
+:root[data-shell="webview2"] .topbar a,
+:root[data-shell="webview2"] .topbar button,
+:root[data-shell="webview2"] .topbar input,
+:root[data-shell="webview2"] .topbar select,
+:root[data-shell="webview2"] .topbar textarea,
+:root[data-shell="webview2"] .topbar label,
+:root[data-shell="webview2"] .topbar [role="button"],
+:root[data-shell="webview2"] .topbar .topbar-actions,
+:root[data-shell="webview2"] .topbar .topbar-user,
+:root[data-shell="webview2"] .topbar .user-chip,
+:root[data-shell="webview2"] .topbar .top-search,
+:root[data-shell="webview2"] .topbar .search-pop,
+:root[data-shell="webview2"] .sidebar .brand a,
+:root[data-shell="webview2"] .sidebar .brand button {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+/* DWM draws the three system caption buttons over the top-right corner, so the
+   strip's own content has to stop short of them or it ends up underneath and
+   unclickable. */
+:root[data-shell="webview2"] .topbar {
+  padding-right: calc(var(--ds-caption-w) + 12px);
+}
+
+/* The global search popup hangs below the topbar and must stay inside the
+   window. */
+:root[data-shell="webview2"] .search-pop {
+  max-width: calc(100vw - var(--ds-sidebar-w) - 24px);
+}
+
+/* ==========================================================================
    8. COMPONENTS - workbench vocabulary
    LeebertyGXP and LeebertyPV share every one of these class names, so the same
    rules land in both. PV's extra screens (clock, philosophy, lessons) simply

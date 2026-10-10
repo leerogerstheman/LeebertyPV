@@ -132,6 +132,46 @@ LeebertyGXP.exe --theme system    跟随 Windows（默认，等价于不传）
 这正是 `design-system.css` 通过 `prefers-color-scheme` 读到的同一个信号。把它钉死成
 Light/Dark 会让页面主题冻住，而标题栏还在跟着系统走。用 `--theme` 固定时，两边一起固定。
 
+### `--custom-titlebar` 开关（默认关闭）
+
+把系统标题栏那 32px 还给页面，让应用自己的顶栏兼作标题栏。
+
+```
+LeebertyGXP.exe --custom-titlebar
+PEWorkbench.exe --custom-titlebar
+```
+
+**默认不开，是刻意的。** 这条链路里有几件事没有任何自动化检查能确认：系统说明按钮是否
+还在、窗口能否从边缘缩放、最大化后是否还让开任务栏。必须有人看一眼。在那之前，标准标题栏
+（已经是正确的深色）就是默认。
+
+开启后由三部分协作：
+
+| 部分 | 位置 | 作用 |
+|---|---|---|
+| `WM_NCCALCSIZE` 返回 0 | `WindowTheme.HandleNcCalcSize` | 客户区 = 整个窗口，标题栏让给页面 |
+| `WM_NCHITTEST` | `WindowTheme.HandleNcHitTest` | 找回缩放边框 |
+| `WM_GETMINMAXINFO` | `WindowTheme.AdjustMinMaxInfo` | 最大化时不让内容溢出屏幕 |
+| `DwmExtendFrameIntoClientArea` | `WindowTheme.ExtendFrameIntoClientArea` | 拿回阴影、圆角、边框 |
+| `IsNonClientRegionSupportEnabled` | 各启动器，**导航之前** | 让引擎把 `app-region` 矩形上报为非客户区 |
+| `app-region` 规则 | `design-system.css` 第 7b 节 | 标记哪块能拖、哪块不能 |
+
+**为什么用 `WM_NCCALCSIZE` 而不是删掉 `WS_CAPTION`**：删 `WS_CAPTION` 实测能把标题栏占位
+从 39px 压到 14px，但客户区仍然到不了顶，而且说明按钮依赖 `WS_CAPTION` 存在才会被 DWM 绘制。
+实测数据：
+
+| 做法 | 客户区 | 标题栏占位 | `WS_CAPTION` |
+|---|---|---|---|
+| 普通窗口 | 864x441 | 39px | 有 |
+| 删 `WS_CAPTION` | 866x466 | 14px | 无 |
+| **`WM_NCCALCSIZE`→0** | **880x480** | **0px** | **有** |
+
+拖动、右键系统菜单、双击最大化都由 Windows 原生提供（引擎上报非客户区之后），这里没有
+重新实现任何一条。
+
+`--custom-titlebar` 未开启时，`data-shell` 属性不会被注入，第 7b 节整体不匹配，浏览器里的
+布局与开启前**逐像素相同**——这一点是量过的（文档高度一致）。
+
 ### 为什么是 C# 5
 
 启动器由 .NET Framework 自带的编译器编译，GXP/PV 显式带 `/langversion:5`。不能用字符串
