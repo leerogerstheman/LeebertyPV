@@ -1,0 +1,1084 @@
+/* ==========================================================================
+   Leeberty Design System  ·  design-system.css
+   --------------------------------------------------------------------------
+   ONE FILE, THREE WORKBENCHES.
+
+   This stylesheet is byte-identical in LeebertyGXP, LeebertyPV and
+   PE-Workbench. It is loaded AFTER the application stylesheet
+   (app.css / pe.css), so at equal specificity its rules win, and it never has
+   to touch a single line of the application stylesheets.
+
+   WHY IT IS ADDITIVE
+   ------------------
+   The application stylesheets carry ~800 class names, a test suite asserts that
+   every class a view uses is defined in app.css, and a pixel check watches the
+   domain accents. Rewriting them would put all of that at risk for no visual
+   gain. So this file only ever:
+     · redefines the CSS custom properties the applications already consume, and
+     · overrides existing selectors with equal-or-higher specificity.
+
+   It introduces no class the applications do not already define. Adding a class
+   here and using it in a view would break LeebertyGXP / LeebertyPV
+   `test/assets.js`, which resolves every class in a view against app.css.
+
+   HOW IT DISCRIMINATES BETWEEN APPS
+   ---------------------------------
+   Each shell declares its identity once:   <html data-app="gxp">
+     gxp  LeebertyGXP      teal  #0f766e
+     pv   LeebertyPV       teal  #0f766e
+     pe   PE-Workbench     sky   #075985
+   Without the attribute the teal default applies, so a missing attribute
+   degrades to "slightly wrong accent", never to "unstyled".
+
+   DARK MODE
+   ---------
+   Follows the operating system by default (`prefers-color-scheme`), and can be
+   pinned from the shell:
+     <html data-app="gxp" data-theme="dark">   force dark
+     <html data-app="gxp" data-theme="light">  force light
+   WebView2 reads `color-scheme`, so native scrollbars, form controls and the
+   window backdrop follow the same decision instead of staying white.
+
+   THREE RULES THAT KEEP THIS FILE HONEST
+   --------------------------------------
+   1. A custom property may never be defined in terms of itself. The light
+      identity values live in `*-base` variables that nothing ever reassigns;
+      the dark theme derives from those. Writing
+      `--ds-brand: color-mix(in srgb, var(--ds-brand) …)` inside the dark block
+      is a self-reference, which CSS resolves to "invalid", not to "old value" -
+      the brand would vanish rather than stay put.
+
+   2. `.main` and `.content` are SWAPPED between the two families. In
+      LeebertyGXP / LeebertyPV `.main` is the padded scroll region and
+      `.content` is the flex wrapper; in PE-Workbench it is the other way
+      round. Neither may be given padding here, or one family's topbar ends up
+      indented. Only `.view` - which PE does not use - is safe to touch.
+
+   3. WHY THE DARK BLOCK APPEARS TWICE. `@media (prefers-color-scheme: dark)`
+      and `[data-theme="dark"]` cannot be merged into one selector list: a media
+      query is not a selector. `light-dark()` would collapse them, but it needs
+      Chromium 123+ and these workbenches still ship a legacy Edge fallback.
+      Predictability beats brevity in a validated environment, so the block is
+      written out twice and both copies are kept identical. Edit one, edit the
+      other.
+
+   ONLY ONE PROPERTY DEPENDS ON `color-mix()`
+   ------------------------------------------
+   `--ds-ring`, the focus glow. Chromium 111+ (March 2023) has it, and every
+   other colour here is a literal, so an engine without it loses the glow and
+   keeps the border, the outline and every layout decision.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. PRIMITIVES
+   Raw values. Components consume the semantic layer in section 3, never these.
+   ========================================================================== */
+
+:root {
+  /* ---- neutral ramp: cool slate, tuned for long reading sessions ------- */
+  --ds-n-0:   #ffffff;
+  --ds-n-25:  #fbfcfe;
+  --ds-n-50:  #f6f8fb;
+  --ds-n-100: #eef2f7;
+  --ds-n-150: #e6ebf2;
+  --ds-n-200: #dbe2ea;
+  --ds-n-250: #d0d9e3;
+  --ds-n-300: #c6d0dc;
+  --ds-n-400: #97a5b6;
+  --ds-n-500: #6b7c90;
+  --ds-n-600: #55657a;
+  --ds-n-700: #3f4f61;
+  --ds-n-800: #26333f;
+  --ds-n-900: #16202b;
+  --ds-n-950: #0d151d;
+
+  /* ---- neutral ramp: the dark counterpart ----------------------------- */
+  --ds-d-0:   #05090f;
+  --ds-d-25:  #080d15;
+  --ds-d-50:  #0b1220;
+  --ds-d-100: #101827;
+  --ds-d-150: #131c2b;
+  --ds-d-200: #18222f;
+  --ds-d-250: #1e2937;
+  --ds-d-300: #263243;
+  --ds-d-350: #2f3d50;
+  --ds-d-400: #3b4a5e;
+  --ds-d-500: #56677e;
+  --ds-d-600: #7c8ca1;
+  --ds-d-700: #a9b8ca;
+  --ds-d-800: #cdd8e6;
+  --ds-d-900: #e8eef6;
+  --ds-d-950: #f4f8fd;
+
+  /* ---- spacing: 4px base ---------------------------------------------- */
+  --ds-s-1:  4px;
+  --ds-s-2:  8px;
+  --ds-s-3:  12px;
+  --ds-s-4:  16px;
+  --ds-s-5:  20px;
+  --ds-s-6:  24px;
+  --ds-s-8:  32px;
+  --ds-s-10: 40px;
+  --ds-s-12: 48px;
+
+  /* ---- radii ----------------------------------------------------------- */
+  --ds-r-xs:   4px;
+  --ds-r-sm:   6px;
+  --ds-r-md:   10px;
+  --ds-r-lg:   14px;
+  --ds-r-xl:   18px;
+  --ds-r-pill: 999px;
+
+  /* ---- type ------------------------------------------------------------ */
+  --ds-font-sans: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei",
+                  "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+  --ds-font-mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Mono",
+                  Menlo, Consolas, "Liberation Mono", monospace;
+  --ds-fs-xs:  11.5px;
+  --ds-fs-sm:  12.5px;
+  --ds-fs-md:  13.5px;
+  --ds-fs-lg:  15px;
+  --ds-fs-xl:  20px;
+  --ds-fs-2xl: 26px;
+  --ds-lh-tight: 1.25;
+  --ds-lh-base:  1.55;
+
+  /* ---- motion: short enough to feel instant, long enough to read ------ */
+  --ds-t-fast: 110ms cubic-bezier(.4, 0, .2, 1);
+  --ds-t-base: 160ms cubic-bezier(.4, 0, .2, 1);
+
+  /* ---- layout ---------------------------------------------------------- */
+  --ds-sidebar-w: 236px;
+  --ds-topbar-h:  52px;
+}
+
+/* ==========================================================================
+   2. APP IDENTITY
+   The only place the three workbenches differ. A fourth shell means one more
+   block, nothing else.
+
+   `*-base` is the light-mode value and is NEVER reassigned. `--ds-brand` and
+   friends are derived from it so the dark theme has something stable to read -
+   see rule 1 in the header.
+   ========================================================================== */
+
+:root {
+  /* Default identity: the GxP family teal. */
+  --ds-brand-base:      #0f766e;
+  --ds-brand-2-base:    #0d5f59;
+  --ds-brand-ink-base:  #0b4f4a;
+  --ds-accent-base:     #0d9488;
+  --ds-brand-soft-base: #e6f4f2;
+  --ds-ring-base:       rgba(15, 118, 110, .22);
+}
+
+:root[data-app="pe"] {
+  --ds-brand-base:      #075985;
+  --ds-brand-2-base:    #0e7490;
+  --ds-brand-ink-base:  #0c4a6e;
+  --ds-accent-base:     #0f766e;
+  --ds-brand-soft-base: #eff6ff;
+  --ds-ring-base:       rgba(7, 89, 133, .22);
+}
+
+:root {
+  --ds-brand:      var(--ds-brand-base);
+  --ds-brand-2:    var(--ds-brand-2-base);
+  --ds-brand-ink:  var(--ds-brand-ink-base);
+  --ds-brand-soft: var(--ds-brand-soft-base);
+  --ds-accent:     var(--ds-accent-base);
+  --ds-ring-color: var(--ds-ring-base);
+}
+
+/* ==========================================================================
+   3. SEMANTIC LAYER  (light)
+   The applications use two naming conventions for the same concepts -
+   `--ink`/`--panel` in LeebertyGXP and LeebertyPV, `--c-ink`/`--c-panel` in
+   PE-Workbench - and both are satisfied here. Defining a variable an
+   application does not use costs nothing; leaving one undefined would drop
+   that app back to its old palette for a whole surface.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---- surfaces -------------------------------------------------------- */
+  --ds-bg:           var(--ds-n-100);
+  --ds-bg-2:         var(--ds-n-150);
+  --ds-panel:        var(--ds-n-0);
+  --ds-panel-2:      var(--ds-n-50);
+  --ds-panel-3:      var(--ds-n-100);
+  --ds-panel-hover:  var(--ds-n-50);
+  --ds-panel-sunken: var(--ds-n-150);
+
+  /* ---- text ------------------------------------------------------------ */
+  --ds-ink:   var(--ds-n-900);
+  --ds-ink-2: var(--ds-n-700);
+  --ds-ink-3: var(--ds-n-500);
+
+  /* ---- borders --------------------------------------------------------- */
+  --ds-line:        var(--ds-n-200);
+  --ds-line-2:      var(--ds-n-150);
+  --ds-line-strong: var(--ds-n-300);
+
+  /* ---- status: each is >= 4.5:1 against its own soft fill -------------- */
+  --ds-ok:        #15803d;
+  --ds-ok-soft:   #e8f7ee;
+  --ds-ok-line:   #b7e2c4;
+  --ds-warn:      #b45309;
+  --ds-warn-soft: #fdf4e5;
+  --ds-warn-line: #f0d3a5;
+  --ds-bad:       #b91c1c;
+  --ds-bad-soft:  #fdecec;
+  --ds-bad-line:  #f3c0c0;
+  --ds-info:      #1d4ed8;
+  --ds-info-soft: #eaf0fd;
+  --ds-info-line: #c3d2f7;
+  --ds-purple-soft: #f5f3ff;
+  --ds-muted:      var(--ds-n-500);
+  --ds-muted-soft: var(--ds-n-100);
+
+  /* ---- elevation: three layers, not one blur -------------------------- */
+  --ds-shadow-1: 0 1px 2px rgba(15, 26, 36, .06),
+                 0 1px 3px rgba(15, 26, 36, .04);
+  --ds-shadow-2: 0 1px 2px rgba(15, 26, 36, .05),
+                 0 4px 12px rgba(15, 26, 36, .07);
+  --ds-shadow-3: 0 8px 20px rgba(15, 26, 36, .10),
+                 0 20px 48px rgba(15, 26, 36, .12);
+
+  /* The single color-mix() in this file. Chromium 111+. */
+  --ds-ring: 0 0 0 3px var(--ds-ring-color);
+
+  /* ---- scrim ----------------------------------------------------------- */
+  --ds-scrim: rgba(11, 18, 32, .52);
+
+  /* ======================================================================
+     3a. APPLICATION TOKEN MAP - LeebertyGXP / LeebertyPV
+     ====================================================================== */
+  --bg:         var(--ds-bg);
+  --panel:      var(--ds-panel);
+  --panel-2:    var(--ds-panel-2);
+  --ink:        var(--ds-ink);
+  --ink-2:      var(--ds-ink-2);
+  --ink-3:      var(--ds-ink-3);
+  --line:       var(--ds-line);
+  --line-2:     var(--ds-line-2);
+
+  --brand:      var(--ds-brand);
+  --brand-2:    var(--ds-brand-2);
+  --brand-soft: var(--ds-brand-soft);
+
+  --ok:        var(--ds-ok);
+  --ok-soft:   var(--ds-ok-soft);
+  --warn:      var(--ds-warn);
+  --warn-soft: var(--ds-warn-soft);
+  --bad:       var(--ds-bad);
+  --bad-soft:  var(--ds-bad-soft);
+  --info:      var(--ds-info);
+  --info-soft: var(--ds-info-soft);
+  --muted:      var(--ds-muted);
+  --muted-soft: var(--ds-muted-soft);
+
+  /* ======================================================================
+     3b. APPLICATION TOKEN MAP - PE-Workbench
+     ====================================================================== */
+  --c-ink:    var(--ds-ink);
+  --c-ink-2:  var(--ds-ink-2);
+  --c-ink-3:  var(--ds-ink-3);
+  --c-line:   var(--ds-line);
+  --c-bg:     var(--ds-bg);
+  --c-panel:  var(--ds-panel);
+
+  --c-brand:   var(--ds-brand);
+  --c-brand-2: var(--ds-brand-2);
+  --c-accent:  var(--ds-accent);
+
+  --c-red:      var(--ds-bad);
+  --c-red-bg:   var(--ds-bad-soft);
+  --c-amber:    var(--ds-warn);
+  --c-amber-bg: var(--ds-warn-soft);
+  --c-green:    var(--ds-ok);
+  --c-green-bg: var(--ds-ok-soft);
+  --c-blue-bg:   var(--ds-info-soft);
+  --c-purple-bg: var(--ds-purple-soft);
+
+  /* ======================================================================
+     3c. SHARED APPLICATION TOKENS
+     These names already mean the same thing in all three stylesheets, so they
+     are the natural place to unify geometry and typography.
+     ====================================================================== */
+  --radius:    var(--ds-r-md);
+  --radius-sm: var(--ds-r-sm);
+  --radius-lg: var(--ds-r-lg);
+
+  --shadow:    var(--ds-shadow-1);
+  --shadow-md: var(--ds-shadow-2);
+  --shadow-lg: var(--ds-shadow-3);
+
+  --mono: var(--ds-font-mono);
+  --sans: var(--ds-font-sans);
+}
+
+/* ==========================================================================
+   4. DARK THEME
+   The neutral ramp inverts, the status hues lighten so they stay legible on a
+   dark fill, and each workbench's brand is lifted to a 400-level tint of its
+   own hue - a saturated 700-level teal on #131c2b is unreadable.
+   ========================================================================== */
+
+/* ---- 4a. follows the operating system -------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --ds-bg:           var(--ds-d-50);
+    --ds-bg-2:         var(--ds-d-25);
+    --ds-panel:        var(--ds-d-150);
+    --ds-panel-2:      var(--ds-d-200);
+    --ds-panel-3:      var(--ds-d-250);
+    --ds-panel-hover:  var(--ds-d-250);
+    --ds-panel-sunken: var(--ds-d-100);
+
+    --ds-ink:   var(--ds-d-900);
+    --ds-ink-2: var(--ds-d-700);
+    --ds-ink-3: var(--ds-d-600);
+
+    --ds-line:        var(--ds-d-300);
+    --ds-line-2:      var(--ds-d-250);
+    --ds-line-strong: var(--ds-d-350);
+
+    --ds-ok:        #4ade80;
+    --ds-ok-soft:   #10281a;
+    --ds-ok-line:   #1f5133;
+    --ds-warn:      #fbbf24;
+    --ds-warn-soft: #2b2110;
+    --ds-warn-line: #5c4318;
+    --ds-bad:       #f87171;
+    --ds-bad-soft:  #2c1416;
+    --ds-bad-line:  #5c2426;
+    --ds-info:      #7aa2f7;
+    --ds-info-soft: #141f36;
+    --ds-info-line: #24406b;
+    --ds-purple-soft: #241d38;
+    --ds-muted:      var(--ds-d-600);
+    --ds-muted-soft: var(--ds-d-250);
+
+    /* Teal family. #2dd4bf is already the GxP accent on the dark sidebar, so
+       the link colour and the navigation marker agree. */
+    --ds-brand:      #2dd4bf;
+    --ds-brand-2:    #5eead4;
+    --ds-brand-ink:  #99f6e4;
+    --ds-brand-soft: #10312e;
+    --ds-accent:     #2dd4bf;
+    --ds-ring-color: rgba(45, 212, 191, .30);
+
+    --ds-shadow-1: 0 1px 2px rgba(0, 0, 0, .45);
+    --ds-shadow-2: 0 1px 3px rgba(0, 0, 0, .50),
+                   0 6px 16px rgba(0, 0, 0, .45);
+    --ds-shadow-3: 0 10px 26px rgba(0, 0, 0, .55),
+                   0 24px 56px rgba(0, 0, 0, .50);
+
+    --ds-scrim: rgba(3, 7, 14, .68);
+  }
+
+  /* PE-Workbench keeps its sky identity in the dark. */
+  :root[data-app="pe"]:not([data-theme="light"]) {
+    --ds-brand:      #38bdf8;
+    --ds-brand-2:    #22d3ee;
+    --ds-brand-ink:  #7dd3fc;
+    --ds-brand-soft: #0c2438;
+    --ds-accent:     #2dd4bf;
+    --ds-ring-color: rgba(56, 189, 248, .30);
+  }
+}
+
+/* ---- 4b. pinned by the shell ------------------------------------------ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ds-bg:           var(--ds-d-50);
+  --ds-bg-2:         var(--ds-d-25);
+  --ds-panel:        var(--ds-d-150);
+  --ds-panel-2:      var(--ds-d-200);
+  --ds-panel-3:      var(--ds-d-250);
+  --ds-panel-hover:  var(--ds-d-250);
+  --ds-panel-sunken: var(--ds-d-100);
+
+  --ds-ink:   var(--ds-d-900);
+  --ds-ink-2: var(--ds-d-700);
+  --ds-ink-3: var(--ds-d-600);
+
+  --ds-line:        var(--ds-d-300);
+  --ds-line-2:      var(--ds-d-250);
+  --ds-line-strong: var(--ds-d-350);
+
+  --ds-ok:        #4ade80;
+  --ds-ok-soft:   #10281a;
+  --ds-ok-line:   #1f5133;
+  --ds-warn:      #fbbf24;
+  --ds-warn-soft: #2b2110;
+  --ds-warn-line: #5c4318;
+  --ds-bad:       #f87171;
+  --ds-bad-soft:  #2c1416;
+  --ds-bad-line:  #5c2426;
+  --ds-info:      #7aa2f7;
+  --ds-info-soft: #141f36;
+  --ds-info-line: #24406b;
+  --ds-purple-soft: #241d38;
+  --ds-muted:      var(--ds-d-600);
+  --ds-muted-soft: var(--ds-d-250);
+
+  --ds-brand:      #2dd4bf;
+  --ds-brand-2:    #5eead4;
+  --ds-brand-ink:  #99f6e4;
+  --ds-brand-soft: #10312e;
+  --ds-accent:     #2dd4bf;
+  --ds-ring-color: rgba(45, 212, 191, .30);
+
+  --ds-shadow-1: 0 1px 2px rgba(0, 0, 0, .45);
+  --ds-shadow-2: 0 1px 3px rgba(0, 0, 0, .50),
+                 0 6px 16px rgba(0, 0, 0, .45);
+  --ds-shadow-3: 0 10px 26px rgba(0, 0, 0, .55),
+                 0 24px 56px rgba(0, 0, 0, .50);
+
+  --ds-scrim: rgba(3, 7, 14, .68);
+}
+
+:root[data-app="pe"][data-theme="dark"] {
+  --ds-brand:      #38bdf8;
+  --ds-brand-2:    #22d3ee;
+  --ds-brand-ink:  #7dd3fc;
+  --ds-brand-soft: #0c2438;
+  --ds-accent:     #2dd4bf;
+  --ds-ring-color: rgba(56, 189, 248, .30);
+}
+
+/* ---- 4c. surfaces the application stylesheets hard-code ---------------
+   No variable can redirect a literal, so these are the few places where the
+   application stylesheets paint a light colour directly. Listed rather than
+   guessed: each one was read out of app.css / pe.css. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .table tbody tr:hover,
+  :root:not([data-theme="light"]) .btn:hover,
+  :root:not([data-theme="light"]) .inbox-item:hover,
+  :root:not([data-theme="light"]) .mx-row:hover .mx-user,
+  :root:not([data-theme="light"]) .matrix-group td,
+  :root:not([data-theme="light"]) .mx-group-row td {
+    background: var(--ds-panel-2);
+  }
+  :root:not([data-theme="light"]) .matrix-group td,
+  :root:not([data-theme="light"]) .mx-group-row td {
+    background: var(--ds-panel-3);
+  }
+  :root:not([data-theme="light"]) .item-overdue { background: var(--ds-bad-soft); }
+  :root:not([data-theme="light"]) .item-oversight { background: var(--ds-warn-soft); }
+  :root:not([data-theme="light"]) .fc-signed .fc-step,
+  :root:not([data-theme="light"]) .fn-signed { background: var(--ds-ok-soft); }
+}
+
+:root[data-theme="dark"] .table tbody tr:hover,
+:root[data-theme="dark"] .btn:hover,
+:root[data-theme="dark"] .inbox-item:hover,
+:root[data-theme="dark"] .mx-row:hover .mx-user {
+  background: var(--ds-panel-2);
+}
+:root[data-theme="dark"] .matrix-group td,
+:root[data-theme="dark"] .mx-group-row td {
+  background: var(--ds-panel-3);
+}
+:root[data-theme="dark"] .item-overdue { background: var(--ds-bad-soft); }
+:root[data-theme="dark"] .item-oversight { background: var(--ds-warn-soft); }
+:root[data-theme="dark"] .fc-signed .fc-step,
+:root[data-theme="dark"] .fn-signed { background: var(--ds-ok-soft); }
+
+/* ==========================================================================
+   5. BASE
+   ========================================================================== */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  /* Painted before the first frame, so a WebView2 host never flashes white
+     while the shell boots. */
+  background: var(--ds-bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--ds-font-sans);
+  font-size: 14px;
+  line-height: var(--ds-lh-base);
+  color: var(--ds-ink);
+  background: var(--ds-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ds-ink);
+  letter-spacing: -.005em;
+  line-height: var(--ds-lh-tight);
+}
+h1 { font-size: var(--ds-fs-2xl); font-weight: 700; }
+h2 { font-size: var(--ds-fs-xl);  font-weight: 680; }
+h3 { font-size: var(--ds-fs-lg);  font-weight: 660; }
+h4 { font-size: var(--ds-fs-md);  font-weight: 650; }
+
+a { color: var(--ds-brand); }
+a:hover { color: var(--ds-brand-2); }
+
+/* Identifiers, dates and hashes get read aloud over the phone during an audit,
+   so they are monospaced and never reflowed. */
+code, kbd, samp, pre { font-family: var(--ds-font-mono); }
+
+/* Numeric columns must not jitter as values update. */
+.stat-value, .kpi .num, .dc-stat strong, .dfr-count strong, .dcc-count,
+.dcc-stat strong, .score-value, .rb-value, .chain-big, .mx-mark,
+.dc-count, .dfr-count, .dcc-stats, .mx-mark {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--ds-brand-soft);
+  color: var(--ds-ink);
+}
+
+/* One focus treatment for the whole suite. `:focus-visible` keeps it off mouse
+   clicks, and it is never removed: this UI is driven from the keyboard during
+   evidence review. A component rule with higher specificity still wins. */
+:focus-visible {
+  outline: 2px solid var(--ds-brand);
+  outline-offset: 1px;
+}
+
+/* ==========================================================================
+   6. SCROLLBARS
+   ========================================================================== */
+
+* { scrollbar-width: thin; scrollbar-color: var(--ds-line-strong) transparent; }
+
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--ds-line-strong);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  border-radius: var(--ds-r-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ds-ink-3);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-corner { background: transparent; }
+
+/* ==========================================================================
+   7. SHELL
+   All three workbenches use the same shell vocabulary even where the inner
+   components diverge. `.main` and `.content` are deliberately absent here -
+   see rule 2 in the header.
+   ========================================================================== */
+
+.sidebar {
+  width: var(--ds-sidebar-w);
+  flex: 0 0 var(--ds-sidebar-w);
+  background: linear-gradient(180deg, #12222e 0%, #0e1a24 100%);
+  color: #c9d6e3;
+  border-right: 1px solid rgba(255, 255, 255, .06);
+  scrollbar-color: rgba(255, 255, 255, .18) transparent;
+}
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .18); }
+
+.brand { border-bottom: 1px solid rgba(255, 255, 255, .07); }
+.brand-name { font-weight: 680; letter-spacing: .01em; }
+
+.nav-item {
+  color: #b9c8d6;
+  border-left: 3px solid transparent;
+  border-radius: 0 var(--ds-r-sm) var(--ds-r-sm) 0;
+  margin-right: 8px;
+  padding-left: 13px;
+  transition: background var(--ds-t-fast), color var(--ds-t-fast);
+}
+.nav-item:hover { background: rgba(255, 255, 255, .06); color: #fff; }
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(45, 212, 191, .18), rgba(45, 212, 191, .04));
+  color: #fff;
+  border-left-color: #2dd4bf;
+  font-weight: 620;
+}
+
+.topbar {
+  min-height: var(--ds-topbar-h);
+  background: var(--ds-panel);
+  border-bottom: 1px solid var(--ds-line);
+  padding: 9px 22px;
+}
+.topbar-title { font-weight: 660; letter-spacing: -.005em; }
+
+.view { gap: 18px; }
+.view-title { font-size: var(--ds-fs-xl); font-weight: 700; letter-spacing: -.01em; }
+.view-sub { color: var(--ds-ink-3); max-width: 78ch; }
+
+/* ==========================================================================
+   8. COMPONENTS - workbench vocabulary
+   LeebertyGXP and LeebertyPV share every one of these class names, so the same
+   rules land in both. PV's extra screens (clock, philosophy, lessons) simply
+   never match a selector here and keep their own styling.
+   ========================================================================== */
+
+/* ---- cards ------------------------------------------------------------ */
+.card {
+  background: var(--ds-panel);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-md);
+  box-shadow: var(--ds-shadow-1);
+}
+.card-head {
+  background: var(--ds-panel-2);
+  border-bottom: 1px solid var(--ds-line-2);
+  padding: 11px 16px;
+}
+.card-title { font-weight: 650; font-size: 14px; letter-spacing: -.003em; }
+.card-sub { color: var(--ds-ink-3); }
+.card-body { padding: 16px; }
+.card-foot-note { border-top: 1px dashed var(--ds-line-2); }
+
+/* ---- stats ------------------------------------------------------------ */
+.stat {
+  background: var(--ds-panel);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-md);
+  transition: border-color var(--ds-t-fast), box-shadow var(--ds-t-fast);
+}
+.stat-clickable:hover {
+  border-color: var(--ds-brand);
+  box-shadow: var(--ds-shadow-1);
+}
+.stat-value { font-weight: 700; letter-spacing: -.015em; }
+
+/* ---- badges ----------------------------------------------------------- */
+.badge {
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--ds-r-pill);
+}
+.badge-ok      { background: var(--ds-ok-soft);    color: var(--ds-ok);    border-color: var(--ds-ok-line); }
+.badge-warn    { background: var(--ds-warn-soft);  color: var(--ds-warn);  border-color: var(--ds-warn-line); }
+.badge-bad     { background: var(--ds-bad-soft);   color: var(--ds-bad);   border-color: var(--ds-bad-line); }
+.badge-info    { background: var(--ds-info-soft);  color: var(--ds-info);  border-color: var(--ds-info-line); }
+.badge-muted   { background: var(--ds-muted-soft); color: var(--ds-muted); }
+.badge-neutral { background: var(--ds-panel-3);    color: var(--ds-ink-2); border-color: var(--ds-line); }
+
+/* ---- tables ----------------------------------------------------------- */
+.table-wrap {
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-md);
+  background: var(--ds-panel);
+}
+.table { font-size: 13px; }
+.table th {
+  background: var(--ds-panel-2);
+  color: var(--ds-ink-2);
+  font-weight: 640;
+  letter-spacing: .01em;
+  border-bottom: 1px solid var(--ds-line);
+}
+.table td { border-bottom: 1px solid var(--ds-line-2); }
+.table tbody tr { transition: background var(--ds-t-fast); }
+.table tbody tr:hover { background: var(--ds-panel-hover); }
+
+.matrix-table th { background: var(--ds-panel-2); }
+.matrix-group td { background: var(--ds-panel-3); font-weight: 600; }
+.matrix-no { color: var(--ds-line-strong); }
+
+/* ---- buttons ---------------------------------------------------------- */
+.btn {
+  font-weight: 600;
+  padding: 6px 13px;
+  border-radius: var(--ds-r-sm);
+  border: 1px solid var(--ds-line);
+  background: var(--ds-panel);
+  color: var(--ds-ink);
+  transition: background var(--ds-t-fast), border-color var(--ds-t-fast),
+              box-shadow var(--ds-t-fast), transform var(--ds-t-fast);
+}
+.btn:hover {
+  background: var(--ds-panel-3);
+  border-color: var(--ds-line-strong);
+}
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { box-shadow: var(--ds-ring); }
+.btn:disabled { opacity: .55; }
+
+.btn-primary {
+  background: var(--ds-brand);
+  border-color: var(--ds-brand);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--ds-brand-2);
+  border-color: var(--ds-brand-2);
+}
+.btn-danger { background: var(--ds-bad); border-color: var(--ds-bad); color: #fff; }
+.btn-danger:hover {
+  background: #991b1b;
+  border-color: #991b1b;
+}
+.btn-ghost { background: transparent; border-color: transparent; }
+.btn-ghost:hover { background: var(--ds-muted-soft); border-color: var(--ds-line); }
+.btn-tab.active {
+  background: var(--ds-brand-soft);
+  border-color: var(--ds-brand);
+  color: var(--ds-brand-2);
+  font-weight: 660;
+}
+
+/* ---- chips ------------------------------------------------------------ */
+.chip {
+  border-radius: var(--ds-r-pill);
+  border: 1px solid var(--ds-line);
+  background: var(--ds-panel);
+  color: var(--ds-ink-2);
+  transition: background var(--ds-t-fast), border-color var(--ds-t-fast),
+              color var(--ds-t-fast);
+}
+.chip:hover { border-color: var(--ds-brand); color: var(--ds-brand-2); }
+.chip.active {
+  background: var(--ds-brand);
+  border-color: var(--ds-brand);
+  color: #fff;
+  font-weight: 620;
+}
+
+/* ---- forms ------------------------------------------------------------ */
+.input, .select, .textarea,
+input[type="text"], input[type="password"], input[type="number"],
+input[type="date"], input[type="search"], select, textarea {
+  background: var(--ds-panel);
+  color: var(--ds-ink);
+  border: 1px solid var(--ds-line-strong);
+  border-radius: var(--ds-r-sm);
+  transition: border-color var(--ds-t-fast), box-shadow var(--ds-t-fast);
+}
+.input:hover, .select:hover, .textarea:hover,
+input[type="text"]:hover, input[type="password"]:hover, input[type="number"]:hover,
+input[type="date"]:hover, input[type="search"]:hover, select:hover, textarea:hover {
+  border-color: var(--ds-ink-3);
+}
+.input:focus, .select:focus, .textarea:focus,
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--ds-brand);
+  box-shadow: var(--ds-ring);
+}
+::placeholder { color: var(--ds-ink-3); opacity: .85; }
+.field-label { font-weight: 620; color: var(--ds-ink-2); }
+.field-help, .hint { color: var(--ds-ink-3); }
+.form-error { color: var(--ds-bad); font-weight: 600; }
+
+/* ---- notices ---------------------------------------------------------- */
+.warning-note, .info-note, .guidance-note, .signature-notice, .terminal-note {
+  border-radius: var(--ds-r-sm);
+}
+.info-note { background: var(--ds-info-soft); color: var(--ds-info); }
+.warning-note, .terminal-note, .signature-notice {
+  background: var(--ds-warn-soft);
+  color: var(--ds-warn);
+}
+.guidance-note { background: var(--ds-brand-soft); color: var(--ds-brand-ink); }
+.warn-strong { color: var(--ds-bad); font-weight: 650; }
+.error-box { background: var(--ds-bad-soft); color: var(--ds-bad); border-radius: var(--ds-r-sm); }
+
+/* ---- empty / loading --------------------------------------------------- */
+.loading, .empty { color: var(--ds-ink-3); }
+.empty.ok { background: var(--ds-ok-soft); color: var(--ds-ok); }
+
+/* ---- toasts ----------------------------------------------------------- */
+.toast {
+  background: var(--ds-panel);
+  color: var(--ds-ink);
+  border-radius: var(--ds-r-md);
+  border: 1px solid var(--ds-line);
+  box-shadow: var(--ds-shadow-3);
+}
+.toast-ok, .toast.ok     { border-left-color: var(--ds-ok); }
+.toast-warn              { border-left-color: var(--ds-warn); }
+.toast-bad, .toast.err   { border-left-color: var(--ds-bad); }
+.toast-x { color: var(--ds-ink-3); }
+
+/* ---- modals ----------------------------------------------------------- */
+.modal-backdrop {
+  background: var(--ds-scrim);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.modal-panel, .modal {
+  background: var(--ds-panel);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  box-shadow: var(--ds-shadow-3);
+}
+.modal-title { font-weight: 680; }
+.modal-x { color: var(--ds-ink-3); transition: color var(--ds-t-fast); }
+.modal-x:hover { color: var(--ds-ink); }
+
+/* ---- progress and rings ----------------------------------------------- */
+.progress-bar {
+  background: var(--ds-panel-3);
+  border-radius: var(--ds-r-pill);
+  overflow: hidden;
+}
+.progress-fill { border-radius: var(--ds-r-pill); }
+
+/* ---- tabs ------------------------------------------------------------- */
+.tab {
+  color: var(--ds-ink-3);
+  transition: color var(--ds-t-fast), background var(--ds-t-fast);
+}
+.tab:hover { color: var(--ds-ink); background: var(--ds-panel-2); }
+.tab.active {
+  color: var(--ds-brand);
+  font-weight: 660;
+  box-shadow: inset 0 -2px 0 var(--ds-brand);
+}
+
+/* ---- structured lists -------------------------------------------------- */
+.inbox-item, .work-item, .pick-row, .manage-row, .domain-flow-row,
+.version-item, .ready-item, .compliance-item, .finding, .checklist-item,
+.curriculum-card, .process-card, .template-card, .identity-card,
+.persona-card, .participant-card, .domain-card, .qual-tile, .item-row {
+  transition: background var(--ds-t-fast), border-color var(--ds-t-fast),
+              box-shadow var(--ds-t-fast), transform var(--ds-t-fast);
+}
+.inbox-item:hover, .pick-row:hover, .manage-row:hover, .domain-flow-row:hover {
+  background: var(--ds-panel-hover);
+}
+.identity-card:hover, .persona-card:hover, .participant-card:hover,
+.domain-card:hover, .process-card:hover, .curriculum-card:hover {
+  border-color: var(--ds-brand);
+  box-shadow: var(--ds-shadow-2);
+}
+
+/* ---- flow diagrams ---------------------------------------------------- */
+.flow-node, .fc-step, .fp-step, .fn-role-block, .fc-card, .fstep {
+  border-radius: var(--ds-r-sm);
+  transition: border-color var(--ds-t-fast), box-shadow var(--ds-t-fast);
+}
+.fn-signed, .fc-signed .fc-step { background: var(--ds-ok-soft); }
+.fn-independent, .fc-independent .fc-step { border-style: dashed; }
+
+/* ---- json viewer ------------------------------------------------------ */
+.json-view {
+  background: #0f1a24;
+  color: #cbd7e3;
+  border-radius: var(--ds-r-sm);
+  border: 1px solid var(--ds-d-300);
+}
+
+/* ---- misc ------------------------------------------------------------- */
+.role-chip { background: var(--ds-muted-soft); color: var(--ds-ink-2); border-radius: var(--ds-r-pill); }
+.chip-warn { background: var(--ds-warn-soft); color: var(--ds-warn); }
+.muted { color: var(--ds-ink-3); }
+.mono  { font-family: var(--ds-font-mono); }
+.overdue  { color: var(--ds-bad);  font-weight: 620; }
+.due-soon { color: var(--ds-warn); font-weight: 620; }
+
+.readiness-banner, .verdict-banner, .banner-note, .chain-result,
+.demo-banner, .demo-warning, .signed-in-banner, .refusal-head,
+.item-row, .checklist-item {
+  border-radius: var(--ds-r-md);
+}
+
+.skip-link {
+  background: var(--ds-panel);
+  color: var(--ds-ink);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-sm);
+  box-shadow: var(--ds-shadow-2);
+  padding: 8px 12px;
+}
+.skip-link:focus { outline: 2px solid var(--ds-brand); }
+
+/* ==========================================================================
+   9. COMPONENTS - PE-Workbench vocabulary
+   PE-Workbench names the same ideas differently (`.badge.green` rather than
+   `.badge-ok`, `.btn.primary` rather than `.btn-primary`). Both vocabularies
+   live in this one file; each application only ever matches its own.
+   ========================================================================== */
+
+.kpi {
+  background: var(--ds-panel);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-md);
+  box-shadow: var(--ds-shadow-1);
+}
+.kpi .num { font-weight: 800; letter-spacing: -.02em; }
+.kpi .lbl { color: var(--ds-ink-3); }
+
+.btn.primary {
+  background: var(--ds-brand);
+  border-color: var(--ds-brand);
+  color: #fff;
+}
+.btn.primary:hover {
+  background: var(--ds-brand-2);
+  border-color: var(--ds-brand-2);
+}
+.btn.danger { background: var(--ds-bad-soft); color: var(--ds-bad); border-color: var(--ds-bad-line); }
+
+.badge.gray   { background: var(--ds-panel-3);    color: var(--ds-ink-2);      border-color: var(--ds-line); }
+.badge.green  { background: var(--ds-ok-soft);    color: var(--ds-ok);         border-color: var(--ds-ok-line); }
+.badge.red    { background: var(--ds-bad-soft);   color: var(--ds-bad);        border-color: var(--ds-bad-line); }
+.badge.amber  { background: var(--ds-warn-soft);  color: var(--ds-warn);       border-color: var(--ds-warn-line); }
+.badge.blue   { background: var(--ds-info-soft);  color: var(--ds-info);       border-color: var(--ds-info-line); }
+.badge.purple { background: var(--ds-purple-soft); color: #6d28d9;             border-color: #ddd6fe; }
+.badge.teal   { background: var(--ds-brand-soft); color: var(--ds-brand-ink);  border-color: transparent; }
+
+.pill {
+  background: var(--ds-panel-2);
+  border-color: var(--ds-line);
+  color: var(--ds-ink-2);
+  border-radius: var(--ds-r-pill);
+}
+
+table.pe th {
+  background: var(--ds-panel-2);
+  color: var(--ds-ink-2);
+  font-weight: 640;
+  border-bottom: 1px solid var(--ds-line);
+}
+table.pe td { border-bottom: 1px solid var(--ds-line-2); }
+table.pe tr.clickable:hover td { background: var(--ds-panel-hover); }
+.matrix th { background: var(--ds-panel-2); }
+
+.identity-card, .card, .item-row, .checklist-item, .flow .fstep,
+.icer-preview .ip-cell, .empty-guide .eg-step {
+  background: var(--ds-panel);
+}
+.identity-card { border-radius: var(--ds-r-md); box-shadow: var(--ds-shadow-1); }
+.identity-card:hover { border-color: var(--ds-brand); box-shadow: var(--ds-shadow-2); }
+
+.flow .fstep { border-radius: var(--ds-r-md); }
+.flow .fstep.done { background: var(--ds-ok-soft); border-color: var(--ds-ok-line); }
+.flow .fstep.next { border-color: var(--ds-brand); box-shadow: var(--ds-ring); }
+
+.alert { border-radius: var(--ds-r-md); }
+.alert.info { background: var(--ds-info-soft); border-color: var(--ds-info-line); color: var(--ds-info); }
+.alert.warn { background: var(--ds-warn-soft); border-color: var(--ds-warn-line); color: var(--ds-warn); }
+.alert.err  { background: var(--ds-bad-soft);  border-color: var(--ds-bad-line);  color: var(--ds-bad); }
+.alert.ok   { background: var(--ds-ok-soft);   border-color: var(--ds-ok-line);   color: var(--ds-ok); }
+
+.top-search input {
+  background-color: var(--ds-panel);
+  border-color: var(--ds-line-strong);
+  border-radius: var(--ds-r-sm);
+}
+.search-pop {
+  background: var(--ds-panel);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  box-shadow: var(--ds-shadow-3);
+}
+.search-pop .s-item:hover, .search-pop .s-item.sel { background: var(--ds-panel-3); }
+.search-kbd { background: var(--ds-panel-2); border-color: var(--ds-line); }
+
+.tabs .tab.active {
+  background: var(--ds-panel);
+  border-color: var(--ds-line);
+  border-bottom-color: var(--ds-panel);
+  color: var(--ds-brand);
+}
+
+.stepper .sp .dot { background: var(--ds-panel-3); border-color: var(--ds-line); }
+.stepper .sp.done .dot { background: var(--ds-ok);    border-color: var(--ds-ok); }
+.stepper .sp.next .dot { background: var(--ds-brand); border-color: var(--ds-brand); }
+
+.next-action {
+  background: linear-gradient(135deg, var(--ds-brand-soft), var(--ds-info-soft));
+  border-color: var(--ds-info-line);
+  border-left-color: var(--ds-brand-2);
+  border-radius: var(--ds-r-md);
+}
+.icer-preview {
+  background: var(--ds-brand-soft);
+  border-color: var(--ds-info-line);
+  border-radius: var(--ds-r-md);
+}
+.philosophy-quote {
+  background: var(--ds-info-soft);
+  color: var(--ds-info);
+  border-radius: 0 var(--ds-r-md) var(--ds-r-md) 0;
+}
+
+.ob-card { background: var(--ds-panel); border-radius: var(--ds-r-lg); box-shadow: var(--ds-shadow-3); }
+.ob-backdrop { background: var(--ds-scrim); }
+.ob-highlight { outline-color: var(--ds-brand); }
+
+/* PE keeps its own navy sidebar; the gradient just gives it depth. */
+.sidebar { background: linear-gradient(180deg, #0d2135 0%, #0a1a2b 100%); }
+.sidebar nav a { border-radius: var(--ds-r-sm); }
+.sidebar nav a.active { background: rgba(14, 116, 144, .35); }
+
+/* ==========================================================================
+   10. MOTION PREFERENCES
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* The theme swap is the one transition worth keeping: it stops a hard flash
+   when Windows switches between light and dark. */
+@media (prefers-reduced-motion: no-preference) {
+  body { transition: background-color var(--ds-t-base), color var(--ds-t-base); }
+}
+
+/* ==========================================================================
+   11. PRINT
+   Inspection evidence is routinely printed in black and white, and a dark
+   theme must never reach paper.
+   ========================================================================== */
+
+@media print {
+  :root {
+    color-scheme: light;
+    --ds-bg: #ffffff;
+    --ds-panel: #ffffff;
+    --ds-panel-2: #ffffff;
+    --ds-panel-3: #f4f4f4;
+    --ds-panel-hover: #ffffff;
+    --ds-ink: #000000;
+    --ds-ink-2: #222222;
+    --ds-ink-3: #555555;
+    --ds-line: #cccccc;
+    --ds-line-2: #dddddd;
+    --ds-line-strong: #bbbbbb;
+    --ds-shadow-1: none;
+    --ds-shadow-2: none;
+    --ds-shadow-3: none;
+  }
+
+  html, body { background: #fff !important; color: #000 !important; }
+
+  .sidebar, .topbar, .skip-link, .toast-host, .modal-host,
+  .btn, .chip, .card-actions { display: none !important; }
+
+  .card, .stat, .table-wrap, .identity-card, .persona-card, .participant-card,
+  .domain-card, .process-card, .curriculum-card, .kpi {
+    box-shadow: none !important;
+    border-color: #bbb !important;
+    break-inside: avoid;
+  }
+
+  .table th { background: #f0f0f0 !important; color: #000 !important; }
+  .badge { border: 1px solid #999 !important; background: transparent !important; color: #000 !important; }
+  a { color: #000 !important; text-decoration: none !important; }
+}

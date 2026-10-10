@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-app="pv">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,6 +8,10 @@
   <meta name="description" content="LeebertyPV - configuration-driven pharmacovigilance workbench: ICSR processing, causality assessment, signal detection, PSUR, risk management, AEFI, medical literature monitoring and GVP compliance, with a hash-chained audit trail and electronic signatures.">
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="stylesheet" href="/css/app.css">
+  <!-- Shared design system. MUST stay after app.css: it redefines the same
+       custom properties and relies on equal specificity plus later order to
+       win. Byte-identical in LeebertyGXP, LeebertyPV and PE-Workbench. -->
+  <link rel="stylesheet" href="/css/design-system.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
