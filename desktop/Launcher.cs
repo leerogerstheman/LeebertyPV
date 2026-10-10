@@ -84,6 +84,7 @@ static class Program
             else if (args[i] == "--repair-demo") selfRepair = true;
             else if (args[i] == "--go" && i + 1 < args.Length) StartView = args[i + 1];
             else if (args[i] == "--login" && i + 1 < args.Length) StartLogin = args[i + 1];
+            else if (args[i] == "--theme" && i + 1 < args.Length) WindowTheme.Requested = WindowTheme.Normalize(args[i + 1]);
         }
 
         nodeExe = FindNode();
@@ -178,6 +179,8 @@ static class Program
             Path.Combine(root, "src", "server.js"));
         check("the desktop icon can be drawn without a resource file", MakeIcon() != null, "generated");
         check("the native client type compiles and loads", typeof(NativeForm) != null, "NativeForm");
+        check("the window chrome can be themed (dark title bar, rounded corners)",
+            CanApplyWindowChrome(), WindowTheme.Describe());
         check("the health probe reports no server on a free port", !HealthOk(), "port " + port);
 
         if (nodeExe == null) { Console.WriteLine("\n  " + failures + " failure(s)\n"); Environment.Exit(1); }
@@ -578,6 +581,36 @@ static class Program
     }
 
     // ----------------------------------------------------------------- window --
+
+    /// <summary>
+    /// Prove that the window chrome can be themed without putting a window on
+    /// screen. This client draws its own UI rather than hosting a browser, so the
+    /// frame is the one part of the design system no stylesheet can reach - and
+    /// therefore the one part that has to be checked here.
+    ///
+    /// The handle is created without Show(): DwmSetWindowAttribute works on a
+    /// window that exists but is not visible, so the self-test never flashes a
+    /// window at whoever is watching the build.
+    /// </summary>
+    static bool CanApplyWindowChrome()
+    {
+        try
+        {
+            using (var probe = new Form())
+            {
+                probe.ShowInTaskbar = false;
+                probe.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                IntPtr handle = probe.Handle;             // creates it, does not show it
+                if (handle == IntPtr.Zero) return false;
+                return WindowTheme.Apply(probe, WindowTheme.IsDark());
+            }
+        }
+        catch (Exception ex)
+        {
+            LogLine("window chrome probe failed: " + ex.Message);
+            return false;
+        }
+    }
 
     static void OpenWindow()
     {

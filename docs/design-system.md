@@ -89,19 +89,80 @@ CSS 规范把「自定义属性在自身值里引用自己」判定为 **invalid
 
 ---
 
+## 窗口层：`desktop/WindowTheme.cs`
+
+CSS 只能管到**客户区内部**。标题栏、窗口边框和圆角由 Windows 的 DWM（桌面窗口管理器）
+绘制，Web 引擎碰不到。没有这一层，深色工作台会嵌在一个亮白标题栏里——这是最明显的
+「网页塞进盒子」的破绽。
+
+它设置三项：
+
+| DWM 属性 | 效果 |
+|---|---|
+| `DWMWA_USE_IMMERSIVE_DARK_MODE` | 深/浅色标题栏与系统菜单 |
+| `DWMWA_WINDOW_CORNER_PREFERENCE` | Windows 11 圆角 |
+| `DWMWA_BORDER_COLOR` | 1px 边框，取设计系统的 `--ds-line` 值 |
+
+**故意不设 Mica / 亚克力（`DWMWA_SYSTEMBACKDROP_TYPE`）**。背景材质只在窗口透明的地方
+可见，而这个窗口被不透明的 WebView2 填满，页面自己又画了
+`html { background: var(--ds-bg) }`。设了等于加一个什么都不改变的调用。要让它可见，
+就得把边框延伸进客户区、再挖出透明区域——那是「自定义标题栏」，是另一件事，有自己的
+布局代价。
+
+### 三个窗口并不相同
+
+| 仓库 | 窗口类型 | 窗口层 | WebView2 配色 |
+|---|---|---|---|
+| LeebertyGXP | 内嵌 WebView2 | 适用 | 适用 |
+| LeebertyPV | **纯原生 WinForms**（`NativeForm`，不嵌浏览器） | 适用 | 不适用 |
+| PE-Workbench | 内嵌 WebView2 | 适用 | 适用 |
+
+PV 的桌面端自绘 UI，**不加载 `web/` 里的任何东西**，所以 `design-system.css` 对它的
+客户端区域完全无效——它只有窗口层这一半。这是已知的、刻意的差异，不是遗漏。
+
+### `--theme` 开关
+
+```
+LeebertyGXP.exe --theme dark      强制深色窗口层
+LeebertyGXP.exe --theme light     强制浅色
+LeebertyGXP.exe --theme system    跟随 Windows（默认，等价于不传）
+```
+
+默认（system）下 WebView2 的 `PreferredColorScheme` 保持 `Auto`，会**实时**跟随系统——
+这正是 `design-system.css` 通过 `prefers-color-scheme` 读到的同一个信号。把它钉死成
+Light/Dark 会让页面主题冻住，而标题栏还在跟着系统走。用 `--theme` 固定时，两边一起固定。
+
+### 为什么是 C# 5
+
+启动器由 .NET Framework 自带的编译器编译，GXP/PV 显式带 `/langversion:5`。不能用字符串
+插值、`nameof`、表达式体成员、`?.`。这不是风格偏好，编译器会直接拒绝。
+
+### 怎么确认它真的生效
+
+自检项 `the window chrome can be themed` 会创建一个**不显示**的窗口并调用 DWM——
+`DwmSetWindowAttribute` 对存在但不可见的窗口同样有效，所以构建过程不会闪出窗口。
+
+要肉眼看结果，用带 `PrintWindow(…, PW_RENDERFULLCONTENT)` 的抓图（PE 的 `--shot` 就是
+这么做的，`GetWindowRect` + `PW_RENDERFULLCONTENT` 会把非客户区一起抓进来）。实测同一
+个窗口在两种主题下，顶部条带（y≈2–30，即标题栏）的平均亮度是 **48 → 228**，而客户区
+两主题都是 255——变化只发生在非客户区，也就是 CSS 够不到的那一条。
+
+---
+
 ## 同步副本
 
-需要同步的是**两个**逐字节相同的文件：
+需要同步的是**三个**逐字节相同的文件：
 
 | 文件 | 作用 |
 |---|---|
-| `web/css/design-system.css` | 设计系统本体 |
+| `web/css/design-system.css` | 设计系统本体（客户端区域内的一切） |
+| `desktop/WindowTheme.cs` | 窗口层（标题栏、边框、圆角）——CSS 够不到的那一半 |
 | `scripts/check-css.js` | 静态体检工具（零依赖 Node 脚本） |
 
 以任意一份为准，覆盖另外两份，然后校验哈希：
 
 ```powershell
-$files = @('web\css\design-system.css', 'scripts\check-css.js')
+$files = @('web\css\design-system.css', 'desktop\WindowTheme.cs', 'scripts\check-css.js')
 $src   = 'D:\LeebertyGXP'
 
 foreach ($f in $files) {
@@ -126,7 +187,13 @@ foreach ($f in $files) {
 #    这一步能在打开浏览器之前就抓住最隐蔽的那类错误
 node scripts/check-css.js web/css/design-system.css
 
-# 2. 三个仓库的完整测试（GXP/PV 各约 3 分钟，PE 约 2 秒）
+# 2. 桌面启动器：编译 + 窗口层自检（不需要服务器，不会弹出窗口）
+#    GXP / PV
+node scripts/build-desktop.js --selftest
+#    PE-Workbench（构建脚本会自动跑）
+node scripts/build-desktop.js
+
+# 3. 三个仓库的完整测试（GXP/PV 各约 3 分钟，PE 约 2 秒）
 node test/run-all.js
 ```
 

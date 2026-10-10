@@ -83,9 +83,15 @@ function main() {
   const source = path.join(config.root, 'desktop', 'Launcher.cs');
   const client = path.join(config.root, 'desktop', 'NativeClient.cs');
   const uikit = path.join(config.root, 'desktop', 'UiKit.cs');
+  // Window chrome - dark title bar, rounded corners, matching border - is the half
+  // of the design system that CSS cannot reach, because Windows draws the frame,
+  // not the application. Byte-identical across LeebertyGXP, LeebertyPV and
+  // PE-Workbench, like web/css/design-system.css.
+  const windowTheme = path.join(config.root, 'desktop', 'WindowTheme.cs');
   if (!fs.existsSync(source)) fail(`source not found: ${source}`);
   if (!fs.existsSync(client)) fail(`source not found: ${client}`);
   if (!fs.existsSync(uikit)) fail(`source not found: ${uikit}`);
+  if (!fs.existsSync(windowTheme)) fail(`source not found: ${windowTheme}`);
 
   const csc = findCsc();
   if (!csc) {
@@ -124,6 +130,7 @@ function main() {
     source,
     client,
     uikit,
+    windowTheme,
   ], { encoding: 'utf8' });
 
   if (compile.status !== 0) {

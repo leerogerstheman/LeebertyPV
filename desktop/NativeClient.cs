@@ -148,6 +148,12 @@ public class NativeForm : Form {
         Font = Theme.BodyFont;
         try { Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath); } catch { }
 
+        // Window chrome. This client draws its own UI rather than hosting a
+        // browser, but the frame is still drawn by DWM: the title bar, the border
+        // and the corner radius are unreachable from any stylesheet. Attach()
+        // hooks HandleCreated, so StartPosition and MinimumSize above still win.
+        WindowTheme.Attach(this);
+
         BuildShell();
         try { _boot = Json.M(Req.Get("/api/bootstrap")); } catch { _boot = null; }
         try { _choices = Json.M(Req.Get("/api/login-choices")); } catch { _choices = null; }
