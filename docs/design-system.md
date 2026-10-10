@@ -111,14 +111,25 @@ CSS 只能管到**客户区内部**。标题栏、窗口边框和圆角由 Windo
 
 ### 三个窗口并不相同
 
-| 仓库 | 窗口类型 | 窗口层 | WebView2 配色 |
-|---|---|---|---|
-| LeebertyGXP | 内嵌 WebView2 | 适用 | 适用 |
-| LeebertyPV | **纯原生 WinForms**（`NativeForm`，不嵌浏览器） | 适用 | 不适用 |
-| PE-Workbench | 内嵌 WebView2 | 适用 | 适用 |
+| 仓库 | 默认窗口 | 窗口层 | WebView2 配色 | `app-region` |
+|---|---|---|---|---|
+| LeebertyGXP | 内嵌 WebView2 | 适用 | 适用 | 适用 |
+| LeebertyPV | **纯原生 WinForms**（`NativeForm`，自绘 UI） | 适用 | 不适用 | 不适用 |
+| LeebertyPV `--webview` | 内嵌 WebView2 | 适用 | 适用 | 适用 |
+| PE-Workbench | 内嵌 WebView2 | 适用 | 适用 | 适用 |
 
-PV 的桌面端自绘 UI，**不加载 `web/` 里的任何东西**，所以 `design-system.css` 对它的
-客户端区域完全无效——它只有窗口层这一半。这是已知的、刻意的差异，不是遗漏。
+PV 默认的桌面端自绘 UI，**不加载 `web/` 里的任何东西**，所以 `design-system.css` 对它
+的客户端区域完全无效——它只有窗口层这一半。这是 PV 刻意的设计（它的启动器头部写着
+"No Edge, no WebView2, no embedded browser"），不是遗漏。
+
+`--webview` 是给这条规律的例外开的口子：它把 `web/` 那套界面放进内嵌浏览器，
+从而完整吃到这里的一切。它默认关闭，所以上面的结论对默认路径依然成立。
+
+加这个开关的原因不是「原生界面不好」，而是 PV 有**两套前端**（`NativeClient.cs` +
+`UiKit.cs` 自绘一套，`web/` 又一套），维护成本是双份的。要判断砍掉哪一套，得先把两套
+并排看一次。代价是 PV 仓库多了约 1.4MB 的 WebView2 绑定二进制（`desktop/webview2-sdk/`，
+与 LeebertyGXP 同样的 vendor 方式）——是磁盘开销，不是依赖：构建仍然是 Windows 自带的
+csc 编译本地 .cs 文件，没有任何包管理器参与。
 
 ### `--theme` 开关
 

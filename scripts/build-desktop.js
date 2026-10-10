@@ -88,10 +88,28 @@ function main() {
   // not the application. Byte-identical across LeebertyGXP, LeebertyPV and
   // PE-Workbench, like web/css/design-system.css.
   const windowTheme = path.join(config.root, 'desktop', 'WindowTheme.cs');
+  // The second frontend: the web/ views in an embedded browser, opened with
+  // --webview. Compiled in unconditionally so the flag works from any build; the
+  // native client stays the default and is unaffected.
+  const webClient = path.join(config.root, 'desktop', 'WebViewClient.cs');
   if (!fs.existsSync(source)) fail(`source not found: ${source}`);
   if (!fs.existsSync(client)) fail(`source not found: ${client}`);
   if (!fs.existsSync(uikit)) fail(`source not found: ${uikit}`);
   if (!fs.existsSync(windowTheme)) fail(`source not found: ${windowTheme}`);
+  if (!fs.existsSync(webClient)) fail(`source not found: ${webClient}`);
+
+  // The WebView2 SDK bindings the --webview path is compiled against and loaded
+  // from at runtime. Vendored under desktop/webview2-sdk (Microsoft's
+  // redistributable hosting component), the same way LeebertyGXP vendors it: the
+  // compiler can only reference what is on disk, and the loader is resolved by
+  // name beside the exe. No package manager, no network.
+  const sdkDir = path.join(config.root, 'desktop', 'webview2-sdk');
+  const sdkCore = path.join(sdkDir, 'Microsoft.Web.WebView2.Core.dll');
+  const sdkWinForms = path.join(sdkDir, 'Microsoft.Web.WebView2.WinForms.dll');
+  if (!fs.existsSync(sdkCore) || !fs.existsSync(sdkWinForms)) {
+    fail(`WebView2 SDK bindings missing under ${sdkDir}`);
+  }
+  const sdkRefs = [`/reference:${sdkCore}`, `/reference:${sdkWinForms}`];
 
   const csc = findCsc();
   if (!csc) {
@@ -126,11 +144,13 @@ function main() {
     '/reference:System.Drawing.dll',
     '/reference:System.Windows.Forms.dll',
     '/reference:System.Web.Extensions.dll',
+    ...sdkRefs,
     ...iconArg,
     source,
     client,
     uikit,
     windowTheme,
+    webClient,
   ], { encoding: 'utf8' });
 
   if (compile.status !== 0) {
@@ -145,7 +165,22 @@ function main() {
   const size = fs.statSync(exePath).size;
   log(`output      ${exePath}`);
   log(`size        ${(size / 1024).toFixed(0)} KB`);
-  log(`deps        none (WinForms from the .NET Framework)`);
+  log('deps        .NET Framework + vendored WebView2 bindings (--webview only)');
+
+  // The WebView2 bindings have to sit beside the exe: the Core and WinForms
+  // assemblies are loaded at start-up and the loader is resolved by name. They
+  // are only ever *used* by --webview; the native client never touches them.
+  const sdkFiles = [
+    'Microsoft.Web.WebView2.Core.dll', 'Microsoft.Web.WebView2.Core.xml',
+    'Microsoft.Web.WebView2.WinForms.dll', 'Microsoft.Web.WebView2.WinForms.xml',
+    'WebView2Loader.dll', 'WebView2Loader_x86.dll', 'LICENSE.txt',
+  ];
+  let copied = 0;
+  for (const f of sdkFiles) {
+    const from = path.join(sdkDir, f);
+    if (fs.existsSync(from)) { fs.copyFileSync(from, path.join(args.out, f)); copied += 1; }
+  }
+  log(`webview2    ${copied} binding file(s) copied beside the exe`);
 
   // A README beside the exe so the folder is self-explanatory.
   fs.writeFileSync(path.join(args.out, '使用说明.txt'), [
@@ -171,13 +206,21 @@ function main() {
     '',
     '可选参数 / Optional:',
     '  LeebertyPV.exe --port 8793    换端口',
+    '  LeebertyPV.exe --webview      改用内嵌浏览器渲染 web\\ 里的界面（对比用）',
+    '                               render the web\\ interface in an embedded browser',
+    '  LeebertyPV.exe --theme dark   强制深色窗口层 / force the dark window chrome',
     '  LeebertyPV.exe --selftest     无界面自检（验证启动与停止）',
     '',
     '说明 / Notes:',
-    '  * 本 exe 由 Windows 自带的 C# 编译器现场编译，不依赖任何第三方组件。',
-    '    Compiled by the C# compiler shipped with Windows. No third-party components.',
-    '  * 窗口为原生 WinForms 应用，不依赖 Edge / WebView2 / 任何浏览器组件。',
-    '    The window is a native WinForms application; no Edge / WebView2 / browser needed.',
+    '  * 本 exe 由 Windows 自带的 C# 编译器现场编译，不引入任何包管理器依赖。',
+    '    Compiled by the C# compiler shipped with Windows. No package manager involved.',
+    '  * 默认窗口为原生 WinForms 应用，不依赖 Edge / WebView2 / 任何浏览器组件。',
+    '    The default window is a native WinForms application; no Edge / WebView2 / browser needed.',
+    '  * --webview 改用内嵌浏览器渲染同一套 web\\ 界面，需要 WebView2 运行时；',
+    '    同目录的 DLL 只是绑定，不传该参数时不会被加载。',
+    '    --webview renders the same web\\ interface in an embedded browser and needs the',
+    '    WebView2 runtime; the DLLs beside the exe are bindings only and are never loaded',
+    '    without the flag.',
     '  * 数据仍在 data\\ 目录，与命令行启动完全一致。',
     '    Data still lives in data\\, identical to the command-line launchers.',
     '',

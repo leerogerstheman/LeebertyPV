@@ -45,6 +45,16 @@ static class Program
     static bool weStartedServer;
     static NativeForm mainForm;
 
+    /// <summary>
+    /// Set from --webview. Opens the web/ interface in an embedded browser
+    /// instead of the GDI+ native client.
+    ///
+    /// Off by default, and deliberately so: this client's whole point has been
+    /// that it needs no browser. The flag exists so the two frontends can be put
+    /// side by side before anyone decides which one to keep.
+    /// </summary>
+    static bool webViewMode;
+
     /// <summary>Locate the directory that contains src\server.js.</summary>
     static string ResolveRoot()
     {
@@ -85,6 +95,8 @@ static class Program
             else if (args[i] == "--go" && i + 1 < args.Length) StartView = args[i + 1];
             else if (args[i] == "--login" && i + 1 < args.Length) StartLogin = args[i + 1];
             else if (args[i] == "--theme" && i + 1 < args.Length) WindowTheme.Requested = WindowTheme.Normalize(args[i + 1]);
+            else if (args[i] == "--webview") webViewMode = true;
+            else if (args[i] == "--custom-titlebar") WindowTheme.CustomTitleBar = true;
         }
 
         nodeExe = FindNode();
@@ -179,6 +191,12 @@ static class Program
             Path.Combine(root, "src", "server.js"));
         check("the desktop icon can be drawn without a resource file", MakeIcon() != null, "generated");
         check("the native client type compiles and loads", typeof(NativeForm) != null, "NativeForm");
+        // The --webview frontend is optional, so these report rather than gate:
+        // everything above still has to work when no engine is installed.
+        check("the WebView2 bindings for --webview are beside the exe", WebViewClient.SdkPresent(),
+            "Core.dll / WinForms.dll / WebView2Loader.dll");
+        check("a WebView2 engine is discoverable for --webview",
+            WebViewClient.FindRuntime() != null, WebViewClient.FindRuntime() ?? "no runtime found");
         check("the window chrome can be themed (dark title bar, rounded corners)",
             CanApplyWindowChrome(), WindowTheme.Describe());
         check("the health probe reports no server on a free port", !HealthOk(), "port " + port);
@@ -621,6 +639,20 @@ static class Program
         }
         try
         {
+            // Two frontends live in this launcher. The native client is the
+            // default and always has been; --webview opens the same web/ views
+            // the other two workbenches serve, so the two can be compared.
+            if (webViewMode)
+            {
+                if (WebViewClient.IsOpen) { WebViewClient.Focus(); return; }
+                if (WebViewClient.Open(BaseUrl)) return;
+
+                // No runtime or no SDK bindings: say so and fall back rather than
+                // leaving the user with no window at all.
+                ShowTrayMessage("内嵌浏览器不可用，改用原生界面 / WebView2 unavailable, using the native client");
+                webViewMode = false;
+            }
+
             if (mainForm == null || mainForm.IsDisposed)
             {
                 mainForm = new NativeForm();
@@ -743,7 +775,12 @@ static class Program
         return Icon.FromHandle(handle);
     }
 
-    static void LogLine(string line)
+    /// <summary>
+    /// Append one line to logs/desktop.log. Internal rather than private because
+    /// WebViewClient - the --webview frontend - is a separate file and reports
+    /// its engine discovery and custom-title-bar decisions through it.
+    /// </summary>
+    internal static void LogLine(string line)
     {
         try
         {
